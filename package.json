@@ -1,0 +1,42 @@
+{
+  "name": "@umi-ag/umi-sdk",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "main": "./dist/@umi-ag/umi-sdk.umd.js",
+  "module": "./dist/@umi-ag/umi-sdk.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/@umi-ag/umi-sdk.es.js",
+      "require": "./dist/@umi-ag/umi-sdk.umd.js"
+    }
+  },
+  "description": "",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "bot": "vite-node scripts/bot.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint ./src --fix -c .eslintrc.cjs --ext js,ts,jsx,tsx --ignore-pattern='!.*'"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "@types/node": "^18.15.10",
+    "@typescript-eslint/eslint-plugin": "^5.57.0",
+    "@typescript-eslint/parser": "^5.57.0",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "prettier": "^2.8.7",
+    "rollup-plugin-node-polyfills": "^0.2.1",
+    "typescript": "^5.0.2",
+    "vite": "^4.2.1",
+    "vite-node": "^0.29.7",
+    "vite-plugin-dts": "^2.1.0",
+    "vite-tsconfig-paths": "^4.0.7"
+  }
+}
