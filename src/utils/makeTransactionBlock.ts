@@ -311,7 +311,7 @@ export const make3splitSwapPayload = (
   return ok(txb);
 };
 
-export const makeSuiSwapPayload = (
+export const makeTradeTransactionBlock = (
   route: TradingRoute,
   slippageTolerance: number,
   coins_s: PaginatedCoins['data'],
@@ -324,5 +324,6 @@ export const makeSuiSwapPayload = (
     .with({ nSplits: 1, nHops: 2 }, () => make2hopSwapPayload(route, slippageTolerance, coins_s))
     .with({ nSplits: 1, nHops: 3 }, () => make3hopSwapPayload(route, slippageTolerance, coins_s))
     .with({ nSplits: 2, nHops: 1 }, () => make2splitSwapPayload(route, slippageTolerance, coins_s))
-    .with({ nSplits: 3, nHops: 1 }, () => make3splitSwapPayload(route, slippageTolerance, coins_s));
+    .with({ nSplits: 3, nHops: 1 }, () => make3splitSwapPayload(route, slippageTolerance, coins_s))
+    .otherwise(() => err('Unsupported trade route'));
 };

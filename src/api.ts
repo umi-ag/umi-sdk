@@ -12,7 +12,7 @@ export const fetchQuotes = async ({
   inputAmount,
   maxHops = 2,
   maxRoutes = 3,
-}: QuoteQuery): Promise<TradingRoute[]> => {
+}: QuoteQuery): Promise<TradingRoute> => {
   const url = new URL(`${endpoint}/quotes`);
   url.searchParams.append('source_coin', sourceCoin);
   url.searchParams.append('target_coin', targetCoin);
