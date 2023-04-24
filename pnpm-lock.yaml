@@ -17,6 +17,7 @@ specifiers:
   neverthrow: ^6.0.0
   prettier: ^2.8.7
   rollup-plugin-node-polyfills: ^0.2.1
+  ts-pattern: ^4.2.2
   typescript: ^5.0.2
   vite: ^4.2.1
   vite-node: ^0.29.7
@@ -30,6 +31,7 @@ dependencies:
   decimal.js: 10.4.3
   dotenv: 16.0.3
   neverthrow: 6.0.0
+  ts-pattern: 4.2.2
 
 devDependencies:
   '@types/node': 18.15.10
@@ -2847,6 +2849,10 @@ packages:
       '@ts-morph/common': 0.18.1
       code-block-writer: 11.0.3
     dev: true
+
+  /ts-pattern/4.2.2:
+    resolution: {integrity: sha512-qzJMo2pbkUJWusRH5o8xR+xogn6RmvViyUgwBFTtRENLse470clCGjHDf6haWGZ1AOmk8XkEohUoBW8Uut6Scg==}
+    dev: false
 
   /tsconfck/2.1.1_typescript@5.0.2:
     resolution: {integrity: sha512-ZPCkJBKASZBmBUNqGHmRhdhM8pJYDdOXp4nRgj/O0JwUwsMq50lCDRQP/M5GBNAA0elPrq4gAeu4dkaVCuKWww==}
