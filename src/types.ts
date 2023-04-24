@@ -7,6 +7,7 @@ export type TradingUnit = {
   fee_target: number;
   venue_object_id: string;
   is_x_to_y: boolean;
+  protocol_name: string;
 };
 
 export type TradingBlock = {
@@ -38,45 +39,3 @@ export type QuoteQuery = {
   maxHops?: number,
   maxRoutes?: number,
 };
-
-// export type CoinAmount = {
-//   coin_type: string,
-//   amount: number,
-// };
-
-// export type DEX = {
-//   name: String,
-//   reserve_x: CoinAmount,
-//   reserve_y: CoinAmount,
-//   fee_x: number,
-//   fee_y: number,
-// };
-
-// export type SwapQuote = {
-//   steps: {
-//     dex: DEX,
-//     receive_coin: {
-//  amount: number,
-//     }
-//   }[],
-//   g_score: number,
-//   h_score: number,
-// };
-
-// export type SwapInfo = {
-//   fromCoin: CoinAmount;
-//   toCoin: CoinAmount;
-//   part: Decimal;
-//   fee: CoinAmount;
-//   pool: PoolStatus;
-// };
-
-// export type PriceQuote = {
-//   fromCoin: CoinAmount;
-//   toCoin: CoinAmount;
-//   swapType: 'direct' | 'multi-hop' | 'split';
-//   swapRoute1: SwapInfo;
-//   swapRoute2?: SwapInfo; // exists when `swapType` is either multi-hop or split
-//   swapRoute3?: SwapInfo; // exists when `swapType` is either multi-hop or split
-//   price: Decimal;
-// };
