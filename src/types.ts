@@ -17,6 +17,7 @@ export type TradingBlock = {
   target_coin: string;
   venues: {
     venue: TradingUnit;
+    // f64
     weight: number;
   }[];
 };
