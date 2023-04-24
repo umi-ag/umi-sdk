@@ -1,7 +1,9 @@
 export type TradingUnit = {
   source_coin: string;
   target_coin: string;
+  // f64
   amount_in: number;
+  // f64
   min_amount_out: number;
   fee_source: number;
   fee_target: number;

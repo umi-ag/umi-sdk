@@ -1,5 +1,7 @@
 import type { PaginatedCoins } from '@mysten/sui.js';
 import { TransactionBlock } from '@mysten/sui.js';
+import { findCoinByType } from '@umi-ag/sui-coin-list';
+import Decimal from 'decimal.js';
 import { err, ok } from 'neverthrow';
 import type { PriceQuote, SwapSettings } from 'umi-sdk';
 import { CoinAmount, is_x_to_y_ } from 'umi-sdk';
@@ -14,12 +16,23 @@ export const make1hopSwapPayload = (
   const sourceCoinType = route[0].chain[0].source_coin;
   const targetCoinType = route[0].chain[0].target_coin;
 
+  const sourceCoinInfo = findCoinByType(sourceCoinType);
+  const targetCoinInfo = findCoinByType(targetCoinType);
+  if (!sourceCoinInfo || !targetCoinInfo) {
+    return err(new Error('coin not found'));
+  }
+
   const tradingUnit = route[0].chain[0].venues[0].venue;
 
   const first_venue = tradingUnit.venue_object_id;
 
-  const sourceCoinAmount = tradingUnit.amount_in;
-  const minTargetCoinAmount = tradingUnit.min_amount_out;
+  const sourceCoinAmount = new Decimal(tradingUnit.amount_in)
+    .mul(10 ** sourceCoinInfo.decimals)
+    .toFixed(0);
+  const minTargetCoinAmount = new Decimal(tradingUnit.min_amount_out)
+    .mul(10 ** targetCoinInfo.decimals)
+    .mul(1 - slippageTolerance)
+    .toFixed(0);
 
   const first_direction = tradingUnit.is_x_to_y ? 'x' : 'y';
   const first_package = tradingUnit.protocol_name;
