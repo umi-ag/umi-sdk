@@ -29,11 +29,13 @@ export type TradingRoute = {
   weight: number;
 }[];
 
-export type Venue = {
+export type VenueInfo = {
   venueObjectId: string,
   coinXType: string,
   coinYType: string,
 };
+
+export type VenueBook = Record<string, Record<string, VenueInfo>>;
 
 export type QuoteQuery = {
   sourceCoin: string,

@@ -1,4 +1,4 @@
-import type { Venue } from '../types';
+import type { VenueBook } from '../types';
 
 export const packageBook = {
   sui_aggregator: {
@@ -24,21 +24,7 @@ export const packageBook = {
       add_liquidity: 'add_liquidity',
     }
   },
-  // suiswap: {
-  //   packageObjectId: '0xa49083dd15863269c84624e83201ede24fc397aa',
-  //   pool: {
-  //     name: 'pool',
-  //     SwapCap: '0xc5e8d9e13e858eed03e16e7f6afe826d393d1c94',
-  //   }
-  // },
 };
-
-// type: '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_btc::DEVNET_BTC',
-// type: '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_eth::DEVNET_ETH',
-// type: '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdc::DEVNET_USDC',
-// type: '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdt::DEVNET_USDT',
-
-type VenueBook = Record<string, Record<string, Venue>>;
 
 export const venueObjectIdBook: VenueBook = {
   udoswap: {
