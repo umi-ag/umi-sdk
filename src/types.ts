@@ -2,18 +2,19 @@ export type TradingUnit = {
   source_coin: string;
   target_coin: string;
   // f64
-  amount_in: number;
+  source_amount: number;
   // f64
-  min_amount_out: number;
+  target_amount: number;
   fee_source: number;
   fee_target: number;
-  venue_object_id: string;
-  protocol_name: string;
 
+  object_type: string;
+  object_id: string;
   is_x_to_y: boolean;
-  package: string;
-  module: string;
   function: string;
+
+  /** @deprecated */
+  protocol_name: string;
 };
 
 export type TradingBlock = {

@@ -23,13 +23,13 @@ export const make1hopSwapPayload = (
 
   const tradingUnit = route[0].chain[0].venues[0].venue;
 
-  const first_venue = tradingUnit.venue_object_id;
+  const first_venue = tradingUnit.object_id;
 
-  const sourceCoinAmount = new Decimal(tradingUnit.amount_in)
+  const sourceCoinAmount = new Decimal(tradingUnit.source_amount)
     .mul(10 ** sourceCoinInfo.decimals)
     .round()
     .toString();
-  const minTargetCoinAmount = new Decimal(tradingUnit.min_amount_out)
+  const minTargetCoinAmount = new Decimal(tradingUnit.target_amount)
     .mul(1 - slippageTolerance)
     .mul(10 ** targetCoinInfo.decimals)
     .round()
@@ -72,8 +72,8 @@ export const make2hopSwapPayload = (
   const firstTradingUnit = route[0].chain[0].venues[0].venue;
   const secondTradingUnit = route[0].chain[1].venues[0].venue;
 
-  const first_venue = firstTradingUnit.venue_object_id;
-  const second_venue = secondTradingUnit.venue_object_id;
+  const first_venue = firstTradingUnit.object_id;
+  const second_venue = secondTradingUnit.object_id;
 
   const first_is_x_to_y = firstTradingUnit.is_x_to_y;
   const second_is_x_to_y = secondTradingUnit.is_x_to_y;
@@ -82,10 +82,10 @@ export const make2hopSwapPayload = (
   const first_package = firstTradingUnit.protocol_name;
   const second_package = firstTradingUnit.protocol_name;
 
-  const sourceCoinAmount = new Decimal(firstTradingUnit.amount_in)
+  const sourceCoinAmount = new Decimal(firstTradingUnit.source_amount)
     .mul(10 ** sourceCoinInfo.decimals)
     .toFixed(0);
-  const minTargetCoinAmount = new Decimal(secondTradingUnit.min_amount_out)
+  const minTargetCoinAmount = new Decimal(secondTradingUnit.target_amount)
     .mul(10 ** targetCoinInfo.decimals)
     .mul(1 - slippageTolerance)
     .toFixed(0);
@@ -129,9 +129,9 @@ export const make3hopSwapPayload = (
   const secondTradingUnit = route[0].chain[1].venues[0].venue;
   const thirdTradingUnit = route[0].chain[2].venues[0].venue;
 
-  const first_venue = firstTradingUnit.venue_object_id;
-  const second_venue = secondTradingUnit.venue_object_id;
-  const third_venue = thirdTradingUnit.venue_object_id;
+  const first_venue = firstTradingUnit.object_id;
+  const second_venue = secondTradingUnit.object_id;
+  const third_venue = thirdTradingUnit.object_id;
 
   const first_is_x_to_y = firstTradingUnit.is_x_to_y;
   const second_is_x_to_y = secondTradingUnit.is_x_to_y;
@@ -143,11 +143,11 @@ export const make3hopSwapPayload = (
   const second_package = secondTradingUnit.protocol_name;
   const third_package = thirdTradingUnit.protocol_name;
 
-  const sourceCoinAmount = new Decimal(firstTradingUnit.amount_in)
+  const sourceCoinAmount = new Decimal(firstTradingUnit.source_amount)
     .mul(10 ** sourceCoinInfo.decimals)
     .round()
     .toString();
-  const minTargetCoinAmount = new Decimal(secondTradingUnit.min_amount_out)
+  const minTargetCoinAmount = new Decimal(secondTradingUnit.target_amount)
     .mul(1 - slippageTolerance)
     .mul(10 ** targetCoinInfo.decimals)
     .round()
@@ -202,8 +202,8 @@ export const make2splitSwapPayload = (
   const secondWeight = new Decimal(route[0].chain[0].venues[1].weight)
     .mul(10 ** 4).round().toString();
 
-  const first_venue = firstTradingUnit.venue_object_id;
-  const second_venue = secondTradingUnit.venue_object_id;
+  const first_venue = firstTradingUnit.object_id;
+  const second_venue = secondTradingUnit.object_id;
 
   const first_is_x_to_y = firstTradingUnit.is_x_to_y;
   const second_is_x_to_y = secondTradingUnit.is_x_to_y;
@@ -212,11 +212,11 @@ export const make2splitSwapPayload = (
   const first_package = firstTradingUnit.protocol_name;
   const second_package = secondTradingUnit.protocol_name;
 
-  const sourceCoinAmount = new Decimal(firstTradingUnit.amount_in)
+  const sourceCoinAmount = new Decimal(firstTradingUnit.source_amount)
     .mul(10 ** sourceCoinInfo.decimals)
     .round()
     .toString();
-  const minTargetCoinAmount = new Decimal(secondTradingUnit.min_amount_out)
+  const minTargetCoinAmount = new Decimal(secondTradingUnit.target_amount)
     .mul(1 - slippageTolerance)
     .mul(10 ** targetCoinInfo.decimals)
     .round()
@@ -267,9 +267,9 @@ export const make3splitSwapPayload = (
   const thirdWeight = new Decimal(route[0].chain[0].venues[2].weight)
     .mul(10 ** 3).round().toString();
 
-  const first_venue = firstTradingUnit.venue_object_id;
-  const second_venue = secondTradingUnit.venue_object_id;
-  const third_venue = thirdTradingUnit.venue_object_id;
+  const first_venue = firstTradingUnit.object_id;
+  const second_venue = secondTradingUnit.object_id;
+  const third_venue = thirdTradingUnit.object_id;
 
   const first_is_x_to_y = firstTradingUnit.is_x_to_y;
   const second_is_x_to_y = secondTradingUnit.is_x_to_y;
@@ -281,11 +281,11 @@ export const make3splitSwapPayload = (
   const second_package = secondTradingUnit.protocol_name;
   const third_package = thirdTradingUnit.protocol_name;
 
-  const sourceCoinAmount = new Decimal(firstTradingUnit.amount_in)
+  const sourceCoinAmount = new Decimal(firstTradingUnit.source_amount)
     .mul(10 ** sourceCoinInfo.decimals)
     .round()
     .toString();
-  const minTargetCoinAmount = new Decimal(secondTradingUnit.min_amount_out)
+  const minTargetCoinAmount = new Decimal(secondTradingUnit.target_amount)
     .mul(1 - slippageTolerance)
     .mul(10 ** targetCoinInfo.decimals)
     .round()
@@ -309,6 +309,34 @@ export const make3splitSwapPayload = (
   });
 
   return ok(txb);
+};
+
+export const makeFlexTxb = (
+  route: TradingRoute,
+  slippageTolerance: number,
+  coins_s: PaginatedCoins['data'],
+) => {
+  const txb = new TransactionBlock();
+
+  const [merged, ...rest] = coins_s;
+  txb.mergeCoins(txb.object(merged.coinObjectId), rest.map(c => txb.object(c.coinObjectId)));
+
+  for (const { chain, weight } of route) { // route
+    for (const { venues } of chain) { // chain
+      const coins: any[] = [];
+      for (const { venue, weight } of venues) { // step
+        const txb = new TransactionBlock();
+
+        const coin = txb.moveCall({
+          target: 'some::mod::fn',
+        });
+        coins.push(coin);
+      }
+
+      const [coin, ...rest] = coins;
+      const merged = txb.mergeCoins(coin, rest);
+    }
+  }
 };
 
 export const makeTradeTransactionBlock = (
