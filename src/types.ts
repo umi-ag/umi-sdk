@@ -10,6 +10,10 @@ export type TradingUnit = {
   venue_object_id: string;
   is_x_to_y: boolean;
   protocol_name: string;
+
+  package: string;
+  module: string;
+  function: string;
 };
 
 export type TradingBlock = {
