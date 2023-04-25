@@ -8,9 +8,9 @@ export type TradingUnit = {
   fee_source: number;
   fee_target: number;
   venue_object_id: string;
-  is_x_to_y: boolean;
   protocol_name: string;
 
+  is_x_to_y: boolean;
   package: string;
   module: string;
   function: string;
