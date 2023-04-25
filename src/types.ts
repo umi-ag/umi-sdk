@@ -11,7 +11,7 @@ export type TradingUnit = {
   object_type: string;
   object_id: string;
   is_x_to_y: boolean;
-  function: string;
+  function: `${string}::${string}::${string}`;
 
   /** @deprecated */
   protocol_name: string;

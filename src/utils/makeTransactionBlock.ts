@@ -1,11 +1,11 @@
-import type { PaginatedCoins } from '@mysten/sui.js';
+import type { PaginatedCoins, TransactionArgument } from '@mysten/sui.js';
 import { TransactionBlock } from '@mysten/sui.js';
 import { findCoinByType } from '@umi-ag/sui-coin-list';
 import Decimal from 'decimal.js';
 import { err, ok } from 'neverthrow';
 import { match } from 'ts-pattern';
 import { packageBook } from '../addressList/testnet';
-import type { TradingRoute } from '../types';
+import type { TradingRoute, TradingUnit } from '../types';
 
 export const make1hopSwapPayload = (
   route: TradingRoute,
@@ -311,7 +311,28 @@ export const make3splitSwapPayload = (
   return ok(txb);
 };
 
+const addUmaUdoMoveCall = (
+  txb: TransactionBlock,
+  venue: TradingUnit,
+  coin: TransactionArgument,
+) => {
+  const [coinXType, coinYType] = venue.is_x_to_y
+    ? [venue.source_coin, venue.target_coin]
+    : [venue.target_coin, venue.source_coin];
+
+  return txb.moveCall({
+    target: venue.function,
+    typeArguments: [coinXType, coinYType],
+    arguments: [
+      txb.pure(venue.object_id),
+      txb.pure(coin),
+    ]
+  });
+};
+
 export const makeFlexTxb = (
+  owner: string,
+  sourceAmount: number,
   route: TradingRoute,
   slippageTolerance: number,
   coins_s: PaginatedCoins['data'],
@@ -321,22 +342,50 @@ export const makeFlexTxb = (
   const [merged, ...rest] = coins_s;
   txb.mergeCoins(txb.object(merged.coinObjectId), rest.map(c => txb.object(c.coinObjectId)));
 
+  const swappedCoins: any = [];
+
+  // coina
   for (const { chain, weight } of route) { // route
+    const splitAmount = sourceAmount * weight;
+    const [splited] = txb.splitCoins(
+      txb.object(merged.coinObjectId),
+      [txb.pure(splitAmount)],
+    );
+
+    // coina to coinb
+    // coinb to coinc
+    let coinToSwap = splited;
     for (const { venues } of chain) { // chain
       const coins: any[] = [];
       for (const { venue, weight } of venues) { // step
-        const txb = new TransactionBlock();
+        const [coin] = txb.splitCoins(
+          coinToSwap,
+          [txb.pure(splitAmount * weight)],
+        );
 
-        const coin = txb.moveCall({
-          target: 'some::mod::fn',
-        });
-        coins.push(coin);
+        const swapped = addUmaUdoMoveCall(txb, venue, coin);
+        coins.push(swapped);
       }
 
+      if (coins.length < 1) {
+        return err('Invalid trade chain');
+      }
       const [coin, ...rest] = coins;
-      const merged = txb.mergeCoins(coin, rest);
+      coinToSwap = txb.mergeCoins(coin, rest);
     }
+    swappedCoins.push(coinToSwap);
   }
+
+  if (swappedCoins.length < 1) {
+    return err('Invalid trade route');
+  }
+  const [coin, ...rest2] = swappedCoins;
+  txb.mergeCoins(coin, rest2);
+
+  txb.transferObjects([coin], txb.pure(owner));
+  // coinc
+
+  return ok(txb);
 };
 
 export const makeTradeTransactionBlock = (
