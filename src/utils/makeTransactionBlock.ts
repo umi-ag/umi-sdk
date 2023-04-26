@@ -12,8 +12,8 @@ export const make1hopSwapPayload = (
   slippageTolerance: number,
   coins_s: PaginatedCoins['data'],
 ) => {
-  const sourceCoinType = route[0].chain[0].source_coin;
-  const targetCoinType = route[0].chain[0].target_coin;
+  const sourceCoinType = route.chains[0].chain[0].source_coin;
+  const targetCoinType = route.chains[0].chain[0].target_coin;
 
   const sourceCoinInfo = findCoinByType(sourceCoinType);
   const targetCoinInfo = findCoinByType(targetCoinType);
@@ -21,7 +21,7 @@ export const make1hopSwapPayload = (
     return err('coin not found');
   }
 
-  const tradingUnit = route[0].chain[0].venues[0].venue;
+  const tradingUnit = route.chains[0].chain[0].venues[0].venue;
 
   const first_venue = tradingUnit.object_id;
 
@@ -60,8 +60,8 @@ export const make2hopSwapPayload = (
 ) => {
   if (coins_s.length < 1) return err('The length input coins is less than 1');
 
-  const sourceCoinType = route[0].chain[0].source_coin;
-  const targetCoinType = route[0].chain[1].target_coin;
+  const sourceCoinType = route.chains[0].chain[0].source_coin;
+  const targetCoinType = route.chains[0].chain[1].target_coin;
 
   const sourceCoinInfo = findCoinByType(sourceCoinType);
   const targetCoinInfo = findCoinByType(targetCoinType);
@@ -69,8 +69,8 @@ export const make2hopSwapPayload = (
     return err('coin not found');
   }
 
-  const firstTradingUnit = route[0].chain[0].venues[0].venue;
-  const secondTradingUnit = route[0].chain[1].venues[0].venue;
+  const firstTradingUnit = route.chains[0].chain[0].venues[0].venue;
+  const secondTradingUnit = route.chains[0].chain[1].venues[0].venue;
 
   const first_venue = firstTradingUnit.object_id;
   const second_venue = secondTradingUnit.object_id;
@@ -116,8 +116,8 @@ export const make3hopSwapPayload = (
 ) => {
   if (coins_s.length < 1) return err('The length input coins is less than 1');
 
-  const sourceCoinType = route[0].chain[0].source_coin;
-  const targetCoinType = route[0].chain[1].target_coin;
+  const sourceCoinType = route.chains[0].chain[0].source_coin;
+  const targetCoinType = route.chains[0].chain[1].target_coin;
 
   const sourceCoinInfo = findCoinByType(sourceCoinType);
   const targetCoinInfo = findCoinByType(targetCoinType);
@@ -125,9 +125,9 @@ export const make3hopSwapPayload = (
     return err('coin not found');
   }
 
-  const firstTradingUnit = route[0].chain[0].venues[0].venue;
-  const secondTradingUnit = route[0].chain[1].venues[0].venue;
-  const thirdTradingUnit = route[0].chain[2].venues[0].venue;
+  const firstTradingUnit = route.chains[0].chain[0].venues[0].venue;
+  const secondTradingUnit = route.chains[0].chain[1].venues[0].venue;
+  const thirdTradingUnit = route.chains[0].chain[2].venues[0].venue;
 
   const first_venue = firstTradingUnit.object_id;
   const second_venue = secondTradingUnit.object_id;
@@ -185,8 +185,8 @@ export const make2splitSwapPayload = (
 ) => {
   if (coins_s.length < 1) return err('The length input coins is less than 1');
 
-  const sourceCoinType = route[0].chain[0].source_coin;
-  const targetCoinType = route[0].chain[0].target_coin;
+  const sourceCoinType = route.chains[0].chain[0].source_coin;
+  const targetCoinType = route.chains[0].chain[0].target_coin;
 
   const sourceCoinInfo = findCoinByType(sourceCoinType);
   const targetCoinInfo = findCoinByType(targetCoinType);
@@ -194,12 +194,12 @@ export const make2splitSwapPayload = (
     return err('coin not found');
   }
 
-  const firstTradingUnit = route[0].chain[0].venues[0].venue;
-  const secondTradingUnit = route[0].chain[0].venues[1].venue;
+  const firstTradingUnit = route.chains[0].chain[0].venues[0].venue;
+  const secondTradingUnit = route.chains[0].chain[0].venues[1].venue;
   // to bps
-  const firstWeight = new Decimal(route[0].chain[0].venues[0].weight)
+  const firstWeight = new Decimal(route.chains[0].chain[0].venues[0].weight)
     .mul(10 ** 4).round().toString();
-  const secondWeight = new Decimal(route[0].chain[0].venues[1].weight)
+  const secondWeight = new Decimal(route.chains[0].chain[0].venues[1].weight)
     .mul(10 ** 4).round().toString();
 
   const first_venue = firstTradingUnit.object_id;
@@ -247,8 +247,8 @@ export const make3splitSwapPayload = (
 ) => {
   if (coins_s.length < 1) return err('The length input coins is less than 1');
 
-  const sourceCoinType = route[0].chain[0].source_coin;
-  const targetCoinType = route[0].chain[0].target_coin;
+  const sourceCoinType = route.chains[0].chain[0].source_coin;
+  const targetCoinType = route.chains[0].chain[0].target_coin;
 
   const sourceCoinInfo = findCoinByType(sourceCoinType);
   const targetCoinInfo = findCoinByType(targetCoinType);
@@ -256,15 +256,15 @@ export const make3splitSwapPayload = (
     return err('coin not found');
   }
 
-  const firstTradingUnit = route[0].chain[0].venues[0].venue;
-  const secondTradingUnit = route[0].chain[0].venues[1].venue;
-  const thirdTradingUnit = route[0].chain[0].venues[2].venue;
+  const firstTradingUnit = route.chains[0].chain[0].venues[0].venue;
+  const secondTradingUnit = route.chains[0].chain[0].venues[1].venue;
+  const thirdTradingUnit = route.chains[0].chain[0].venues[2].venue;
   // to bps
-  const firstWeight = new Decimal(route[0].chain[0].venues[0].weight)
+  const firstWeight = new Decimal(route.chains[0].chain[0].venues[0].weight)
     .mul(10 ** 3).round().toString();
-  const secondWeight = new Decimal(route[0].chain[0].venues[1].weight)
+  const secondWeight = new Decimal(route.chains[0].chain[0].venues[1].weight)
     .mul(10 ** 3).round().toString();
-  const thirdWeight = new Decimal(route[0].chain[0].venues[2].weight)
+  const thirdWeight = new Decimal(route.chains[0].chain[0].venues[2].weight)
     .mul(10 ** 3).round().toString();
 
   const first_venue = firstTradingUnit.object_id;
@@ -325,12 +325,13 @@ const addUmaUdoMoveCall = (
     typeArguments: [coinXType, coinYType],
     arguments: [
       txb.pure(venue.object_id),
-      txb.pure(coin),
+      // txb.pure(coin),
+      coin,
     ]
   });
 };
 
-export const makeFlexTxb = (
+export const makeTxbFromRoute = (
   owner: string,
   sourceAmount: number,
   route: TradingRoute,
@@ -339,17 +340,27 @@ export const makeFlexTxb = (
 ) => {
   const txb = new TransactionBlock();
 
+  const sourceCoin = findCoinByType(route.source_coin);
+  if (!sourceCoin) {
+    return err('source coin not found');
+  }
+
   const [merged, ...rest] = coins_s;
   txb.mergeCoins(txb.object(merged.coinObjectId), rest.map(c => txb.object(c.coinObjectId)));
 
   const swappedCoins: any = [];
 
   // coina
-  for (const { chain, weight } of route) { // route
-    const splitAmount = sourceAmount * weight;
+  for (const { chain, weight } of route.chains) { // route
+    const splitAmountForChain = new Decimal(sourceAmount)
+      .mul(weight)
+      .mul(10 ** sourceCoin.decimals)
+      .round()
+      .toNumber();
+
     const [splited] = txb.splitCoins(
       txb.object(merged.coinObjectId),
-      [txb.pure(splitAmount)],
+      [txb.pure(splitAmountForChain)],
     );
 
     // coina to coinb
@@ -358,9 +369,13 @@ export const makeFlexTxb = (
     for (const { venues } of chain) { // chain
       const coins: any[] = [];
       for (const { venue, weight } of venues) { // step
+        const splitAmountForTrade = new Decimal(splitAmountForChain)
+          .mul(weight)
+          .round()
+          .toNumber();
         const [coin] = txb.splitCoins(
           coinToSwap,
-          [txb.pure(splitAmount * weight)],
+          [txb.pure(splitAmountForTrade)],
         );
 
         const swapped = addUmaUdoMoveCall(txb, venue, coin);
@@ -375,6 +390,7 @@ export const makeFlexTxb = (
     }
     swappedCoins.push(coinToSwap);
   }
+  // coinc
 
   if (swappedCoins.length < 1) {
     return err('Invalid trade route');
@@ -383,7 +399,6 @@ export const makeFlexTxb = (
   txb.mergeCoins(coin, rest2);
 
   txb.transferObjects([coin], txb.pure(owner));
-  // coinc
 
   return ok(txb);
 };
@@ -393,8 +408,8 @@ export const makeTradeTransactionBlock = (
   slippageTolerance: number,
   coins_s: PaginatedCoins['data'],
 ) => {
-  const nSplits = route[0].chain[0].venues.length;
-  const nHops = route[0].chain.length;
+  const nSplits = route.chains[0].chain[0].venues.length;
+  const nHops = route.chains[0].chain.length;
 
   return match({ nSplits, nHops })
     .with({ nSplits: 1, nHops: 1 }, () => make1hopSwapPayload(route, slippageTolerance, coins_s))
