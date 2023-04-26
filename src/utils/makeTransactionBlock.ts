@@ -345,34 +345,39 @@ export const makeTxbFromRoute = (
     return err('source coin not found');
   }
 
-  const [merged, ...rest] = coins_s;
-  txb.mergeCoins(txb.object(merged.coinObjectId), rest.map(c => txb.object(c.coinObjectId)));
+  const [mergedCoin, ...remainingCoins] = coins_s;
+  txb.mergeCoins(
+    txb.object(mergedCoin.coinObjectId),
+    remainingCoins.map(c => txb.object(c.coinObjectId)),
+  );
 
-  const swappedCoins: any = [];
+  const swappedCoins: TransactionArgument[] = [];
 
-  // coina
-  for (const { chain, weight } of route.chains) { // route
+  // Process each chain in the trading route
+  for (const { chain, weight } of route.chains) {
     const splitAmountForChain = new Decimal(sourceAmount)
       .mul(weight)
       .mul(10 ** sourceCoin.decimals)
       .round()
       .toNumber();
 
-    const [splited] = txb.splitCoins(
-      txb.object(merged.coinObjectId),
+    const [splitCoin] = txb.splitCoins(
+      txb.object(mergedCoin.coinObjectId),
       [txb.pure(splitAmountForChain)],
     );
 
-    // coina to coinb
-    // coinb to coinc
-    let coinToSwap = splited;
-    for (const { venues } of chain) { // chain
+    // Process each step in the chain
+    let coinToSwap = splitCoin;
+    for (const { venues } of chain) {
       const coins: any[] = [];
-      for (const { venue, weight } of venues) { // step
+
+      // Process each step in the trading venue
+      for (const { venue, weight } of venues) {
         const splitAmountForTrade = new Decimal(splitAmountForChain)
           .mul(weight)
           .round()
           .toNumber();
+
         const [coin] = txb.splitCoins(
           coinToSwap,
           [txb.pure(splitAmountForTrade)],
@@ -390,15 +395,14 @@ export const makeTxbFromRoute = (
     }
     swappedCoins.push(coinToSwap);
   }
-  // coinc
 
   if (swappedCoins.length < 1) {
     return err('Invalid trade route');
   }
-  const [coin, ...rest2] = swappedCoins;
-  txb.mergeCoins(coin, rest2);
+  const [finalCoin, ...restCoins] = swappedCoins;
+  txb.mergeCoins(finalCoin, restCoins);
 
-  txb.transferObjects([coin], txb.pure(owner));
+  txb.transferObjects([finalCoin], txb.pure(owner));
 
   return ok(txb);
 };
