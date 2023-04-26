@@ -1,43 +1,56 @@
-export type TradingUnit = {
+export type Venue = {
+  name: string;
+  object_id: string;
+  object_type: string;
   source_coin: string;
   target_coin: string;
   // f64
   source_amount: number;
   // f64
   target_amount: number;
-  fee_source: number;
-  fee_target: number;
-
-  name: string;
-  object_type: string;
-  object_id: string;
+  source_fee: number;
+  target_fee: number;
   is_x_to_y: boolean;
-  function: `${string}::${string}::${string}`;
-
-  /** @deprecated */
-  protocol_name: string;
+  function: `${string}::${string}::${string}`
 };
 
-export type TradingBlock = {
+export type WeightedVenue = {
+  venue: Venue;
+  // f64
+  weight: number;
+};
+
+export type Step = {
   source_coin: string;
   target_coin: string;
-  venues: {
-    venue: TradingUnit;
-    // f64
-    weight: number;
-  }[];
+  source_amount: number;
+  target_amount: number;
+  venues: WeightedVenue[];
 };
 
-export type TradingChain = TradingBlock[];
+export type Chain = {
+  source_coin: string;
+  target_coin: string;
+  source_amount: number;
+  target_amount: number;
+  steps: Step[];
+};
+
+export type WeightedChain = {
+  chain: Chain;
+  // f64
+  weight: number;
+};
 
 export type TradingRoute = {
   source_coin: string;
   target_coin: string;
-  chains: {
-    chain: TradingChain;
-    weight: number;
-  }[];
+  source_amount: number;
+  target_amount: number;
+  chains: WeightedChain[];
 };
+
+export type TradingRoutes = TradingRoute[];
 
 export type VenueInfo = {
   venueObjectId: string,

@@ -21,7 +21,7 @@ const owner = keypair.getPublicKey().toSuiAddress();
 // eslint-disable-next-line @typescript-eslint/no-extra-semi, no-extra-semi
 ;(async () => {
   const sourceAmount = 3;
-  const quote = await dev_fetchSplitQuotes({
+  const [quote] = await dev_fetchSplitQuotes({
     sourceCoin: devUSDC,
     targetCoin: devBTC,
     inputAmount: 3,
