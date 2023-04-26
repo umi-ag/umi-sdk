@@ -8,6 +8,7 @@ export type TradingUnit = {
   fee_source: number;
   fee_target: number;
 
+  name: string;
   object_type: string;
   object_id: string;
   is_x_to_y: boolean;
@@ -30,9 +31,13 @@ export type TradingBlock = {
 export type TradingChain = TradingBlock[];
 
 export type TradingRoute = {
-  chain: TradingChain;
-  weight: number;
-}[];
+  source_coin: string;
+  target_coin: string;
+  chains: {
+    chain: TradingChain;
+    weight: number;
+  }[];
+};
 
 export type VenueInfo = {
   venueObjectId: string,
@@ -45,7 +50,7 @@ export type VenueBook = Record<string, Record<string, VenueInfo>>;
 export type QuoteQuery = {
   sourceCoin: string,
   targetCoin: string,
-  inputAmount: string,
+  inputAmount: string | number,
   maxHops?: number,
   maxRoutes?: number,
 };

@@ -1,10 +1,8 @@
 import { fetch } from 'cross-fetch';
-import * as dotenv from 'dotenv';
 import type { QuoteQuery, TradingRoute } from './types';
 
-dotenv.config();
-
-const endpoint = process.env.UMI_API_ENDPOINT;
+// @ts-ignore
+const endpoint = import.meta.env.VITE_APP_UMI_API_ENDPOINT;
 
 export const fetchQuotes = async ({
   sourceCoin,
@@ -16,7 +14,7 @@ export const fetchQuotes = async ({
   const url = new URL(`${endpoint}/quotes`);
   url.searchParams.append('source_coin', sourceCoin);
   url.searchParams.append('target_coin', targetCoin);
-  url.searchParams.append('input_amount', inputAmount);
+  url.searchParams.append('input_amount', inputAmount.toString());
   url.searchParams.append('max_hops', maxHops.toString());
   url.searchParams.append('max_routes', maxRoutes.toString());
 
@@ -33,15 +31,19 @@ export const dev_fetchSplitQuotes = async ({
   maxHops = 2,
   maxRoutes = 3,
 }: QuoteQuery): Promise<TradingRoute> => {
-  const url = new URL(`${endpoint}/split`);
+  const url = new URL(`${endpoint}/splits`);
   url.searchParams.append('source_coin', sourceCoin);
   url.searchParams.append('target_coin', targetCoin);
-  url.searchParams.append('input_amount', inputAmount);
+  url.searchParams.append('input_amount', inputAmount.toString());
   url.searchParams.append('max_hops', maxHops.toString());
   url.searchParams.append('max_routes', maxRoutes.toString());
 
   const response = await fetch(url.toString());
   const result = await response.json();
 
-  return result;
+  return {
+    ...result,
+    source_coin: sourceCoin,
+    target_coin: targetCoin,
+  };
 };

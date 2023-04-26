@@ -36,8 +36,8 @@ coina--step---coinb--step----coinc
   const umaSwanFn = '0x61eea51ba7688c8d05e45e13bcbfdd36450832d58ac5d061b046a1df5d489807::dex::swap_x_to_y_direct';
 
   const devBTC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_btc::DEVNET_BTC';
-  const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdt::DEVNET_USDT';
   const devUSDC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdc::DEVNET_USDC';
+  const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdt::DEVNET_USDT';
 
   const udoVenue = '0xb15cd58ef08a7d6f8f846c0e113b9eb10be5a56eb5d2c7c072b8b8cd786f62e1';
   const umaVenue = '0x86b3949bccb7285620ac3264721a7c4b756aff94189c1ce4f870b73475a8c5c9';
