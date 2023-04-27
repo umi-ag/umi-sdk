@@ -5,6 +5,18 @@ import Decimal from 'decimal.js';
 import { err, ok } from 'neverthrow';
 import type { TradingRoute, Venue } from '../types';
 
+const addIntoBalanceCall = (
+  txb: TransactionBlock,
+  coinType: string,
+  coin: TransactionArgument,
+) => {
+  return txb.moveCall({
+    target: '0x2::coin::into_balance',
+    typeArguments: [coinType],
+    arguments: [coin],
+  });
+};
+
 const addUmaUdoMoveCall = (
   txb: TransactionBlock,
   venue: Venue,
@@ -19,7 +31,6 @@ const addUmaUdoMoveCall = (
     typeArguments: [coinXType, coinYType],
     arguments: [
       txb.pure(venue.object_id),
-      // txb.pure(coin),
       coin,
     ]
   });
@@ -40,10 +51,12 @@ export const makeTxbFromRoute = (
   }
 
   const [mergedCoin, ...remainingCoins] = coins_s;
-  txb.mergeCoins(
-    txb.object(mergedCoin.coinObjectId),
-    remainingCoins.map(c => txb.object(c.coinObjectId)),
-  );
+  if (remainingCoins.length > 0) {
+    txb.mergeCoins(
+      txb.object(mergedCoin.coinObjectId),
+      remainingCoins.map(c => txb.object(c.coinObjectId)),
+    );
+  }
 
   const swappedCoins: TransactionArgument[] = [];
 
@@ -94,7 +107,9 @@ export const makeTxbFromRoute = (
     return err('Invalid trade route');
   }
   const [finalCoin, ...restCoins] = swappedCoins;
-  txb.mergeCoins(finalCoin, restCoins);
+  if (restCoins.length > 0) {
+    txb.mergeCoins(finalCoin, restCoins);
+  }
 
   txb.transferObjects([finalCoin], txb.pure(owner));
 

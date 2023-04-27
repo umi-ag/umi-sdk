@@ -41,9 +41,5 @@ export const dev_fetchSplitQuotes = async ({
   const response = await fetch(url.toString());
   const result = await response.json();
 
-  return {
-    ...result,
-    source_coin: sourceCoin,
-    target_coin: targetCoin,
-  };
+  return result;
 };
