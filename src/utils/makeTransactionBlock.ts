@@ -98,9 +98,11 @@ export const makeTxbFromRoute = (
         return err('Invalid trade chain');
       }
       const [coin, ...rest] = coins;
-      coinToSwap = txb.mergeCoins(coin, rest);
+      txb.mergeCoins(coin, rest);
+      coinToSwap = coin;
     }
     swappedCoins.push(coinToSwap);
+    txb.transferObjects([splitCoin], txb.pure(owner));
   }
 
   if (swappedCoins.length < 1) {
