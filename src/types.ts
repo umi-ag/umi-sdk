@@ -1,3 +1,5 @@
+import type { PaginatedCoins } from '@mysten/sui.js';
+
 export type Venue = {
   name: string;
   object_id: string;
@@ -11,7 +13,7 @@ export type Venue = {
   source_fee: number;
   target_fee: number;
   is_x_to_y: boolean;
-  function: `${string}::${string}::${string}`
+  function: `${string}::${string}::${string}`;
 };
 
 export type WeightedVenue = {
@@ -67,3 +69,5 @@ export type QuoteQuery = {
   maxHops?: number,
   maxRoutes?: number,
 };
+
+export type CoinObject = PaginatedCoins['data'][number];
