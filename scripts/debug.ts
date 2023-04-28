@@ -1,7 +1,7 @@
 import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, fromB64 } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
 import { dev_fetchSplitQuotes } from '../src/api';
-import { makeTxbFromRoute } from '../src/utils/makeTransactionBlock';
+import { createTradeTransactionBlockFromRoute } from '../src/utils/createTransactionBlock';
 
 globalThis.fetch = fetch;
 
@@ -12,7 +12,7 @@ const provider = new JsonRpcProvider(new Connection({
   fullnode: 'https://sui-api.rpcpool.com',
 }));
 
-const privatekey0x = (process.env.SUI_PRIVATE_KEY as string);
+const privatekey0x = (process.env.SUI_PRIVATE_KEY as string); // 0x.....
 const privatekey = privatekey0x.replace(/^0x/, ''); //slice used to remove the first 2 letter from the string and that's 0x
 const privateKeyBase64 = Buffer.from(privatekey, 'hex').toString('base64'); //convert hex to base64 string
 const keypair = Ed25519Keypair.fromSecretKey(fromB64(privateKeyBase64));
@@ -26,7 +26,6 @@ console.log(await signer.getAddress());
 // eslint-disable-next-line @typescript-eslint/no-extra-semi, no-extra-semi
 ;(async () => {
   console.time('p');
-  const sourceAmount = 3;
   const [quote] = await dev_fetchSplitQuotes({
     sourceCoin: devUSDC,
     targetCoin: devBTC,
@@ -37,12 +36,13 @@ console.log(await signer.getAddress());
   const coins = (await provider.getCoins({ owner, coinType: devUSDC }))
     .data;
   console.timeLog('p', 'coins');
-  const r = makeTxbFromRoute(
+  const r = createTradeTransactionBlockFromRoute(
     owner,
-    sourceAmount,
     quote,
-    0,
     coins,
+    {
+      slippageTolerance: 0.01,
+    }
   );
   console.timeLog('p', 'txb');
 
