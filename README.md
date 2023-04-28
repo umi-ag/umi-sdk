@@ -1,6 +1,6 @@
-# @umi-ag/sui-sdk-ts
+# @umi-ag/sui-sdk
 
-The `@umi-ag/sui-sdk-ts` is a TypeScript library that provides an easy-to-use interface for interacting with the Umi Aggregator on the Sui blockchain. It simplifies the process of fetching trading routes, creating transaction blocks, and executing trades through the Umi Aggregator.
+The `@umi-ag/sui-sdk` is a TypeScript library that provides an easy-to-use interface for interacting with the Umi Aggregator on the Sui blockchain. It simplifies the process of fetching trading routes, creating transaction blocks, and executing trades through the Umi Aggregator.
 
 ## Features
 
@@ -10,33 +10,27 @@ The `@umi-ag/sui-sdk-ts` is a TypeScript library that provides an easy-to-use in
 
 ## Installation
 
-Use npm or yarn to install @umi-ag/sui-sdk-ts in your project:
+Use npm or yarn to install @umi-ag/sui-sdk in your project:
 
 ```
-npm install @umi-ag/sui-sdk-ts
+npm install @umi-ag/sui-sdk
 ```
 
 or
 
 ```
-yarn add @umi-ag/sui-sdk-ts
+yarn add @umi-ag/sui-sdk
 ```
 
 ## Usage
 
-Here's a simple example of how to use @umi-ag/sui-sdk-ts:
+Here's a simple example of how to use @umi-ag/sui-sdk:
 
 ```typescript
 import { UmiSDK } from "@umi-ag/sui-sdk-ts";
-import { JsonRpcProvider } from "@mysten/sui.js";
-
-const provider = new JsonRpcProvider(new Connection({
-  fullnode: 'https://your-json-rpc-url',
-}));
 
 // Create an instance of UmiSDK
 const umisdk = new UmiSDK({
-  provider,
   userAddress: "your-sui-address",
 });
 
@@ -46,19 +40,20 @@ const query = {
   destination_coin: "UMI",
   amount: "1000000000000000000", // 1 ETH in wei
 };
-const routes = await umisdk.fetchTradingRoutes(query);
 
-// Select a trading route
-const selectedRoute = routes[0];
-
-// Create a transaction block from the selected trading route
+// Create a transaction block from the best trading route at the time
 const swapConfig = {
   slippageTolerance: 0.01, // 1% slippage tolerance
 };
-const transactionBlock = await umisdk.createTransactionBlockFromRoute(selectedRoute, swapConfig);
+const transactionBlock = await umisdk.createTransactionBlockFromBestRoute(
+  query,
+  swapConfig,
+);
 
-// Execute the selected trading route (requires a signer)
-await umisdk.executeRoute(selectedRoute, swapConfig);
+// Execute the selected trading route 
+await signAndExecuteTransactionBlock({
+  transactionBlock,
+});
 ```
 
 ## Documentation

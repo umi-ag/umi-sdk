@@ -32,7 +32,12 @@ export class UmiSDK {
    * @returns A promise that resolves to an array of trading routes
    */
   public async fetchTradingRoutes(query: QuoteQuery) {
-    return fetchRoutes(query);
+    const routes = await fetchRoutes(query);
+    if (routes.length === 0) {
+      throw new Error('No trading routes found');
+    }
+
+    return routes;
   }
 
   /**
@@ -64,6 +69,20 @@ export class UmiSDK {
     }
 
     return txbResult.value;
+  }
+
+  /**
+   * Create a transaction block from the best trading route found for the given query and swap configuration
+   * @param query - The query to fetch trading routes
+   * @param swapConfig - The swap configuration, including slippage tolerance
+   * @returns A promise that resolves to a transaction block created from the best trading route
+   */
+  public async createTransactionBlockFromBestRoute(query: QuoteQuery, swapConfig: SwapConfig) {
+    const [bestRoute] = await this.fetchTradingRoutes(query);
+
+    const txb = this.createTransactionBlockFromRoute(bestRoute, swapConfig);
+
+    return txb;
   }
 
   /**
