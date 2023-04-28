@@ -27,7 +27,7 @@ yarn add @umi-ag/sui-sdk
 Here's a simple example of how to use @umi-ag/sui-sdk:
 
 ```typescript
-import { UmiSDK } from "@umi-ag/sui-sdk-ts";
+import { UmiSDK } from "@umi-ag/sui-sdk";
 
 // Create an instance of UmiSDK
 const umisdk = new UmiSDK({
