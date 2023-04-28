@@ -4,7 +4,7 @@ import type { QuoteQuery, TradingRoutes } from './types';
 // @ts-ignore
 const endpoint = import.meta.env.VITE_APP_UMI_API_ENDPOINT;
 
-export const fetchQuotes = async ({
+export const fetchRoutes = async ({
   sourceCoin,
   targetCoin,
   inputAmount,

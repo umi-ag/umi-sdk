@@ -3,9 +3,9 @@ import { TransactionBlock } from '@mysten/sui.js';
 import { findCoinByType } from '@umi-ag/sui-coin-list';
 import Decimal from 'decimal.js';
 import { err, ok } from 'neverthrow';
-import type { TradingRoute, Venue } from '../types';
+import type { CoinObject, TradingRoute, Venue } from '../types';
 
-const addIntoBalanceCall = (
+export const addIntoBalanceCall = (
   txb: TransactionBlock,
   coinType: string,
   coin: TransactionArgument,
@@ -41,7 +41,7 @@ export const makeTxbFromRoute = (
   sourceAmount: number,
   route: TradingRoute,
   slippageTolerance: number,
-  coins_s: PaginatedCoins['data'],
+  coins_s: CoinObject[],
 ) => {
   const txb = new TransactionBlock();
 
@@ -68,6 +68,7 @@ export const makeTxbFromRoute = (
       .round()
       .toNumber();
 
+    // need to be kizen
     const [splitCoin] = txb.splitCoins(
       txb.object(mergedCoin.coinObjectId),
       [txb.pure(splitAmountForChain)],
