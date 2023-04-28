@@ -1,7 +1,7 @@
 import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, fromB64 } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
 import { dev_fetchSplitQuotes } from '../src/api';
-import { createTradeTransactionBlockFromRoute } from '../src/utils/createTransactionBlock';
+import { createTradeTransactionBlockFromRoute } from '../src/core/createTransactionBlock';
 
 globalThis.fetch = fetch;
 

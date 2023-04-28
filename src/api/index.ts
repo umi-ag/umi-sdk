@@ -1,5 +1,5 @@
 import { fetch } from 'cross-fetch';
-import type { QuoteQuery, TradingRoutes } from './types';
+import type { QuoteQuery, TradingRoutes } from '../types';
 
 // @ts-ignore
 const endpoint = import.meta.env.VITE_APP_UMI_API_ENDPOINT;

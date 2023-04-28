@@ -1,9 +1,9 @@
 import type { SignerWithProvider, SuiAddress } from '@mysten/sui.js';
 import { JsonRpcProvider, testnetConnection } from '@mysten/sui.js';
 import { fetchRoutes } from './api';
+import { createTradeTransactionBlockFromRoute } from './core/createTransactionBlock';
+import { getSufficientCoinObjects } from './core/getSufficientCoinObjects';
 import type { QuoteQuery, SwapConfig, TradingRoute, UmiSdkArg } from './types';
-import { createTradeTransactionBlockFromRoute } from './utils/createTransactionBlock';
-import { getSufficientCoinObjects } from './utils/getSufficientCoinObjects';
 
 const defaultProvider = new JsonRpcProvider(testnetConnection);
 
