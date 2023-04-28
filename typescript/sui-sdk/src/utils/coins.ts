@@ -1,14 +1,20 @@
 import type { JsonRpcProvider } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
-import { err, ok } from 'neverthrow';
 import type { CoinObject } from '../types';
 
-export const getSufficientCoinObjects = async (
+type GetSufficientCoinObjectsArgs = {
   provider: JsonRpcProvider,
   owner: string,
   coinType: string,
   requiredAmount: number | string,
-) => {
+};
+
+export const getSufficientCoinObjects = async ({
+  provider,
+  owner,
+  coinType,
+  requiredAmount,
+}: GetSufficientCoinObjectsArgs) => {
   const coins: CoinObject[] = [];
   const totalBalance = () => coins.reduce((sub, cur) => sub.plus(cur.balance), new Decimal(0));
 
@@ -22,8 +28,10 @@ export const getSufficientCoinObjects = async (
   }
 
   if (totalBalance().lt(requiredAmount)) {
-    return err('Insufficient coin objects available for the signer to meet the required amount.');
+    // return err('Insufficient coin objects available for the signer to meet the required amount.');
+    throw new Error('Insufficient coin objects available for the signer to meet the required amount.');
   }
 
-  return ok(coins);
+  // return ok(coins);
+  return coins;
 };
