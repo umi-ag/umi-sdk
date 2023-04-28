@@ -1,9 +1,9 @@
-import type { PaginatedCoins, TransactionArgument } from '@mysten/sui.js';
+import type { TransactionArgument } from '@mysten/sui.js';
 import { TransactionBlock } from '@mysten/sui.js';
 import { findCoinByType } from '@umi-ag/sui-coin-list';
 import Decimal from 'decimal.js';
 import { err, ok } from 'neverthrow';
-import type { CoinObject, TradingRoute, Venue } from '../types';
+import type { CoinObject, SwapConfig, TradingRoute, Venue } from '../types';
 
 export const addIntoBalanceCall = (
   txb: TransactionBlock,
@@ -36,12 +36,11 @@ const addUmaUdoMoveCall = (
   });
 };
 
-export const makeTxbFromRoute = (
+export const createTradeTransactionBlockFromRoute = (
   owner: string,
-  sourceAmount: number,
   route: TradingRoute,
-  slippageTolerance: number,
   coins_s: CoinObject[],
+  swapConfig: SwapConfig,
 ) => {
   const txb = new TransactionBlock();
 
@@ -62,7 +61,7 @@ export const makeTxbFromRoute = (
 
   // Process each chain in the trading route
   for (const { chain, weight } of route.chains) {
-    const splitAmountForChain = new Decimal(sourceAmount)
+    const splitAmountForChain = new Decimal(route.source_amount)
       .mul(weight)
       .mul(10 ** sourceCoin.decimals)
       .round()
@@ -117,12 +116,4 @@ export const makeTxbFromRoute = (
   txb.transferObjects([finalCoin], txb.pure(owner));
 
   return ok(txb);
-};
-
-export const makeTradeTransactionBlock = (
-  route: TradingRoute,
-  slippageTolerance: number,
-  coins_s: PaginatedCoins['data'],
-) => {
-  return makeTxbFromRoute('', 0, route, slippageTolerance, coins_s);
 };

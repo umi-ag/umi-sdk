@@ -1,4 +1,4 @@
-import type { PaginatedCoins } from '@mysten/sui.js';
+import type { JsonRpcProvider, PaginatedCoins, SignerWithProvider, SuiAddress } from '@mysten/sui.js';
 
 export type Venue = {
   name: string;
@@ -71,3 +71,13 @@ export type QuoteQuery = {
 };
 
 export type CoinObject = PaginatedCoins['data'][number];
+
+export type UmiSdkArg = {
+  provider?: JsonRpcProvider,
+  signer?: SignerWithProvider,
+  userAddress: SuiAddress,
+};
+
+export type SwapConfig = {
+  slippageTolerance: number,
+};
