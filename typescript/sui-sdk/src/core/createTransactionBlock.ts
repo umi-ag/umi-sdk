@@ -1,9 +1,8 @@
-import type { TransactionArgument } from '@mysten/sui.js';
-import { TransactionBlock } from '@mysten/sui.js';
+import type { TransactionBlock, TransactionArgument } from '@mysten/sui.js';
 import { findCoinByType } from '@umi-ag/sui-coin-list';
 import Decimal from 'decimal.js';
-import { err, ok } from 'neverthrow';
-import type { CoinObject, SwapConfig, TradingRoute, Venue } from '../types';
+import type { TradingRoute, Venue } from '../types';
+import { match } from 'ts-pattern';
 
 export const addIntoBalanceCall = (
   txb: TransactionBlock,
@@ -17,7 +16,7 @@ export const addIntoBalanceCall = (
   });
 };
 
-const addUmaUdoMoveCall = (
+const swapUmaUdoMoveCall = (
   txb: TransactionBlock,
   venue: Venue,
   coin: TransactionArgument,
@@ -36,47 +35,69 @@ const addUmaUdoMoveCall = (
   });
 };
 
-export const createTradeTransactionBlockFromRoute = (
-  owner: string,
-  route: TradingRoute,
-  coins_s: CoinObject[],
-  swapConfig: SwapConfig,
+const tradeMoveCall = (
+  txb: TransactionBlock,
+  venue: Venue,
+  coin: TransactionArgument,
 ) => {
-  const txb = new TransactionBlock();
+  return match(venue)
+    .with({ name: 'umaswap' }, { name: 'udoswap' }, () => swapUmaUdoMoveCall(txb, venue, coin))
+    .otherwise(() => {
+      throw new Error('Unsupported venue.');
+    });
+};
 
-  const sourceCoin = findCoinByType(route.source_coin);
-  if (!sourceCoin) {
-    return err('source coin not found');
+type AggregateTradeArgs = {
+  transactionBlock: TransactionBlock,
+  quote: TradingRoute,
+  minTargetCoinAmount?: TransactionArgument;
+  coins: TransactionArgument[];
+  accountAddress: TransactionArgument,
+};
+
+export const aggregateMoveCall = (
+  {
+    transactionBlock: txb,
+    quote,
+    coins,
+    minTargetCoinAmount,
+    accountAddress,
+  }: AggregateTradeArgs
+) => {
+  const sourceCoinInfo = findCoinByType(quote.source_coin);
+  if (!sourceCoinInfo) {
+    // return err('Source coin not found.');
+    throw new Error('Source coin not found.');
   }
 
-  const [mergedCoin, ...remainingCoins] = coins_s;
-  if (remainingCoins.length > 0) {
+  const [sourceCoin, ...restSourceCoins] = coins;
+  if (restSourceCoins.length > 0) {
     txb.mergeCoins(
-      txb.object(mergedCoin.coinObjectId),
-      remainingCoins.map(c => txb.object(c.coinObjectId)),
+      sourceCoin,
+      restSourceCoins,
     );
   }
 
-  const swappedCoins: TransactionArgument[] = [];
+  const targetCoins: TransactionArgument[] = [];
 
   // Process each chain in the trading route
-  for (const { chain, weight } of route.chains) {
-    const splitAmountForChain = new Decimal(route.source_amount)
+  for (const { chain, weight } of quote.chains) {
+    const splitAmountForChain = new Decimal(quote.source_amount)
       .mul(weight)
-      .mul(10 ** sourceCoin.decimals)
+      .mul(10 ** sourceCoinInfo.decimals)
       .round()
       .toNumber();
 
-    // need to be kizen
+    // TODO: need to be kizen
     const [splitCoin] = txb.splitCoins(
-      txb.object(mergedCoin.coinObjectId),
+      sourceCoin,
       [txb.pure(splitAmountForChain)],
     );
 
     // Process each step in the chain
     let coinToSwap = splitCoin;
     for (const { venues } of chain.steps) {
-      const coins: any[] = [];
+      const coins: TransactionArgument[] = [];
 
       // Process each step in the trading venue
       for (const { venue, weight } of venues) {
@@ -85,35 +106,123 @@ export const createTradeTransactionBlockFromRoute = (
           .round()
           .toNumber();
 
+        // TODO: need to be kizen
         const [coin] = txb.splitCoins(
           coinToSwap,
           [txb.pure(splitAmountForTrade)],
         );
 
-        const swapped = addUmaUdoMoveCall(txb, venue, coin);
+        const swapped = tradeMoveCall(txb, venue, coin);
         coins.push(swapped);
       }
 
       if (coins.length < 1) {
-        return err('Invalid trade chain');
+        // return err('Invalid trade chain');
+        throw new Error('Invalid trade chain');
       }
       const [coin, ...rest] = coins;
-      txb.mergeCoins(coin, rest);
+      if (rest.length > 0) {
+        txb.mergeCoins(coin, rest);
+      }
       coinToSwap = coin;
     }
-    swappedCoins.push(coinToSwap);
-    txb.transferObjects([splitCoin], txb.pure(owner));
+
+    targetCoins.push(coinToSwap);
+    // send the remaining coin to the account address
+    txb.transferObjects([splitCoin], accountAddress);
   }
 
-  if (swappedCoins.length < 1) {
-    return err('Invalid trade route');
+  if (targetCoins.length < 1) {
+    // return err('Invalid trade route');
+    throw new Error('Invalid trade route');
   }
-  const [finalCoin, ...restCoins] = swappedCoins;
-  if (restCoins.length > 0) {
-    txb.mergeCoins(finalCoin, restCoins);
+  const [targetCoin, ...restTargetCoins] = targetCoins;
+  if (restTargetCoins.length > 0) {
+    txb.mergeCoins(targetCoin, restTargetCoins);
   }
 
-  txb.transferObjects([finalCoin], txb.pure(owner));
-
-  return ok(txb);
+  // return ok(targetCoin);
+  return targetCoin;
 };
+
+// export const createTradeTransactionBlockFromRoute = (
+//   owner: string,
+//   route: TradingRoute,
+//   coins_s: CoinObject[],
+//   swapConfig: SwapConfig,
+// ) => {
+//   const txb = new TransactionBlock();
+
+//   const sourceCoin = findCoinByType(route.source_coin);
+//   if (!sourceCoin) {
+//     return err('source coin not found');
+//   }
+
+//   const [mergedCoin, ...remainingCoins] = coins_s;
+//   if (remainingCoins.length > 0) {
+//     txb.mergeCoins(
+//       txb.object(mergedCoin.coinObjectId),
+//       remainingCoins.map(c => txb.object(c.coinObjectId)),
+//     );
+//   }
+
+//   const swappedCoins: TransactionArgument[] = [];
+
+//   // Process each chain in the trading route
+//   for (const { chain, weight } of route.chains) {
+//     const splitAmountForChain = new Decimal(route.source_amount)
+//       .mul(weight)
+//       .mul(10 ** sourceCoin.decimals)
+//       .round()
+//       .toNumber();
+
+//     // need to be kizen
+//     const [splitCoin] = txb.splitCoins(
+//       txb.object(mergedCoin.coinObjectId),
+//       [txb.pure(splitAmountForChain)],
+//     );
+
+//     // Process each step in the chain
+//     let coinToSwap = splitCoin;
+//     for (const { venues } of chain.steps) {
+//       const coins: any[] = [];
+
+//       // Process each step in the trading venue
+//       for (const { venue, weight } of venues) {
+//         const splitAmountForTrade = new Decimal(splitAmountForChain)
+//           .mul(weight)
+//           .round()
+//           .toNumber();
+
+//         const [coin] = txb.splitCoins(
+//           coinToSwap,
+//           [txb.pure(splitAmountForTrade)],
+//         );
+
+//         const swapped = swapUmaUdoMoveCall(txb, venue, coin);
+//         coins.push(swapped);
+//       }
+
+//       if (coins.length < 1) {
+//         return err('Invalid trade chain');
+//       }
+//       const [coin, ...rest] = coins;
+//       txb.mergeCoins(coin, rest);
+//       coinToSwap = coin;
+//     }
+//     swappedCoins.push(coinToSwap);
+//     txb.transferObjects([splitCoin], txb.pure(owner));
+//   }
+
+//   if (swappedCoins.length < 1) {
+//     return err('Invalid trade route');
+//   }
+//   const [finalCoin, ...restCoins] = swappedCoins;
+//   if (restCoins.length > 0) {
+//     txb.mergeCoins(finalCoin, restCoins);
+//   }
+
+//   txb.transferObjects([finalCoin], txb.pure(owner));
+
+//   return ok(txb);
+// };
