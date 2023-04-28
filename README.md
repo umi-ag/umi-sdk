@@ -58,12 +58,12 @@ await signAndExecuteTransactionBlock({
 
 ## Documentation
 
-For more information on how to use @umi-ag/sui-sdk-ts and its features, please refer to the [official documentation](https://sui-sdk-ts.example.com/docs).
+For more information on how to use @umi-ag/sui-sdk and its features, please refer to the [official documentation](https://sui-sdk-ts.example.com/docs).
 
 ## Contributing
 
-We welcome contributions to @umi-ag/sui-sdk-ts! If you'd like to contribute, please follow our [contributing guidelines](https://sui-sdk-ts.example.com/contributing) and read our [code of conduct](https://sui-sdk-ts.example.com/code-of-conduct).
+We welcome contributions to @umi-ag/sui-sdk! If you'd like to contribute, please follow our [contributing guidelines](https://sui-sdk-ts.example.com/contributing) and read our [code of conduct](https://sui-sdk-ts.example.com/code-of-conduct).
 
 ## License
 
-@umi-ag/sui-sdk-ts is released under the [MIT License](LICENSE).
+@umi-ag/sui-sdk is released under the [MIT License](LICENSE).
