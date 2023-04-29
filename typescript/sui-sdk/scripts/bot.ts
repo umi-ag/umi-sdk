@@ -31,8 +31,8 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     sourceCoinAmount: quote1.target_amount,
   });
 
-  console.log(JSON.stringify(quote1, null, 2));
-  console.log(JSON.stringify(quote2, null, 2));
+  // console.log(JSON.stringify(quote1, null, 2));
+  // console.log(JSON.stringify(quote2, null, 2));
 
   const btcInfo = findCoinByType(devBTC);
   const usdcInfo = findCoinByType(devUSDC);
@@ -65,15 +65,15 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
   });
 
   txb.transferObjects([btcAfter, usdc], owner);
-  console.log(JSON.stringify(JSON.parse(txb.serialize()), null, 2));
+  // console.log(JSON.stringify(JSON.parse(txb.serialize()), null, 2));
 
-  const dryRunResult2 = await signer.dryRunTransactionBlock({ transactionBlock: txb });
-  console.log(JSON.stringify(dryRunResult2, null, 2));
+  // const dryRunResult2 = await signer.dryRunTransactionBlock({ transactionBlock: txb });
+  // console.log(JSON.stringify(dryRunResult2, null, 2));
 
   const result = await signer.signAndExecuteTransactionBlock({
     transactionBlock: txb,
   });
-  console.log(JSON.stringify(result, null, 2));
+  // console.log(JSON.stringify(result, null, 2));
   console.log(result.digest);
   // const gasUsed = getTotalGasUsed(dryRunResult.effects);
   // const suiMarketPrice = 1;
