@@ -1,7 +1,6 @@
 import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock, getTotalGasUsed } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
 import { getSufficientCoinObjects, umiAggregatorMoveCall, fetchQuotes } from '../src';
-import { findCoinByType } from '@umi-ag/sui-coin-list';
 
 globalThis.fetch = fetch;
 
@@ -20,7 +19,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
 
 // This example shows how to swap BTC to USDC and then swap back to BTC
 (async () => {
-  const sourceCoinAmount = 0.01;
+  const sourceCoinAmount = 1000; // u64
   const [quote1] = await fetchQuotes({
     sourceCoin: devBTC,
     targetCoin: devUSDC,
@@ -32,10 +31,6 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     sourceCoinAmount: quote1.target_amount,
   });
 
-  const btcInfo = findCoinByType(devBTC);
-  const usdcInfo = findCoinByType(devUSDC);
-  if (!btcInfo || !usdcInfo) throw new Error('Coin not found');
-
   const txb = new TransactionBlock();
   const owner = txb.pure(address);
 
@@ -43,7 +38,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     provider,
     owner: address,
     coinType: devBTC,
-    requiredAmount: sourceCoinAmount * (10 ** btcInfo.decimals),
+    requiredAmount: sourceCoinAmount,
   });
 
   const usdc = umiAggregatorMoveCall({
@@ -64,7 +59,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
 
   const dryRunResult = await signer.dryRunTransactionBlock({ transactionBlock: txb });
   console.log(dryRunResult.balanceChanges);
-  // TODO: Check btc balance increase
+  // Check BTC balance increase ...
 
   const result = await signer.signAndExecuteTransactionBlock({
     transactionBlock: txb,

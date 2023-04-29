@@ -52,6 +52,61 @@ await signer.signAndExecuteTransactionBlock({ transactionBlock: txb });
 ```
 
 Additionally, you can manually add move calls to the TransactionBlock.
+
+```typescript
+import { getSufficientCoinObjects, umiAggregatorMoveCall, fetchQuotes } from '@umi-ag/ts-sdk';
+
+const sourceCoinAmount = 1000; // u64
+const [quote1] = await fetchQuotes({
+  sourceCoin: devBTC,
+  targetCoin: devUSDC,
+  sourceCoinAmount,
+});
+const [quote2] = await fetchQuotes({
+  sourceCoin: devUSDC,
+  targetCoin: devBTC,
+  sourceCoinAmount: quote1.target_amount,
+});
+
+const txb = new TransactionBlock();
+const owner = txb.pure(address);
+
+const btcBefore = await getSufficientCoinObjects({
+  provider,
+  owner: address,
+  coinType: devBTC,
+  requiredAmount: sourceCoinAmount,
+});
+
+const usdc = umiAggregatorMoveCall({
+  transactionBlock: txb,
+  quote: quote1,
+  accountAddress: owner,
+  coins: btcBefore.map(coin => txb.object(coin.coinObjectId)),
+});
+
+const btcAfter = umiAggregatorMoveCall({
+  transactionBlock: txb,
+  quote: quote2,
+  accountAddress: owner,
+  coins: [usdc],
+});
+
+txb.transferObjects([btcAfter, usdc], owner);
+
+const dryRunResult = await signer.dryRunTransactionBlock({ transactionBlock: txb });
+console.log(dryRunResult.balanceChanges);
+// Check BTC balance increase ... 
+
+const result = await signer.signAndExecuteTransactionBlock({
+  transactionBlock: txb,
+  options: {
+    showBalanceChanges: true,
+    showEffects: true,
+  }
+});
+```
+
 See [bot.ts](https://github.com/umi-ag/umi-sdk/typescript/sui-sdk/scripts/bot.ts)
 
 ## Documentation
