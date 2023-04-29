@@ -25,11 +25,15 @@ const swapUmaUdoMoveCall = (
     ? [venue.source_coin, venue.target_coin]
     : [venue.target_coin, venue.source_coin];
 
+  // If the venue object is already in the transaction block, use it.
+  const venueObjectArg = txb.blockData.inputs.find(i => i.value === venue.object_id)
+    ?? txb.pure(venue.object_id);
+
   return txb.moveCall({
     target: venue.function,
     typeArguments: [coinXType, coinYType],
     arguments: [
-      txb.pure(venue.object_id),
+      venueObjectArg,
       coin,
     ]
   });
@@ -87,6 +91,7 @@ export const aggregateMoveCall = (
       .mul(10 ** sourceCoinInfo.decimals)
       .round()
       .toNumber();
+    console.log('splitAmountForChain', splitAmountForChain);
 
     // TODO: need to be kizen
     const [splitCoin] = txb.splitCoins(
