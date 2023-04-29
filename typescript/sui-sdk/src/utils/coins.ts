@@ -1,4 +1,4 @@
-import type { JsonRpcProvider } from '@mysten/sui.js';
+import type { JsonRpcProvider, TransactionArgument, TransactionBlock } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
 import type { CoinObject } from '../types';
 
@@ -34,4 +34,16 @@ export const getSufficientCoinObjects = async ({
 
   // return ok(coins);
   return coins;
+};
+
+export const addIntoBalanceCall = (
+  txb: TransactionBlock,
+  coinType: string,
+  coin: TransactionArgument,
+) => {
+  return txb.moveCall({
+    target: '0x2::coin::into_balance',
+    typeArguments: [coinType],
+    arguments: [coin],
+  });
 };
