@@ -4,18 +4,32 @@ import Decimal from 'decimal.js';
 import type { TradingRoute, Venue } from '../types';
 import { match } from 'ts-pattern';
 
+export const getCoinXYTypes = (venue: Venue) => {
+  const [coinXType, coinYType] = venue.is_x_to_y
+    ? [venue.source_coin, venue.target_coin]
+    : [venue.target_coin, venue.source_coin];
+  return [coinXType, coinYType];
+};
+
+export const maybeFindOrCreateVenueObject = (
+  txb: TransactionBlock,
+  venue: Venue,
+) => {
+  // If the venue object is already in the transaction block, use it.
+  const venueObjectArg = txb.blockData.inputs.find(i => i.value === venue.object_id)
+    ?? txb.pure(venue.object_id);
+
+  return venueObjectArg;
+};
+
 export const swapUmaUdoMoveCall = (
   txb: TransactionBlock,
   venue: Venue,
   coin: TransactionArgument,
 ) => {
-  const [coinXType, coinYType] = venue.is_x_to_y
-    ? [venue.source_coin, venue.target_coin]
-    : [venue.target_coin, venue.source_coin];
+  const [coinXType, coinYType] = getCoinXYTypes(venue);
 
-  // If the venue object is already in the transaction block, use it.
-  const venueObjectArg = txb.blockData.inputs.find(i => i.value === venue.object_id)
-    ?? txb.pure(venue.object_id);
+  const venueObjectArg = maybeFindOrCreateVenueObject(txb, venue);
 
   return txb.moveCall({
     target: venue.function,
@@ -33,10 +47,7 @@ export const tradeMoveCall = (
   coin: TransactionArgument,
 ) => {
   return match(venue)
-    .with({ name: 'umaswap' }, { name: 'udoswap' }, () => swapUmaUdoMoveCall(txb, venue, coin))
-    .otherwise(() => {
-      throw new Error('Unsupported venue.');
-    });
+    .otherwise(() => swapUmaUdoMoveCall(txb, venue, coin));
 };
 
 export type UmiAggregatorMoveCallArgs = {
