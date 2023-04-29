@@ -59,7 +59,7 @@ type AggregateTradeArgs = {
   accountAddress: TransactionArgument,
 };
 
-export const aggregateMoveCall = (
+export const umiAggregatorMoveCall = (
   {
     transactionBlock: txb,
     quote,

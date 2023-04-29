@@ -1,6 +1,6 @@
 import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { getSufficientCoinObjects, aggregateMoveCall, dev_fetchSplitQuotes } from '../src';
+import { getSufficientCoinObjects, umiAggregatorMoveCall, dev_fetchSplitQuotes } from '../src';
 import { findCoinByType } from '@umi-ag/sui-coin-list';
 
 globalThis.fetch = fetch;
@@ -49,7 +49,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     requiredAmount: sourceCoinAmount * (10 ** btcInfo.decimals),
   });
 
-  const usdc = aggregateMoveCall({
+  const usdc = umiAggregatorMoveCall({
     transactionBlock: txb,
     quote: quote1,
     accountAddress: owner,
@@ -57,7 +57,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
   });
   // txb.transferObjects([usdc], owner);
 
-  const btcAfter = aggregateMoveCall({
+  const btcAfter = umiAggregatorMoveCall({
     transactionBlock: txb,
     quote: quote2,
     accountAddress: owner,
