@@ -1,5 +1,5 @@
 {
-  "name": "@umi-ag/sui-sdk-ts",
+  "name": "@umi-ag/sui-sdk",
   "files": [
     "src",
     "dist"

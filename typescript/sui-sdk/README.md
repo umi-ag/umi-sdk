@@ -27,7 +27,7 @@ yarn add @umi-ag/sui-sdk
 Here's a simple example of how to use @umi-ag/sui-sdk:
 
 ```typescript
-import { buildUmiAggregatorTxbWithBestQuote } from '@umi-ag/ts-sdk';
+import { buildUmiAggregatorTxbWithBestQuote } from '@umi-ag/sui-sdk';
 
 const provider = new JsonRpcProvider(testnetConnection);
 
@@ -54,7 +54,7 @@ await signer.signAndExecuteTransactionBlock({ transactionBlock: txb });
 Additionally, you can manually add move calls to the TransactionBlock.
 
 ```typescript
-import { getSufficientCoinObjects, umiAggregatorMoveCall, fetchQuotes } from '@umi-ag/ts-sdk';
+import { getSufficientCoinObjects, umiAggregatorMoveCall, fetchQuotes } from '@umi-ag/sui-sdk';
 
 const sourceCoinAmount = 1000; // u64
 const [quote1] = await fetchQuotes({
