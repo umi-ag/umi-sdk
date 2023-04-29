@@ -1,6 +1,6 @@
-import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock } from '@mysten/sui.js';
+import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock, getTotalGasUsed } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { getSufficientCoinObjects, umiAggregatorMoveCall, dev_fetchSplitQuotes } from '../src';
+import { getSufficientCoinObjects, umiAggregatorMoveCall, fetchQuotes } from '../src';
 import { findCoinByType } from '@umi-ag/sui-coin-list';
 
 globalThis.fetch = fetch;
@@ -20,23 +20,19 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
 
 (async () => {
   const sourceCoinAmount = 0.01;
-  const [quote1] = await dev_fetchSplitQuotes({
+  const [quote1] = await fetchQuotes({
     sourceCoin: devBTC,
     targetCoin: devUSDC,
     sourceCoinAmount,
   });
-  const [quote2] = await dev_fetchSplitQuotes({
+  const [quote2] = await fetchQuotes({
     sourceCoin: devUSDC,
     targetCoin: devBTC,
     sourceCoinAmount: quote1.target_amount,
   });
 
-  // console.log(JSON.stringify(quote1, null, 2));
-  // console.log(JSON.stringify(quote2, null, 2));
-
   const btcInfo = findCoinByType(devBTC);
   const usdcInfo = findCoinByType(devUSDC);
-  // console.log(btcInfo, usdcInfo);
   if (!btcInfo || !usdcInfo) throw new Error('Coin not found');
 
   const txb = new TransactionBlock();
@@ -55,7 +51,6 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     accountAddress: owner,
     coins: btcBefore.map(coin => txb.object(coin.coinObjectId)),
   });
-  // txb.transferObjects([usdc], owner);
 
   const btcAfter = umiAggregatorMoveCall({
     transactionBlock: txb,
@@ -65,28 +60,14 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
   });
 
   txb.transferObjects([btcAfter, usdc], owner);
-  // console.log(JSON.stringify(JSON.parse(txb.serialize()), null, 2));
-
-  // const dryRunResult2 = await signer.dryRunTransactionBlock({ transactionBlock: txb });
-  // console.log(JSON.stringify(dryRunResult2, null, 2));
 
   const result = await signer.signAndExecuteTransactionBlock({
     transactionBlock: txb,
+    options: {
+      showBalanceChanges: true,
+      showEffects: true,
+    }
   });
-  // console.log(JSON.stringify(result, null, 2));
-  console.log(result.digest);
-  // const gasUsed = getTotalGasUsed(dryRunResult.effects);
-  // const suiMarketPrice = 1;
-
-  // const pnl = new Decimal(quote.target_amount)
-  //   .minus(quote.source_amount)
-  //   .minus(gasUsed?.toString() ?? 0);
-
-  // if (pnl.gt(0)) {
-  //   // await signer.signAndExecuteTransactionBlock({
-  //   //   transactionBlock: txb,
-  //   // });
-
-  //   console.log(`Profit: ${pnl.toString()} ${quote.target_coin}`);
-  // }
+  const gasUsed = result.effects && getTotalGasUsed(result.effects);
+  console.log(result.digest, gasUsed);
 })();
