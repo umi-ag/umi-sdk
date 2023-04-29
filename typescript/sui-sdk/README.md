@@ -27,38 +27,36 @@ yarn add @umi-ag/sui-sdk
 Here's a simple example of how to use @umi-ag/sui-sdk:
 
 ```typescript
-import { UmiSDK } from "@umi-ag/sui-sdk";
+import { buildUmiAggregatorTxbWithBestQuote } from '@umi-ag/ts-sdk';
 
-// Create an instance of UmiSDK
-const umisdk = new UmiSDK({
-  userAddress: "your-sui-address",
+const provider = new JsonRpcProvider(testnetConnection);
+
+const mnemonic = process.env.SUI_MNEMONIC as string;
+const keypair = Ed25519Keypair.deriveKeypair(mnemonic);
+const signer = new RawSigner(keypair, provider);
+const accountAddress = await signer.getAddress();
+
+const devBTC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_btc::DEVNET_BTC';
+const devUSDC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdc::DEVNET_USDC';
+
+const txb = await buildUmiAggregatorTxbWithBestQuote({
+  provider,
+  accountAddress,
+  sourceCoinType: devBTC,
+  targetCoinType: devUSDC,
+  sourceCoinAmount: 1000n,
+  slippageTolerance: 0.01, // 1%
 });
 
-// Fetch trading routes
-const query = {
-  source_coin: "0x2::sui::SUI",
-  destination_coin: "UMI",
-  amount: "1000000000000000000", // 1 ETH in wei
-};
-
-// Create a transaction block from the best trading route at the time
-const swapConfig = {
-  slippageTolerance: 0.01, // 1% slippage tolerance
-};
-const transactionBlock = await umisdk.createTransactionBlockFromBestRoute(
-  query,
-  swapConfig,
-);
-
-// Execute the selected trading route 
-await signAndExecuteTransactionBlock({
-  transactionBlock,
-});
+await signer.signAndExecuteTransactionBlock({ transactionBlock: txb });
 ```
+
+Additionally, you can manually add move calls to the TransactionBlock.
+See [bot.ts](https://github.com/umi-ag/umi-sdk/typescript/sui-sdk/scripts/bot.ts)
 
 ## Documentation
 
-For more information on how to use @umi-ag/sui-sdk and its features, please refer to the [official documentation](https://sui-sdk-ts.example.com/docs).
+For more information on how to use @umi-ag/sui-sdk and its features, please refer to the [official documentation](https://docs.umi.ag).
 
 ## Contributing
 

@@ -18,6 +18,7 @@ const devBTC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71
 const devUSDC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdc::DEVNET_USDC';
 const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdt::DEVNET_USDT';
 
+// This example shows how to swap BTC to USDC and then swap back to BTC
 (async () => {
   const sourceCoinAmount = 0.01;
   const [quote1] = await fetchQuotes({
@@ -60,6 +61,10 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
   });
 
   txb.transferObjects([btcAfter, usdc], owner);
+
+  const dryRunResult = await signer.dryRunTransactionBlock({ transactionBlock: txb });
+  console.log(dryRunResult.balanceChanges);
+  // TODO: Check btc balance increase
 
   const result = await signer.signAndExecuteTransactionBlock({
     transactionBlock: txb,
