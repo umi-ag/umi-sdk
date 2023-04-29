@@ -65,7 +65,7 @@ export type VenueBook = Record<string, Record<string, VenueInfo>>;
 export type QuoteQuery = {
   sourceCoin: string,
   targetCoin: string,
-  inputAmount: string | number,
+  sourceCoinAmount: string | number,
   maxHops?: number,
   maxRoutes?: number,
 };
