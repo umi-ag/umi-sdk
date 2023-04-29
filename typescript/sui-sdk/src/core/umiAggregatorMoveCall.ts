@@ -47,15 +47,13 @@ export type UmiAggregatorMoveCallArgs = {
   accountAddress: TransactionArgument,
 };
 
-export const umiAggregatorMoveCall = (
-  {
-    transactionBlock: txb,
-    quote,
-    coins,
-    minTargetCoinAmount,
-    accountAddress,
-  }: UmiAggregatorMoveCallArgs
-) => {
+export const umiAggregatorMoveCall = ({
+  transactionBlock: txb,
+  quote,
+  coins,
+  minTargetCoinAmount,
+  accountAddress,
+}: UmiAggregatorMoveCallArgs) => {
   const sourceCoinInfo = findCoinByType(quote.source_coin);
   if (!sourceCoinInfo) {
     // return err('Source coin not found.');
