@@ -1,7 +1,7 @@
 import type { JsonRpcProvider, SuiAddress } from '@mysten/sui.js';
 import { TransactionBlock } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
-import { fetchQuotes } from '../api';
+import { fetchUmiAggregatorQuotes } from '../api';
 import type { TradingRoute } from '../types';
 import { getSufficientCoins } from '../utils';
 import { umiAggregatorMoveCall } from './umiAggregatorMoveCall';
@@ -69,7 +69,7 @@ export const buildUmiAggregatorTxbWithBestQuote = async ({
   slippageTolerance,
 }: BuildTransactionBlockWithBestQuoteArgs) => {
   // TODO: Compare all quotes and pick the best one.
-  const [quote] = await fetchQuotes({
+  const [quote] = await fetchUmiAggregatorQuotes({
     sourceCoin: sourceCoinType,
     targetCoin: targetCoinType,
     sourceAmount: sourceAmount.toString(),

@@ -3,7 +3,7 @@ import type { QuoteQuery, TradingRoutes } from '../types';
 
 export const defaultEndpoint = 'https://quiet-sun-2393.fly.dev';
 
-export const fetchQuotes = async ({
+export const fetchUmiAggregatorQuotes = async ({
   sourceCoin,
   targetCoin,
   sourceAmount,

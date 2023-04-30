@@ -1,6 +1,6 @@
 import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock, getTotalGasUsed } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { fetchQuotes, getSufficientCoins, umiAggregatorMoveCall } from '../src';
+import { fetchUmiAggregatorQuotes, getSufficientCoins, umiAggregatorMoveCall } from '../src';
 
 globalThis.fetch = fetch;
 
@@ -20,12 +20,12 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
 // This example shows how to swap BTC to USDC and then swap back to BTC
 (async () => {
   const sourceAmount = 1000; // u64
-  const [quote1] = await fetchQuotes({
+  const [quote1] = await fetchUmiAggregatorQuotes({
     sourceCoin: devBTC,
     targetCoin: devUSDC,
     sourceAmount,
   });
-  const [quote2] = await fetchQuotes({
+  const [quote2] = await fetchUmiAggregatorQuotes({
     sourceCoin: devUSDC,
     targetCoin: devBTC,
     sourceAmount: quote1.target_amount,
