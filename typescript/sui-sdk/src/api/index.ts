@@ -1,9 +1,6 @@
 import { fetch } from 'cross-fetch';
 import type { QuoteQuery, TradingRoutes } from '../types';
 
-// @ts-ignore
-const endpoint = import.meta.env.VITE_APP_UMI_API_ENDPOINT;
-
 export const fetchQuotes = async ({
   sourceCoin,
   targetCoin,
@@ -11,7 +8,7 @@ export const fetchQuotes = async ({
   maxHops = 2,
   maxRoutes = 3,
 }: QuoteQuery): Promise<TradingRoutes> => {
-  const url = new URL(`${endpoint}/quote`);
+  const url = new URL('https://quiet-sun-2393.fly.dev/quote');
   url.searchParams.append('source_coin', sourceCoin);
   url.searchParams.append('target_coin', targetCoin);
   url.searchParams.append('source_amount', inputAmount.toString());
