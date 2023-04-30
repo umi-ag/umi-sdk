@@ -1,16 +1,18 @@
 {
   "name": "@umi-ag/sui-sdk",
+  "version": "0.202304.2",
   "files": [
     "src",
     "dist"
   ],
-  "main": "./dist/@umi-ag/sui-sdk.umd.js",
-  "module": "./dist/@umi-ag/sui-sdk.es.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/@umi-ag/sui-sdk.es.js",
-      "require": "./dist/@umi-ag/sui-sdk.umd.js"
+      "source": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     }
   },
   "description": "",
@@ -19,7 +21,8 @@
     "dev": "vite build --watch",
     "bot": "vite-node scripts/bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ./src --fix -c .eslintrc.cjs --ext js,ts,jsx,tsx --ignore-pattern='!.*'"
+    "lint": "eslint ./src --fix -c .eslintrc.cjs --ext js,ts,jsx,tsx --ignore-pattern='!.*'",
+    "publish": "npm publish --access public"
   },
   "keywords": [],
   "devDependencies": {
