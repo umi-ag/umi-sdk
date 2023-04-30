@@ -1,5 +1,4 @@
 import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
-import { findCoinByType } from '@umi-ag/sui-coin-list';
 import Decimal from 'decimal.js';
 import { match } from 'ts-pattern';
 import type { TradingRoute, Venue } from '../types';
@@ -53,24 +52,18 @@ export const tradeMoveCall = (
 export type UmiAggregatorMoveCallArgs = {
   transactionBlock: TransactionBlock,
   quote: TradingRoute,
-  minTargetCoinAmount?: TransactionArgument;
   coins: TransactionArgument[];
   accountAddress: TransactionArgument,
+  minTargetAmount?: TransactionArgument;
 };
 
 export const umiAggregatorMoveCall = ({
   transactionBlock: txb,
   quote,
   coins,
-  minTargetCoinAmount,
   accountAddress,
+  minTargetAmount,
 }: UmiAggregatorMoveCallArgs) => {
-  const sourceCoinInfo = findCoinByType(quote.source_coin);
-  if (!sourceCoinInfo) {
-    // return err('Source coin not found.');
-    throw new Error('Source coin not found.');
-  }
-
   const [sourceCoin, ...restSourceCoins] = coins;
   if (restSourceCoins.length > 0) {
     txb.mergeCoins(
@@ -85,10 +78,8 @@ export const umiAggregatorMoveCall = ({
   for (const { chain, weight } of quote.chains) {
     const splitAmountForChain = new Decimal(quote.source_amount)
       .mul(weight)
-      .mul(10 ** sourceCoinInfo.decimals)
       .round()
       .toNumber();
-    console.log('splitAmountForChain', splitAmountForChain);
 
     // TODO: need to be kizen
     const [splitCoin] = txb.splitCoins(
@@ -108,7 +99,7 @@ export const umiAggregatorMoveCall = ({
           .round()
           .toNumber();
 
-        // TODO: need to be kizen
+        // TODO: need to be kaizen
         const [coin] = txb.splitCoins(
           coinToSwap,
           [txb.pure(splitAmountForTrade)],

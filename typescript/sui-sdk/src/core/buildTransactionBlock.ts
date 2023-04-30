@@ -1,10 +1,10 @@
 import type { JsonRpcProvider, SuiAddress } from '@mysten/sui.js';
 import { TransactionBlock } from '@mysten/sui.js';
-import { fetchQuotes } from '../api';
-import { getSufficientCoinObjects } from '../utils';
-import { umiAggregatorMoveCall } from './umiAggregatorMoveCall';
 import Decimal from 'decimal.js';
+import { fetchUmiAggregatorQuotes } from '../api';
 import type { TradingRoute } from '../types';
+import { getSufficientCoins } from '../utils';
+import { umiAggregatorMoveCall } from './umiAggregatorMoveCall';
 
 type BuildTransactionBlockWithQuoteArgs = {
   provider: JsonRpcProvider,
@@ -21,7 +21,7 @@ export const buildUmiAggregatorTxbWithQuote = async ({
 }: BuildTransactionBlockWithQuoteArgs) => {
   const txb = new TransactionBlock();
 
-  const sourceCoins = await getSufficientCoinObjects({
+  const sourceCoins = await getSufficientCoins({
     provider,
     owner: accountAddress,
     coinType: quote.source_coin,
@@ -32,8 +32,8 @@ export const buildUmiAggregatorTxbWithQuote = async ({
 
   const accountAddressObject = txb.pure(accountAddress);
 
-  const minTargetCoinAmount = new Decimal(quote.target_amount)
-    .ceil() // TODO: remove this
+  const minTargetAmount = new Decimal(quote.target_amount)
+    .floor() // TODO: remove this
     .mul(1 - slippageTolerance)
     .round()
     .toString();
@@ -43,7 +43,7 @@ export const buildUmiAggregatorTxbWithQuote = async ({
     quote,
     accountAddress: accountAddressObject,
     coins: sourceCoinObjects,
-    minTargetCoinAmount: txb.pure(minTargetCoinAmount),
+    minTargetAmount: txb.pure(minTargetAmount),
   });
 
   txb.transferObjects([targetCoinObject], accountAddressObject);
@@ -55,7 +55,7 @@ type BuildTransactionBlockWithBestQuoteArgs = {
   provider: JsonRpcProvider,
   sourceCoinType: string,
   targetCoinType: string,
-  sourceCoinAmount: bigint,
+  sourceAmount: bigint,
   accountAddress: SuiAddress,
   slippageTolerance: number,
 };
@@ -64,15 +64,15 @@ export const buildUmiAggregatorTxbWithBestQuote = async ({
   provider,
   sourceCoinType,
   targetCoinType,
-  sourceCoinAmount,
+  sourceAmount,
   accountAddress,
   slippageTolerance,
 }: BuildTransactionBlockWithBestQuoteArgs) => {
   // TODO: Compare all quotes and pick the best one.
-  const [quote] = await fetchQuotes({
+  const [quote] = await fetchUmiAggregatorQuotes({
     sourceCoin: sourceCoinType,
     targetCoin: targetCoinType,
-    sourceCoinAmount: sourceCoinAmount.toString(),
+    sourceAmount: sourceAmount.toString(),
   });
 
   const txb = await buildUmiAggregatorTxbWithQuote({

@@ -44,7 +44,7 @@ const txb = await buildUmiAggregatorTxbWithBestQuote({
   accountAddress,
   sourceCoinType: devBTC,
   targetCoinType: devUSDC,
-  sourceCoinAmount: 1000n,
+  sourceAmount: 1000n,
   slippageTolerance: 0.01, // 1%
 });
 
@@ -56,16 +56,16 @@ Additionally, you can manually add move calls to the TransactionBlock.
 ```typescript
 import { getSufficientCoinObjects, umiAggregatorMoveCall, fetchQuotes } from '@umi-ag/sui-sdk';
 
-const sourceCoinAmount = 1000; // u64
+const sourceAmount = 1000; // u64
 const [quote1] = await fetchQuotes({
   sourceCoin: devBTC,
   targetCoin: devUSDC,
-  sourceCoinAmount,
+  sourceAmount,
 });
 const [quote2] = await fetchQuotes({
   sourceCoin: devUSDC,
   targetCoin: devBTC,
-  sourceCoinAmount: quote1.target_amount,
+  sourceAmount: quote1.target_amount,
 });
 
 const txb = new TransactionBlock();
@@ -75,7 +75,7 @@ const btcBefore = await getSufficientCoinObjects({
   provider,
   owner: address,
   coinType: devBTC,
-  requiredAmount: sourceCoinAmount,
+  requiredAmount: sourceAmount,
 });
 
 const usdc = umiAggregatorMoveCall({
@@ -96,7 +96,7 @@ txb.transferObjects([btcAfter, usdc], owner);
 
 const dryRunResult = await signer.dryRunTransactionBlock({ transactionBlock: txb });
 console.log(dryRunResult.balanceChanges);
-// Check BTC balance increase ... 
+// Check BTC balance increase ...
 
 const result = await signer.signAndExecuteTransactionBlock({
   transactionBlock: txb,
