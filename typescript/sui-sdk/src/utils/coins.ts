@@ -36,6 +36,27 @@ export const getSufficientCoins = async ({
   return coins;
 };
 
+export type WithdrawCoinsArgs = GetSufficientCoinsArgs & {
+  txb: TransactionBlock,
+};
+
+export const withdrawCoin = async ({ txb, ...args }: WithdrawCoinsArgs) => {
+  const coins = await getSufficientCoins(args);
+  const coin = mergeCoinsMoveCall({
+    txb,
+    coinType: args.coinType,
+    coins: coins.map(c => txb.pure(c.coinObjectId)),
+  });
+
+  const splited = txb.splitCoins(coin, [txb.pure(args.requiredAmount)]);
+  maybeTransferOrDestroyCoin({
+    txb,
+    coinType: args.coinType,
+    coin,
+  });
+  return splited;
+};
+
 export const addIntoBalanceCall = (
   txb: TransactionBlock,
   coinType: string,
@@ -45,6 +66,24 @@ export const addIntoBalanceCall = (
     target: '0x2::coin::into_balance',
     typeArguments: [coinType],
     arguments: [coin],
+  });
+};
+
+export type MergeCoinsMoveCallArgs = {
+  txb: TransactionBlock,
+  coinType: string,
+  coins: TransactionArgument[],
+};
+
+export const mergeCoinsMoveCall = ({
+  txb,
+  coinType,
+  coins,
+}: MergeCoinsMoveCallArgs) => {
+  return txb.moveCall({
+    target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::merge_coins',
+    typeArguments: [coinType],
+    arguments: [txb.makeMoveVec({ objects: coins })],
   });
 };
 
@@ -73,21 +112,39 @@ export type SplitCoinByWeightsArgs = {
   weights: TransactionArgument[],
 };
 
-export const splitCoinByWeights = ({
-  txb,
-  coinType,
-  coins,
-  weights,
-}: SplitCoinByWeightsArgs) => {
-  return txb.moveCall({
-    target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::split_coin_by_weights',
-    typeArguments: [coinType],
-    arguments: [
-      txb.makeMoveVec({ objects: coins }),
-      txb.makeMoveVec({ objects: weights }),
-    ],
-  });
-};
+// export const splitCoinByWeights = ({
+//   txb,
+//   coinType,
+//   coins,
+//   weights,
+// }: SplitCoinByWeightsArgs) => {
+//   // const a = txb.makeMoveVec({ objects: coins });
+//   // const b = txb.makeMoveVec({ objects: weights });
+
+//   const result = txb.moveCall({
+//     target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::split_coin_by_weights',
+//     typeArguments: [coinType],
+//     arguments: [
+//       // coins,
+//       // weights,
+//       txb.makeMoveVec({ objects: coins }),
+//       txb.makeMoveVec({ objects: weights }),
+//       // a, b
+//     ],
+//   });
+//   // console.log(a, b);
+//   console.log(coins, weights);
+
+//   return result;
+
+//   // return [...new Array(weights.length).keys()]
+//   //   .map(() => vectorRemoveMoveCall({
+//   //     txb,
+//   //     vectorType: `0x2::coin::Coin<${coinType}>`,
+//   //     vector: result,
+//   //     index: txb.pure(0),
+//   //   }));
+// };
 
 export type CheckAmountSufficientArgs = {
   txb: TransactionBlock,
