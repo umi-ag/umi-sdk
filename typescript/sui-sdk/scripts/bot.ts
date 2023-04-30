@@ -18,12 +18,7 @@ const keypair = () => {
 // const keypair = Ed25519Keypair.deriveKeypair(mnemonic);
 const signer = new RawSigner(keypair(), provider);
 const address = await signer.getAddress();
-
 console.log({ address });
-// const mnemonic = process.env.SUI_MNEMONIC as string;
-// const keypair = Ed25519Keypair.deriveKeypair(mnemonic);
-// const signer = new RawSigner(keypair, provider);
-// const address = await signer.getAddress();
 
 const devBTC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_btc::DEVNET_BTC';
 const devUSDC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdc::DEVNET_USDC';
