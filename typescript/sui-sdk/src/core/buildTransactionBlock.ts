@@ -32,7 +32,7 @@ export const buildUmiAggregatorTxbWithQuote = async ({
 
   const accountAddressObject = txb.pure(accountAddress);
 
-  const minTargetCoinAmount = new Decimal(quote.target_amount)
+  const minTargetAmount = new Decimal(quote.target_amount)
     .ceil() // TODO: remove this
     .mul(1 - slippageTolerance)
     .round()
@@ -43,7 +43,7 @@ export const buildUmiAggregatorTxbWithQuote = async ({
     quote,
     accountAddress: accountAddressObject,
     coins: sourceCoinObjects,
-    minTargetAmount: txb.pure(minTargetCoinAmount),
+    minTargetAmount: txb.pure(minTargetAmount),
   });
 
   txb.transferObjects([targetCoinObject], accountAddressObject);
