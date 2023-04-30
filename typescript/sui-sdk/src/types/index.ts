@@ -30,7 +30,7 @@ export type Step = {
   venues: WeightedVenue[];
 };
 
-export type Chain = {
+export type Hop = {
   source_coin: string;
   target_coin: string;
   source_amount: number;
@@ -38,8 +38,8 @@ export type Chain = {
   steps: Step[];
 };
 
-export type WeightedChain = {
-  chain: Chain;
+export type WeightedHop = {
+  hop: Hop;
   // f64
   weight: number;
 };
@@ -49,7 +49,7 @@ export type TradingRoute = {
   target_coin: string;
   source_amount: number;
   target_amount: number;
-  chains: WeightedChain[];
+  hops: WeightedHop[];
 };
 
 export type TradingRoutes = TradingRoute[];
