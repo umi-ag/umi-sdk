@@ -74,8 +74,8 @@ export const umiAggregatorMoveCall = ({
 
   const targetCoins: TransactionArgument[] = [];
 
-  // Process each chain in the trading route
-  for (const { chain, weight } of quote.chains) {
+  // Process each hop in the trading route
+  for (const { hop, weight } of quote.hops) {
     const splitAmountForChain = new Decimal(quote.source_amount)
       .mul(weight)
       .round()
@@ -87,9 +87,9 @@ export const umiAggregatorMoveCall = ({
       [txb.pure(splitAmountForChain)],
     );
 
-    // Process each step in the chain
+    // Process each step in the hop
     let coinToSwap = splitCoin;
-    for (const { venues } of chain.steps) {
+    for (const { venues } of hop.steps) {
       const coins: TransactionArgument[] = [];
 
       // Process each step in the trading venue
@@ -110,8 +110,8 @@ export const umiAggregatorMoveCall = ({
       }
 
       if (coins.length < 1) {
-        // return err('Invalid trade chain');
-        throw new Error('Invalid trade chain');
+        // return err('Invalid trade hop');
+        throw new Error('Invalid trade hop');
       }
       const [coin, ...rest] = coins;
       if (rest.length > 0) {
