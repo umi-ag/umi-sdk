@@ -86,8 +86,8 @@ export const umiAggregatorMoveCall = ({
       }
 
       if (coins.length < 1) {
-        // return err('Invalid trade chain');
-        throw new Error('Invalid trade chain');
+        // return err('Invalid trade hop');
+        throw new Error('Invalid trade hop');
       }
       const [coin, ...rest] = coins;
       if (rest.length > 0) {
