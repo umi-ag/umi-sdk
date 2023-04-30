@@ -1,7 +1,7 @@
 import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
-import Decimal from 'decimal.js';
 import { match } from 'ts-pattern';
 import type { TradingRoute, Venue } from '../types';
+import { checkAmountSufficient, mergeCoinsMoveCall } from '../utils';
 
 export const getCoinXYTypes = (venue: Venue) => {
   const [coinXType, coinYType] = venue.is_x_to_y
@@ -54,7 +54,7 @@ export type UmiAggregatorMoveCallArgs = {
   quote: TradingRoute,
   coins: TransactionArgument[];
   accountAddress: TransactionArgument,
-  minTargetAmount?: TransactionArgument;
+  minTargetAmount: TransactionArgument;
 };
 
 export const umiAggregatorMoveCall = ({
@@ -64,48 +64,24 @@ export const umiAggregatorMoveCall = ({
   accountAddress,
   minTargetAmount,
 }: UmiAggregatorMoveCallArgs) => {
-  const [sourceCoin, ...restSourceCoins] = coins;
-  if (restSourceCoins.length > 0) {
-    txb.mergeCoins(
-      sourceCoin,
-      restSourceCoins,
-    );
-  }
+  const sourceCoin = mergeCoinsMoveCall({
+    txb,
+    coinType: quote.source_coin,
+    coins,
+  });
 
   const targetCoins: TransactionArgument[] = [];
 
   // Process each chain in the trading route
-  for (const { chain, weight } of quote.chains) {
-    const splitAmountForChain = new Decimal(quote.source_amount)
-      .mul(weight)
-      .round()
-      .toNumber();
-
-    // TODO: need to be kizen
-    const [splitCoin] = txb.splitCoins(
-      sourceCoin,
-      [txb.pure(splitAmountForChain)],
-    );
-
+  for (const { hop } of quote.hops) {
     // Process each step in the chain
-    let coinToSwap = splitCoin;
-    for (const { venues } of chain.steps) {
+    let coinToSwap: TransactionArgument = sourceCoin;
+    for (const { venues } of hop.steps) {
       const coins: TransactionArgument[] = [];
 
       // Process each step in the trading venue
-      for (const { venue, weight } of venues) {
-        const splitAmountForTrade = new Decimal(splitAmountForChain)
-          .mul(weight)
-          .round()
-          .toNumber();
-
-        // TODO: need to be kaizen
-        const [coin] = txb.splitCoins(
-          coinToSwap,
-          [txb.pure(splitAmountForTrade)],
-        );
-
-        const swapped = tradeMoveCall(txb, venue, coin);
+      for (const { venue } of venues) {
+        const swapped = tradeMoveCall(txb, venue, coinToSwap);
         coins.push(swapped);
       }
 
@@ -122,7 +98,7 @@ export const umiAggregatorMoveCall = ({
 
     targetCoins.push(coinToSwap);
     // send the remaining coin to the account address
-    txb.transferObjects([splitCoin], accountAddress);
+    // txb.transferObjects([splitCoin], accountAddress);
   }
 
   if (targetCoins.length < 1) {
@@ -133,6 +109,13 @@ export const umiAggregatorMoveCall = ({
   if (restTargetCoins.length > 0) {
     txb.mergeCoins(targetCoin, restTargetCoins);
   }
+
+  checkAmountSufficient({
+    txb,
+    coinType: quote.target_coin,
+    coin: targetCoin,
+    amount: minTargetAmount,
+  });
 
   // return ok(targetCoin);
   return targetCoin;

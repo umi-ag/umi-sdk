@@ -1,6 +1,6 @@
-import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock, getTotalGasUsed } from '@mysten/sui.js';
+import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { fetchUmiAggregatorQuotes, getSufficientCoins, umiAggregatorMoveCall } from '../src';
+import { fetchUmiAggregatorQuotes, umiAggregatorMoveCall, withdrawCoin } from '../src';
 
 globalThis.fetch = fetch;
 
@@ -25,49 +25,53 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     targetCoin: devUSDC,
     sourceAmount,
   });
-  const [quote2] = await fetchUmiAggregatorQuotes({
-    sourceCoin: devUSDC,
-    targetCoin: devBTC,
-    sourceAmount: quote1.target_amount,
-  });
+  console.log(quote1);
+  // const [quote2] = await fetchUmiAggregatorQuotes({
+  //   sourceCoin: devUSDC,
+  //   targetCoin: devBTC,
+  //   sourceAmount: quote1.target_amount,
+  // });
 
   const txb = new TransactionBlock();
   const owner = txb.pure(address);
 
-  const btcBefore = await getSufficientCoins({
+  const btcBefore = await withdrawCoin({
     provider,
     owner: address,
     coinType: devBTC,
     requiredAmount: sourceAmount,
+    txb,
   });
 
   const usdc = umiAggregatorMoveCall({
     transactionBlock: txb,
     quote: quote1,
     accountAddress: owner,
-    coins: btcBefore.map(coin => txb.object(coin.coinObjectId)),
+    coins: [btcBefore],
+    minTargetAmount: txb.pure(0),
   });
+  txb.transferObjects([usdc], owner);
 
-  const btcAfter = umiAggregatorMoveCall({
-    transactionBlock: txb,
-    quote: quote2,
-    accountAddress: owner,
-    coins: [usdc],
-  });
+  // const btcAfter = umiAggregatorMoveCall({
+  //   transactionBlock: txb,
+  //   quote: quote2,
+  //   accountAddress: owner,
+  //   coins: [usdc],
+  // });
 
-  txb.transferObjects([btcAfter, usdc], owner);
+  // txb.transferObjects([btcAfter, usdc], owner);
 
   const dryRunResult = await signer.dryRunTransactionBlock({ transactionBlock: txb });
   console.log(dryRunResult.balanceChanges);
   // Check BTC balance increase ...
 
-  const result = await signer.signAndExecuteTransactionBlock({
-    transactionBlock: txb,
-    options: {
-      showBalanceChanges: true,
-      showEffects: true,
-    }
-  });
-  const gasUsed = result.effects && getTotalGasUsed(result.effects);
-  console.log(result.digest, gasUsed);
+  // const result = await signer.signAndExecuteTransactionBlock({
+  //   transactionBlock: txb,
+  //   options: {
+  //     showBalanceChanges: true,
+  //     showEffects: true,
+  //   }
+  // });
+  // const gasUsed = result.effects && getTotalGasUsed(result.effects);
+  // console.log(result.digest, gasUsed);
 })();
