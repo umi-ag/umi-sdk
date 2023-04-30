@@ -1,16 +1,18 @@
 {
   "name": "@umi-ag/sui-sdk",
+  "version": "0.202304.4",
   "files": [
     "src",
     "dist"
   ],
-  "main": "./dist/@umi-ag/sui-sdk.umd.js",
-  "module": "./dist/@umi-ag/sui-sdk.es.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/@umi-ag/sui-sdk.es.js",
-      "require": "./dist/@umi-ag/sui-sdk.umd.js"
+      "source": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
     }
   },
   "description": "",
@@ -19,9 +21,19 @@
     "dev": "vite build --watch",
     "bot": "vite-node scripts/bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint ./src --fix -c .eslintrc.cjs --ext js,ts,jsx,tsx --ignore-pattern='!.*'"
+    "lint": "eslint ./src --fix -c .eslintrc.cjs --ext js,ts,jsx,tsx --ignore-pattern='!.*'",
+    "publish": "npm publish --access public"
   },
   "keywords": [],
+  "dependencies": {
+    "@mysten/sui.js": "^0.32.2",
+    "@umi-ag/sui-coin-list": "^0.202304.2",
+    "cross-fetch": "^3.1.5",
+    "decimal.js": "^10.4.3",
+    "dotenv": "^16.0.3",
+    "neverthrow": "^6.0.0",
+    "ts-pattern": "^4.2.2"
+  },
   "devDependencies": {
     "@types/node": "^18.16.3",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
@@ -35,17 +47,8 @@
     "rollup-plugin-node-polyfills": "^0.2.1",
     "typescript": "^5.0.4",
     "vite": "^4.3.3",
-    "vite-node": "^0.29.8",
+    "vite-node": "^0.30.1",
     "vite-plugin-dts": "^2.3.0",
     "vite-tsconfig-paths": "^4.2.0"
-  },
-  "dependencies": {
-    "@mysten/sui.js": "^0.32.2",
-    "@umi-ag/sui-coin-list": "https://gitpkg.now.sh/umi-ag/sui-coin-list/typescript?alpha",
-    "cross-fetch": "^3.1.5",
-    "decimal.js": "^10.4.3",
-    "dotenv": "^16.0.3",
-    "neverthrow": "^6.0.0",
-    "ts-pattern": "^4.2.2"
   }
 }

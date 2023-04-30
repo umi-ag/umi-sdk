@@ -1,16 +1,13 @@
-import nodePolyfills from 'rollup-plugin-node-polyfills';
-import { defineConfig } from 'vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
 import path from 'path';
+import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-
 
 export default defineConfig({
   plugins: [
     dts({
-        insertTypesEntry: true,
+      insertTypesEntry: true,
     }),
-],
+  ],
   resolve: {
     alias: {
       process: 'process/browser',
@@ -25,9 +22,15 @@ export default defineConfig({
     target: 'esnext',
     lib: {
       entry: path.resolve(__dirname, 'src/index.ts'),
-      name: 'umi-sdk',
       formats: ['es', 'umd'],
-      fileName: (format) => `umi-sdk.${format}.js`,
+      name: '@umi-ag/sui-sdk',
+      fileName: (format) => {
+        if (format === 'es') {
+          return 'index.mjs';
+        } else if (format === 'umd') {
+          return 'index.js';
+        }
+      },
     },
   },
   optimizeDeps: {
