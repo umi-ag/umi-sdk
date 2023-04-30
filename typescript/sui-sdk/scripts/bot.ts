@@ -1,6 +1,6 @@
 import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock, getTotalGasUsed } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { fetchQuotes, getSufficientCoinObjects, umiAggregatorMoveCall } from '../src';
+import { fetchQuotes, getSufficientCoins, umiAggregatorMoveCall } from '../src';
 
 globalThis.fetch = fetch;
 
@@ -34,7 +34,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
   const txb = new TransactionBlock();
   const owner = txb.pure(address);
 
-  const btcBefore = await getSufficientCoinObjects({
+  const btcBefore = await getSufficientCoins({
     provider,
     owner: address,
     coinType: devBTC,

@@ -2,19 +2,19 @@ import type { JsonRpcProvider, TransactionArgument, TransactionBlock } from '@my
 import Decimal from 'decimal.js';
 import type { CoinObject } from '../types';
 
-type GetSufficientCoinObjectsArgs = {
+type GetSufficientCoinsArgs = {
   provider: JsonRpcProvider,
   owner: string,
   coinType: string,
   requiredAmount: number | string,
 };
 
-export const getSufficientCoinObjects = async ({
+export const getSufficientCoins = async ({
   provider,
   owner,
   coinType,
   requiredAmount,
-}: GetSufficientCoinObjectsArgs) => {
+}: GetSufficientCoinsArgs) => {
   const coins: CoinObject[] = [];
   const totalBalance = () => coins.reduce((sub, cur) => sub.plus(cur.balance), new Decimal(0));
 
