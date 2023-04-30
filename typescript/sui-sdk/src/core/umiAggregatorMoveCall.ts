@@ -52,17 +52,17 @@ export const tradeMoveCall = (
 export type UmiAggregatorMoveCallArgs = {
   transactionBlock: TransactionBlock,
   quote: TradingRoute,
-  minTargetCoinAmount?: TransactionArgument;
   coins: TransactionArgument[];
   accountAddress: TransactionArgument,
+  minTargetAmount?: TransactionArgument;
 };
 
 export const umiAggregatorMoveCall = ({
   transactionBlock: txb,
   quote,
   coins,
-  minTargetCoinAmount,
   accountAddress,
+  minTargetAmount,
 }: UmiAggregatorMoveCallArgs) => {
   const [sourceCoin, ...restSourceCoins] = coins;
   if (restSourceCoins.length > 0) {

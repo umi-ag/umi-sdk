@@ -1,10 +1,10 @@
 import type { JsonRpcProvider, SuiAddress } from '@mysten/sui.js';
 import { TransactionBlock } from '@mysten/sui.js';
+import Decimal from 'decimal.js';
 import { fetchQuotes } from '../api';
+import type { TradingRoute } from '../types';
 import { getSufficientCoinObjects } from '../utils';
 import { umiAggregatorMoveCall } from './umiAggregatorMoveCall';
-import Decimal from 'decimal.js';
-import type { TradingRoute } from '../types';
 
 type BuildTransactionBlockWithQuoteArgs = {
   provider: JsonRpcProvider,
@@ -43,7 +43,7 @@ export const buildUmiAggregatorTxbWithQuote = async ({
     quote,
     accountAddress: accountAddressObject,
     coins: sourceCoinObjects,
-    minTargetCoinAmount: txb.pure(minTargetCoinAmount),
+    minTargetAmount: txb.pure(minTargetCoinAmount),
   });
 
   txb.transferObjects([targetCoinObject], accountAddressObject);
@@ -55,7 +55,7 @@ type BuildTransactionBlockWithBestQuoteArgs = {
   provider: JsonRpcProvider,
   sourceCoinType: string,
   targetCoinType: string,
-  sourceCoinAmount: bigint,
+  sourceAmount: bigint,
   accountAddress: SuiAddress,
   slippageTolerance: number,
 };
@@ -64,7 +64,7 @@ export const buildUmiAggregatorTxbWithBestQuote = async ({
   provider,
   sourceCoinType,
   targetCoinType,
-  sourceCoinAmount,
+  sourceAmount,
   accountAddress,
   slippageTolerance,
 }: BuildTransactionBlockWithBestQuoteArgs) => {
@@ -72,7 +72,7 @@ export const buildUmiAggregatorTxbWithBestQuote = async ({
   const [quote] = await fetchQuotes({
     sourceCoin: sourceCoinType,
     targetCoin: targetCoinType,
-    sourceCoinAmount: sourceCoinAmount.toString(),
+    sourceAmount: sourceAmount.toString(),
   });
 
   const txb = await buildUmiAggregatorTxbWithQuote({

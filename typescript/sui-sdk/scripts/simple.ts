@@ -20,7 +20,7 @@ const devUSDC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     accountAddress,
     sourceCoinType: devBTC,
     targetCoinType: devUSDC,
-    sourceCoinAmount: 1000n,
+    sourceAmount: 1000n,
     slippageTolerance: 0.01, // 1%
   });
 

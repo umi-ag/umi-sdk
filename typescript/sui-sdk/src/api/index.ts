@@ -6,7 +6,7 @@ export const defaultEndpoint = 'https://quiet-sun-2393.fly.dev';
 export const fetchQuotes = async ({
   sourceCoin,
   targetCoin,
-  sourceCoinAmount: inputAmount,
+  sourceAmount,
   maxHops = 2,
   maxRoutes = 3,
   endpoint = defaultEndpoint,
@@ -14,7 +14,7 @@ export const fetchQuotes = async ({
   const url = new URL(`${endpoint}/quote`);
   url.searchParams.append('source_coin', sourceCoin);
   url.searchParams.append('target_coin', targetCoin);
-  url.searchParams.append('source_amount', inputAmount.toString());
+  url.searchParams.append('source_amount', sourceAmount.toString());
   url.searchParams.append('max_hops', maxHops.toString());
   url.searchParams.append('max_routes', maxRoutes.toString());
 
