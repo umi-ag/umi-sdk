@@ -1,6 +1,6 @@
 {
   "name": "@umi-ag/sui-sdk",
-  "version": "0.202305.1",
+  "version": "0.202305.3",
   "files": [
     "src",
     "dist"
@@ -22,12 +22,12 @@
     "bot": "vite-node scripts/bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./src --fix -c .eslintrc.cjs --ext js,ts,jsx,tsx --ignore-pattern='!.*'",
-    "publish": "npm publish --access public"
+    "pub": "npm publish --access public"
   },
   "keywords": [],
   "dependencies": {
     "@mysten/sui.js": "^0.32.2",
-    "@umi-ag/sui-coin-list": "^0.202304.2",
+    "@umi-ag/sui-coin-list": "^0.202304.3",
     "cross-fetch": "^3.1.5",
     "decimal.js": "^10.4.3",
     "dotenv": "^16.0.3",

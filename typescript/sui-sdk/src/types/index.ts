@@ -39,7 +39,7 @@ export type Chain = {
 };
 
 export type WeightedChain = {
-  chain: Chain;
+  hop: Chain;
   // f64
   weight: number;
 };
@@ -49,7 +49,7 @@ export type TradingRoute = {
   target_coin: string;
   source_amount: number;
   target_amount: number;
-  chains: WeightedChain[];
+  hops: WeightedChain[];
 };
 
 export type TradingRoutes = TradingRoute[];
