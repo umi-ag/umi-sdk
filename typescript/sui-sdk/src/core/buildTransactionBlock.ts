@@ -33,7 +33,7 @@ export const buildUmiAggregatorTxbWithQuote = async ({
   const accountAddressObject = txb.pure(accountAddress);
 
   const minTargetAmount = new Decimal(quote.target_amount)
-    .ceil() // TODO: remove this
+    .floor() // TODO: remove this
     .mul(1 - slippageTolerance)
     .round()
     .toString();

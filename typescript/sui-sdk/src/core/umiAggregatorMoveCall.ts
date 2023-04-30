@@ -99,7 +99,7 @@ export const umiAggregatorMoveCall = ({
           .round()
           .toNumber();
 
-        // TODO: need to be kizen
+        // TODO: need to be kaizen
         const [coin] = txb.splitCoins(
           coinToSwap,
           [txb.pure(splitAmountForTrade)],
