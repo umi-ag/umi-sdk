@@ -47,3 +47,64 @@ export const addIntoBalanceCall = (
     arguments: [coin],
   });
 };
+
+export type MaybeTransferOrDestroyCoinArgs = {
+  txb: TransactionBlock,
+  coinType: string,
+  coin: TransactionArgument,
+};
+
+export const maybeTransferOrDestroyCoin = ({
+  txb,
+  coinType,
+  coin,
+}: MaybeTransferOrDestroyCoinArgs) => {
+  return txb.moveCall({
+    target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::maybe_transfer_or_destroy_coin',
+    typeArguments: [coinType],
+    arguments: [coin],
+  });
+};
+
+export type SplitCoinByWeightsArgs = {
+  txb: TransactionBlock,
+  coinType: string,
+  coins: TransactionArgument[],
+  weights: TransactionArgument[],
+};
+
+export const splitCoinByWeights = ({
+  txb,
+  coinType,
+  coins,
+  weights,
+}: SplitCoinByWeightsArgs) => {
+  return txb.moveCall({
+    target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::split_coin_by_weights',
+    typeArguments: [coinType],
+    arguments: [
+      txb.makeMoveVec({ objects: coins }),
+      txb.makeMoveVec({ objects: weights }),
+    ],
+  });
+};
+
+export type CheckAmountSufficientArgs = {
+  txb: TransactionBlock,
+  coinType: string,
+  coin: TransactionArgument,
+  amount: TransactionArgument,
+};
+
+export const checkAmountSufficient = ({
+  txb,
+  coinType,
+  coin,
+  amount,
+}: CheckAmountSufficientArgs) => {
+  return txb.moveCall({
+    target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::check_amount_sufficient',
+    typeArguments: [coinType],
+    arguments: [coin, amount],
+  });
+};
