@@ -1,8 +1,8 @@
-import type { TransactionBlock, TransactionArgument } from '@mysten/sui.js';
+import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
 import { findCoinByType } from '@umi-ag/sui-coin-list';
 import Decimal from 'decimal.js';
-import type { TradingRoute, Venue } from '../types';
 import { match } from 'ts-pattern';
+import type { TradingRoute, Venue } from '../types';
 
 export const getCoinXYTypes = (venue: Venue) => {
   const [coinXType, coinYType] = venue.is_x_to_y
