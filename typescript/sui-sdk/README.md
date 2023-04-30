@@ -1,7 +1,7 @@
 # @umi-ag/sui-sdk
 
 The `@umi-ag/sui-sdk` is a TypeScript library that provides an easy-to-use
-interface for interacting with the Umi Aggregator on the Sui blockhop. It
+interface for interacting with the Umi Aggregator on the Sui blockchain. It
 simplifies the process of fetching trading routes, creating transaction blocks,
 and executing trades through the Umi Aggregator.
 
@@ -60,62 +60,48 @@ Additionally, you can manually add move calls to the TransactionBlock.
 
 ```typescript
 import {
-  fetchQuotes,
+  fetchUmiAggregatorQuotes,
   getSufficientCoinObjects,
   umiAggregatorMoveCall,
 } from "@umi-ag/sui-sdk";
 
 const sourceAmount = 1000; // u64
-const [quote1] = await fetchQuotes({
+const [quote] = await fetchUmiAggregatorQuotes({
   sourceCoin: devBTC,
   targetCoin: devUSDC,
   sourceAmount,
-});
-const [quote2] = await fetchQuotes({
-  sourceCoin: devUSDC,
-  targetCoin: devBTC,
-  sourceAmount: quote1.target_amount,
 });
 
 const txb = new TransactionBlock();
 const owner = txb.pure(address);
 
-const btcBefore = await getSufficientCoinObjects({
+const btc = await withdrawCoin({
   provider,
   owner: address,
   coinType: devBTC,
   requiredAmount: sourceAmount,
+  txb,
 });
 
 const usdc = umiAggregatorMoveCall({
   transactionBlock: txb,
-  quote: quote1,
+  quote,
   accountAddress: owner,
-  coins: btcBefore.map((coin) => txb.object(coin.coinObjectId)),
+  coins: [btc],
+  minTargetAmount: txb.pure(0),
 });
-
-const btcAfter = umiAggregatorMoveCall({
-  transactionBlock: txb,
-  quote: quote2,
-  accountAddress: owner,
-  coins: [usdc],
-});
-
-txb.transferObjects([btcAfter, usdc], owner);
-
-const dryRunResult = await signer.dryRunTransactionBlock({
-  transactionBlock: txb,
-});
-console.log(dryRunResult.balanceChanges);
-// Check BTC balance increase ...
+txb.transferObjects([usdc], owner);
 
 const result = await signer.signAndExecuteTransactionBlock({
   transactionBlock: txb,
   options: {
     showBalanceChanges: true,
     showEffects: true,
-  },
+  }
 });
+
+const gasUsed = result.effects && getTotalGasUsed(result.effects);
+console.log(result.digest, gasUsed);
 ```
 
 See
