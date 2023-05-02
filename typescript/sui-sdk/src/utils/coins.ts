@@ -81,6 +81,10 @@ export const moveCallMergeCoins = ({
   coinType,
   coins,
 }: MoveCallMergeCoinsArgs) => {
+  if (coins.length === 1) {
+    return coins[0];
+  }
+
   return txb.moveCall({
     target: `${umiTradePackageId}::utils::merge_coins`,
     typeArguments: [coinType],
