@@ -1,8 +1,8 @@
 
 import type { RawSigner } from '@mysten/sui.js';
 import { TransactionBlock } from '@mysten/sui.js';
-import { findCoinByType } from '@umi-ag/sui-coin-list';
 import { assert } from 'console';
+import { findCoinByType } from './coinList';
 
 export const buildFaucetTransactionBlock = (
   coinType: `${string}::${string}::${string}`,
