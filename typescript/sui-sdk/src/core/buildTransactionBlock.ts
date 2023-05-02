@@ -3,7 +3,7 @@ import { TransactionBlock } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
 import { fetchQuotesFromUmi } from '../api';
 import type { TradingRoute } from '../types';
-import { getSufficientCoins } from '../utils';
+import { withdrawCoin } from '../utils';
 import { umiAggregatorMoveCall } from './umiAggregatorMoveCall';
 
 type BuildTransactionBlockForUmiTradeArgs = {
@@ -21,14 +21,13 @@ export const buildTransactionBlockForUmiTrade = async ({
 }: BuildTransactionBlockForUmiTradeArgs) => {
   const txb = new TransactionBlock();
 
-  const sourceCoins = await getSufficientCoins({
+  const sourceCoin = await withdrawCoin({
     provider,
     owner: accountAddress,
     coinType: quote.source_coin,
     requiredAmount: quote.source_amount,
+    txb,
   });
-
-  const sourceCoinObjects = sourceCoins.map(coin => txb.object(coin.coinObjectId));
 
   const accountAddressObject = txb.pure(accountAddress);
 
@@ -42,7 +41,7 @@ export const buildTransactionBlockForUmiTrade = async ({
     transactionBlock: txb,
     quote,
     accountAddress: accountAddressObject,
-    coins: sourceCoinObjects,
+    coins: [sourceCoin],
     minTargetAmount: txb.pure(minTargetAmount),
   });
 
