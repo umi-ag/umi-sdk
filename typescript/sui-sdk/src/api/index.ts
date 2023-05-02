@@ -8,7 +8,7 @@ export const fetchQuotesFromUmi = async ({
   targetCoin,
   sourceAmount,
   maxHops = 2,
-  maxRoutes = 3,
+  maxRoutes = 1,
   endpoint = defaultEndpoint,
 }: QuoteQuery): Promise<TradingRoutes> => {
   const url = new URL(`${endpoint}/quote`);
