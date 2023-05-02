@@ -35,7 +35,7 @@ cd $_
 cd typescript/sui-sdk
 npm i
 export SUI_PRIVATE_KEY=0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-npm run vite-node examples/bot.ts
+npm run vite-node examples/bot-testnet.ts
 ```
 
 Here's a simple example of how to use @umi-ag/sui-sdk:
