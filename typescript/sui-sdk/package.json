@@ -17,9 +17,10 @@
   },
   "description": "",
   "scripts": {
+    "vite-node": "vite-node",
     "build": "vite build",
     "dev": "vite build --watch",
-    "bot": "vite-node scripts/bot.ts",
+    "bot": "vite-node examples/bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./src --fix -c .eslintrc.cjs --ext js,ts,jsx,tsx --ignore-pattern='!.*'",
     "pub": "npm publish --access public"
