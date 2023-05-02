@@ -89,11 +89,12 @@ export const moveCallUmiTradeDirect = ({
         // return err('Invalid trade hop');
         throw new Error('Invalid trade hop');
       }
-      const [coin, ...rest] = coins;
-      if (rest.length > 0) {
-        txb.mergeCoins(coin, rest);
-      }
-      coinToSwap = coin;
+
+      coinToSwap = moveCallMergeCoins({
+        txb,
+        coinType: hop.target_coin,
+        coins,
+      });
     }
 
     targetCoins.push(coinToSwap);
@@ -105,10 +106,12 @@ export const moveCallUmiTradeDirect = ({
     // return err('Invalid trade route');
     throw new Error('Invalid trade route');
   }
-  const [targetCoin, ...restTargetCoins] = targetCoins;
-  if (restTargetCoins.length > 0) {
-    txb.mergeCoins(targetCoin, restTargetCoins);
-  }
+
+  const targetCoin = moveCallMergeCoins({
+    txb,
+    coinType: quote.target_coin,
+    coins: targetCoins,
+  });
 
   moveCallCheckAmountSufficient({
     txb,
@@ -132,7 +135,7 @@ export const moveCallUmiTradeExactSourceCoin = ({
     txb,
     coinType: quote.source_coin,
     coins,
-    amount: minTargetAmount,
+    amount: txb.pure(quote.source_amount),
     recipient: accountAddress,
   });
 
