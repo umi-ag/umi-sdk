@@ -1,5 +1,6 @@
 import type { JsonRpcProvider, TransactionArgument, TransactionBlock } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
+import { umiTradePackageId } from '../config';
 import type { CoinObject } from '../types';
 
 type GetSufficientCoinsArgs = {
@@ -36,20 +37,20 @@ export const getSufficientCoins = async ({
   return coins;
 };
 
-export type WithdrawCoinsArgs = GetSufficientCoinsArgs & {
+export type MoveCallWithdrawCoinsArgs = GetSufficientCoinsArgs & {
   txb: TransactionBlock,
 };
 
-export const withdrawCoin = async ({ txb, ...args }: WithdrawCoinsArgs) => {
+export const moveCallWithdrawCoin = async ({ txb, ...args }: MoveCallWithdrawCoinsArgs) => {
   const coins = await getSufficientCoins(args);
-  const coin = mergeCoinsMoveCall({
+  const coin = moveCallMergeCoins({
     txb,
     coinType: args.coinType,
     coins: coins.map(c => txb.pure(c.coinObjectId)),
   });
 
   const splited = txb.splitCoins(coin, [txb.pure(args.requiredAmount)]);
-  maybeTransferOrDestroyCoin({
+  moveCallMaybeTransferOrDestroyCoin({
     txb,
     coinType: args.coinType,
     coin,
@@ -69,48 +70,68 @@ export const addIntoBalanceCall = (
   });
 };
 
-export type MergeCoinsMoveCallArgs = {
+export type MoveCallMergeCoinsArgs = {
   txb: TransactionBlock,
   coinType: string,
   coins: TransactionArgument[],
 };
 
-export const mergeCoinsMoveCall = ({
+export const moveCallMergeCoins = ({
   txb,
   coinType,
   coins,
-}: MergeCoinsMoveCallArgs) => {
+}: MoveCallMergeCoinsArgs) => {
   return txb.moveCall({
-    target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::merge_coins',
+    target: `${umiTradePackageId}::utils::merge_coins`,
     typeArguments: [coinType],
     arguments: [txb.makeMoveVec({ objects: coins })],
   });
 };
 
-export type MaybeTransferOrDestroyCoinArgs = {
+export type MoveCallMaybeTransferOrDestroyCoinArgs = {
   txb: TransactionBlock,
   coinType: string,
   coin: TransactionArgument,
 };
 
-export const maybeTransferOrDestroyCoin = ({
+export const moveCallMaybeTransferOrDestroyCoin = ({
   txb,
   coinType,
   coin,
-}: MaybeTransferOrDestroyCoinArgs) => {
+}: MoveCallMaybeTransferOrDestroyCoinArgs) => {
   return txb.moveCall({
-    target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::maybe_transfer_or_destroy_coin',
+    target: `${umiTradePackageId}::utils::maybe_transfer_or_destroy_coin`,
     typeArguments: [coinType],
     arguments: [coin],
   });
 };
 
-export type SplitCoinByWeightsArgs = {
+export type MoveCallCheckAmountSufficientArgs = {
   txb: TransactionBlock,
   coinType: string,
-  coins: TransactionArgument[],
-  weights: TransactionArgument[],
+  coin: TransactionArgument,
+  amount: TransactionArgument,
 };
+
+export const moveCallCheckAmountSufficient = ({
+  txb,
+  coinType,
+  coin,
+  amount,
+}: MoveCallCheckAmountSufficientArgs) => {
+  return txb.moveCall({
+    target: `${umiTradePackageId}::utils::check_amount_sufficient`,
+    typeArguments: [coinType],
+    arguments: [coin, amount],
+  });
+};
+
+// export type SplitCoinByWeightsArgs = {
+//   txb: TransactionBlock,
+//   coinType: string,
+//   coins: TransactionArgument[],
+//   weights: TransactionArgument[],
+// };
 
 // export const splitCoinByWeights = ({
 //   txb,
@@ -138,7 +159,7 @@ export type SplitCoinByWeightsArgs = {
 //   return result;
 
 //   // return [...new Array(weights.length).keys()]
-//   //   .map(() => vectorRemoveMoveCall({
+//   //   .map(() => moveCallVectorRemove({
 //   //     txb,
 //   //     vectorType: `0x2::coin::Coin<${coinType}>`,
 //   //     vector: result,
@@ -146,22 +167,3 @@ export type SplitCoinByWeightsArgs = {
 //   //   }));
 // };
 
-export type CheckAmountSufficientArgs = {
-  txb: TransactionBlock,
-  coinType: string,
-  coin: TransactionArgument,
-  amount: TransactionArgument,
-};
-
-export const checkAmountSufficient = ({
-  txb,
-  coinType,
-  coin,
-  amount,
-}: CheckAmountSufficientArgs) => {
-  return txb.moveCall({
-    target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::check_amount_sufficient',
-    typeArguments: [coinType],
-    arguments: [coin, amount],
-  });
-};

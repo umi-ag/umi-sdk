@@ -1,7 +1,7 @@
 import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
 import { match } from 'ts-pattern';
 import type { TradingRoute, Venue } from '../types';
-import { checkAmountSufficient, mergeCoinsMoveCall } from '../utils';
+import { moveCallCheckAmountSufficient, moveCallMergeCoins } from '../utils';
 
 export const getCoinXYTypes = (venue: Venue) => {
   const [coinXType, coinYType] = venue.is_x_to_y
@@ -21,7 +21,7 @@ export const maybeFindOrCreateVenueObject = (
   return venueObjectArg;
 };
 
-export const swapUmaUdoMoveCall = (
+export const moveCallSwapUmaUdo = (
   txb: TransactionBlock,
   venue: Venue,
   coin: TransactionArgument,
@@ -40,16 +40,16 @@ export const swapUmaUdoMoveCall = (
   });
 };
 
-export const tradeMoveCall = (
+export const moveCallTrade = (
   txb: TransactionBlock,
   venue: Venue,
   coin: TransactionArgument,
 ) => {
   return match(venue)
-    .otherwise(() => swapUmaUdoMoveCall(txb, venue, coin));
+    .otherwise(() => moveCallSwapUmaUdo(txb, venue, coin));
 };
 
-export type UmiAggregatorMoveCallArgs = {
+export type MoveCallUmiTradeArgs = {
   transactionBlock: TransactionBlock,
   quote: TradingRoute,
   coins: TransactionArgument[];
@@ -57,14 +57,14 @@ export type UmiAggregatorMoveCallArgs = {
   minTargetAmount: TransactionArgument;
 };
 
-export const umiAggregatorMoveCall = ({
+export const moveCallUmiTrade = ({
   transactionBlock: txb,
   quote,
   coins,
   accountAddress,
   minTargetAmount,
-}: UmiAggregatorMoveCallArgs) => {
-  const sourceCoin = mergeCoinsMoveCall({
+}: MoveCallUmiTradeArgs) => {
+  const sourceCoin = moveCallMergeCoins({
     txb,
     coinType: quote.source_coin,
     coins,
@@ -81,7 +81,7 @@ export const umiAggregatorMoveCall = ({
 
       // Process each step in the trading venue
       for (const { venue } of venues) {
-        const swapped = tradeMoveCall(txb, venue, coinToSwap);
+        const swapped = moveCallTrade(txb, venue, coinToSwap);
         coins.push(swapped);
       }
 
@@ -110,7 +110,7 @@ export const umiAggregatorMoveCall = ({
     txb.mergeCoins(targetCoin, restTargetCoins);
   }
 
-  checkAmountSufficient({
+  moveCallCheckAmountSufficient({
     txb,
     coinType: quote.target_coin,
     coin: targetCoin,
