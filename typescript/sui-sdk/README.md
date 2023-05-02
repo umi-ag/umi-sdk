@@ -73,7 +73,7 @@ Additionally, you can manually add move calls to the TransactionBlock.
 import {
   fetchQuotesFromUmi,
   moveCallWithdrawCoin,
-  moveCallUmiTrade,
+  moveCallUmiTradeExactSourceCoin,
 } from "@umi-ag/sui-sdk";
 
 const sourceAmount = 1000; // u64
@@ -94,7 +94,7 @@ const btc = await moveCallWithdrawCoin({
   txb,
 });
 
-const usdc = moveCallUmiTrade({
+const usdc = moveCallUmiTradeExactSourceCoin({
   transactionBlock: txb,
   quote,
   accountAddress: owner,

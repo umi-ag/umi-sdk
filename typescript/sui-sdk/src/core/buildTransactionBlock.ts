@@ -4,7 +4,7 @@ import Decimal from 'decimal.js';
 import { fetchQuotesFromUmi } from '../api';
 import type { TradingRoute } from '../types';
 import { moveCallWithdrawCoin } from '../utils';
-import { moveCallUmiTrade } from './moveCallUmiTrade';
+import { moveCallUmiTradeExactSourceCoin } from './moveCallUmiTrade';
 
 type BuildTransactionBlockForUmiTradeArgs = {
   provider: JsonRpcProvider,
@@ -37,7 +37,7 @@ export const buildTransactionBlockForUmiTrade = async ({
     .round()
     .toString();
 
-  const targetCoinObject = moveCallUmiTrade({
+  const targetCoinObject = moveCallUmiTradeExactSourceCoin({
     transactionBlock: txb,
     quote,
     accountAddress: accountAddressObject,
