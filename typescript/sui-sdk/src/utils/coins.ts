@@ -43,19 +43,13 @@ export type MoveCallWithdrawCoinsArgs = GetSufficientCoinsArgs & {
 
 export const moveCallWithdrawCoin = async ({ txb, ...args }: MoveCallWithdrawCoinsArgs) => {
   const coins = await getSufficientCoins(args);
-  const coin = moveCallMergeCoins({
+  return moveCallMaybeSplitCoinsAndTransferRest({
     txb,
     coinType: args.coinType,
     coins: coins.map(c => txb.pure(c.coinObjectId)),
+    amount: txb.pure(args.requiredAmount),
+    recipient: txb.pure(args.owner),
   });
-
-  const splited = txb.splitCoins(coin, [txb.pure(args.requiredAmount)]);
-  moveCallMaybeTransferOrDestroyCoin({
-    txb,
-    coinType: args.coinType,
-    coin,
-  });
-  return splited;
 };
 
 export const addIntoBalanceCall = (
@@ -81,6 +75,10 @@ export const moveCallMergeCoins = ({
   coinType,
   coins,
 }: MoveCallMergeCoinsArgs) => {
+  if (coins.length === 1) {
+    return coins[0];
+  }
+
   return txb.moveCall({
     target: `${umiTradePackageId}::utils::merge_coins`,
     typeArguments: [coinType],
@@ -103,6 +101,50 @@ export const moveCallMaybeTransferOrDestroyCoin = ({
     target: `${umiTradePackageId}::utils::maybe_transfer_or_destroy_coin`,
     typeArguments: [coinType],
     arguments: [coin],
+  });
+};
+
+export type MoveCallMaybeSplitCoinAndTransferRest = {
+  txb: TransactionBlock,
+  coinType: string,
+  coin: TransactionArgument,
+  amount: TransactionArgument,
+  recipient: TransactionArgument,
+};
+
+export const moveCallMaybeSplitCoinAndTransferRest = ({
+  txb,
+  coinType,
+  coin,
+  amount,
+  recipient,
+}: MoveCallMaybeSplitCoinAndTransferRest) => {
+  return txb.moveCall({
+    target: `${umiTradePackageId}::utils::maybe_split_coin_and_transfer_rest`,
+    typeArguments: [coinType],
+    arguments: [coin, amount, recipient],
+  });
+};
+
+export type MoveCallMaybeSplitCoinsAndTransferRest = {
+  txb: TransactionBlock,
+  coinType: string,
+  coins: TransactionArgument[],
+  amount: TransactionArgument,
+  recipient: TransactionArgument,
+};
+
+export const moveCallMaybeSplitCoinsAndTransferRest = ({
+  txb,
+  coinType,
+  coins,
+  amount,
+  recipient,
+}: MoveCallMaybeSplitCoinsAndTransferRest) => {
+  return txb.moveCall({
+    target: `${umiTradePackageId}::utils::maybe_split_coins_and_transfer_rest`,
+    typeArguments: [coinType],
+    arguments: [txb.makeMoveVec({ objects: coins }), amount, recipient],
   });
 };
 

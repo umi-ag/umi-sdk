@@ -3,8 +3,8 @@ import { TransactionBlock } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
 import { fetchQuotesFromUmi } from '../api';
 import type { TradingRoute } from '../types';
-import { moveCallWithdrawCoin } from '../utils';
-import { moveCallUmiTrade } from './moveCallUmiTrade';
+import { getSufficientCoins } from '../utils';
+import { moveCallUmiTradeExactSourceCoin } from './moveCallUmiTrade';
 
 type BuildTransactionBlockForUmiTradeArgs = {
   provider: JsonRpcProvider,
@@ -21,12 +21,11 @@ export const buildTransactionBlockForUmiTrade = async ({
 }: BuildTransactionBlockForUmiTradeArgs) => {
   const txb = new TransactionBlock();
 
-  const sourceCoin = await moveCallWithdrawCoin({
+  const sourceCoins = await getSufficientCoins({
     provider,
     owner: accountAddress,
     coinType: quote.source_coin,
     requiredAmount: quote.source_amount,
-    txb,
   });
 
   const accountAddressObject = txb.pure(accountAddress);
@@ -37,11 +36,11 @@ export const buildTransactionBlockForUmiTrade = async ({
     .round()
     .toString();
 
-  const targetCoinObject = moveCallUmiTrade({
+  const targetCoinObject = moveCallUmiTradeExactSourceCoin({
     transactionBlock: txb,
     quote,
     accountAddress: accountAddressObject,
-    coins: [sourceCoin],
+    coins: sourceCoins.map(coin => txb.pure(coin.coinObjectId)),
     minTargetAmount: txb.pure(minTargetAmount),
   });
 
@@ -73,6 +72,7 @@ export const fetchQuoteAndBuildTransactionBlockForUmiTrade = async ({
     targetCoin: targetCoinType,
     sourceAmount: sourceAmount.toString(),
   });
+  console.log(JSON.stringify(quote, null, 2));
 
   const txb = await buildTransactionBlockForUmiTrade({
     provider,

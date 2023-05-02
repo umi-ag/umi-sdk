@@ -1,7 +1,7 @@
 import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
 import { match } from 'ts-pattern';
 import type { TradingRoute, Venue } from '../types';
-import { moveCallCheckAmountSufficient, moveCallMergeCoins } from '../utils';
+import { moveCallCheckAmountSufficient, moveCallMaybeSplitCoinsAndTransferRest, moveCallMergeCoins } from '../utils';
 
 export const getCoinXYTypes = (venue: Venue) => {
   const [coinXType, coinYType] = venue.is_x_to_y
@@ -57,7 +57,7 @@ export type MoveCallUmiTradeArgs = {
   minTargetAmount: TransactionArgument;
 };
 
-export const moveCallUmiTrade = ({
+export const moveCallUmiTradeDirect = ({
   transactionBlock: txb,
   quote,
   coins,
@@ -89,11 +89,12 @@ export const moveCallUmiTrade = ({
         // return err('Invalid trade hop');
         throw new Error('Invalid trade hop');
       }
-      const [coin, ...rest] = coins;
-      if (rest.length > 0) {
-        txb.mergeCoins(coin, rest);
-      }
-      coinToSwap = coin;
+
+      coinToSwap = moveCallMergeCoins({
+        txb,
+        coinType: hop.target_coin,
+        coins,
+      });
     }
 
     targetCoins.push(coinToSwap);
@@ -105,10 +106,12 @@ export const moveCallUmiTrade = ({
     // return err('Invalid trade route');
     throw new Error('Invalid trade route');
   }
-  const [targetCoin, ...restTargetCoins] = targetCoins;
-  if (restTargetCoins.length > 0) {
-    txb.mergeCoins(targetCoin, restTargetCoins);
-  }
+
+  const targetCoin = moveCallMergeCoins({
+    txb,
+    coinType: quote.target_coin,
+    coins: targetCoins,
+  });
 
   moveCallCheckAmountSufficient({
     txb,
@@ -119,4 +122,28 @@ export const moveCallUmiTrade = ({
 
   // return ok(targetCoin);
   return targetCoin;
+};
+
+export const moveCallUmiTradeExactSourceCoin = ({
+  transactionBlock: txb,
+  quote,
+  coins,
+  accountAddress,
+  minTargetAmount,
+}: MoveCallUmiTradeArgs) => {
+  const coin = moveCallMaybeSplitCoinsAndTransferRest({
+    txb,
+    coinType: quote.source_coin,
+    coins,
+    amount: txb.pure(quote.source_amount),
+    recipient: accountAddress,
+  });
+
+  return moveCallUmiTradeDirect({
+    transactionBlock: txb,
+    quote,
+    coins: [coin],
+    accountAddress,
+    minTargetAmount,
+  });
 };
