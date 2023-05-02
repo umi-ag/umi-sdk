@@ -7,6 +7,7 @@ import {
   TransactionBlock,
 } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
+import { faucet } from '../scripts/faucet';
 import {
   fetchUmiAggregatorQuotes,
   umiAggregatorMoveCall,
@@ -41,6 +42,8 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
 // This example shows how to swap BTC to USDC and then swap back to BTC
 (async () => {
   const sourceAmount = 1000; // u64
+  await faucet({ signer, coinType: devBTC, amount: sourceAmount });
+
   const [quote1] = await fetchUmiAggregatorQuotes({
     sourceCoin: devBTC,
     targetCoin: devUSDC,
