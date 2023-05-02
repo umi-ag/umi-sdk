@@ -1,6 +1,6 @@
 {
   "name": "@umi-ag/sui-sdk",
-  "version": "0.202305.3",
+  "version": "0.202305.5",
   "files": [
     "src",
     "dist"
@@ -31,6 +31,7 @@
     "cross-fetch": "^3.1.5",
     "decimal.js": "^10.4.3",
     "dotenv": "^16.0.3",
+    "just-zip-it": "^3.2.0",
     "neverthrow": "^6.0.0",
     "ts-pattern": "^4.2.2"
   },
