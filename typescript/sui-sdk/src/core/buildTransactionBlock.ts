@@ -1,24 +1,24 @@
 import type { JsonRpcProvider, SuiAddress } from '@mysten/sui.js';
 import { TransactionBlock } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
-import { fetchUmiAggregatorQuotes } from '../api';
+import { fetchQuotesFromUmi } from '../api';
 import type { TradingRoute } from '../types';
 import { getSufficientCoins } from '../utils';
 import { umiAggregatorMoveCall } from './umiAggregatorMoveCall';
 
-type BuildTransactionBlockWithQuoteArgs = {
+type BuildTransactionBlockForUmiTradeArgs = {
   provider: JsonRpcProvider,
   quote: TradingRoute,
   accountAddress: SuiAddress,
   slippageTolerance: number,
 };
 
-export const buildUmiAggregatorTxbWithQuote = async ({
+export const buildTransactionBlockForUmiTrade = async ({
   provider,
   quote,
   accountAddress,
   slippageTolerance,
-}: BuildTransactionBlockWithQuoteArgs) => {
+}: BuildTransactionBlockForUmiTradeArgs) => {
   const txb = new TransactionBlock();
 
   const sourceCoins = await getSufficientCoins({
@@ -51,7 +51,7 @@ export const buildUmiAggregatorTxbWithQuote = async ({
   return txb;
 };
 
-type BuildTransactionBlockWithBestQuoteArgs = {
+type FetchQuoteAndBuildTransactionBlockArgs = {
   provider: JsonRpcProvider,
   sourceCoinType: string,
   targetCoinType: string,
@@ -60,22 +60,22 @@ type BuildTransactionBlockWithBestQuoteArgs = {
   slippageTolerance: number,
 };
 
-export const buildUmiAggregatorTxbWithBestQuote = async ({
+export const fetchQuoteAndBuildTransactionBlockForUmiTrade = async ({
   provider,
   sourceCoinType,
   targetCoinType,
   sourceAmount,
   accountAddress,
   slippageTolerance,
-}: BuildTransactionBlockWithBestQuoteArgs) => {
+}: FetchQuoteAndBuildTransactionBlockArgs) => {
   // TODO: Compare all quotes and pick the best one.
-  const [quote] = await fetchUmiAggregatorQuotes({
+  const [quote] = await fetchQuotesFromUmi({
     sourceCoin: sourceCoinType,
     targetCoin: targetCoinType,
     sourceAmount: sourceAmount.toString(),
   });
 
-  const txb = await buildUmiAggregatorTxbWithQuote({
+  const txb = await buildTransactionBlockForUmiTrade({
     provider,
     quote,
     accountAddress,

@@ -1,7 +1,7 @@
 
 import { Ed25519Keypair, JsonRpcProvider, RawSigner, fromB64, testnetConnection } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { buildUmiAggregatorTxbWithBestQuote } from '../src';
+import { fetchQuoteAndBuildTransactionBlockForUmiTrade } from '../src';
 
 globalThis.fetch = fetch;
 
@@ -21,7 +21,7 @@ const signer = new RawSigner(keypair(), provider);
 
 async function main() {
   const accountAddress = await signer.getAddress();
-  const txb = await buildUmiAggregatorTxbWithBestQuote({
+  const txb = await fetchQuoteAndBuildTransactionBlockForUmiTrade({
     provider,
     accountAddress,
     sourceCoinType: devBTC,

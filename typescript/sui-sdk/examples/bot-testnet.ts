@@ -9,7 +9,7 @@ import {
 import fetch from 'cross-fetch';
 import { faucet } from '../scripts/faucet';
 import {
-  fetchUmiAggregatorQuotes,
+  fetchQuotesFromUmi,
   umiAggregatorMoveCall,
   withdrawCoin,
 } from '../src';
@@ -44,13 +44,13 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
   const sourceAmount = 1000; // u64
   await faucet({ signer, coinType: devBTC, amount: sourceAmount });
 
-  const [quote1] = await fetchUmiAggregatorQuotes({
+  const [quote1] = await fetchQuotesFromUmi({
     sourceCoin: devBTC,
     targetCoin: devUSDC,
     sourceAmount,
   });
   console.log(quote1);
-  // const [quote2] = await fetchUmiAggregatorQuotes({
+  // const [quote2] = await fetchQuotesFromUmi({
   //   sourceCoin: devUSDC,
   //   targetCoin: devBTC,
   //   sourceAmount: quote1.target_amount,
