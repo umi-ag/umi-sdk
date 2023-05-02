@@ -1,4 +1,6 @@
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import path from 'path';
+import polyfillNode from 'rollup-plugin-polyfill-node';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -7,6 +9,8 @@ export default defineConfig({
     dts({
       insertTypesEntry: true,
     }),
+    nodeResolve(),
+    polyfillNode(),
   ],
   resolve: {
     alias: {
