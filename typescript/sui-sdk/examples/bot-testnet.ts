@@ -10,8 +10,8 @@ import fetch from 'cross-fetch';
 import { faucet } from '../scripts/faucet';
 import {
   fetchQuotesFromUmi,
-  umiAggregatorMoveCall,
-  withdrawCoin,
+  moveCallUmiTrade,
+  moveCallWithdrawCoin,
 } from '../src';
 
 globalThis.fetch = fetch;
@@ -59,7 +59,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
   const txb = new TransactionBlock();
   const owner = txb.pure(address);
 
-  const btcBefore = await withdrawCoin({
+  const btcBefore = await moveCallWithdrawCoin({
     provider,
     owner: address,
     coinType: devBTC,
@@ -67,7 +67,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     txb,
   });
 
-  const usdc = umiAggregatorMoveCall({
+  const usdc = moveCallUmiTrade({
     transactionBlock: txb,
     quote: quote1,
     accountAddress: owner,
@@ -76,7 +76,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
   });
   txb.transferObjects([usdc], owner);
 
-  // const btcAfter = umiAggregatorMoveCall({
+  // const btcAfter = moveCallUmiTrade({
   //   transactionBlock: txb,
   //   quote: quote2,
   //   accountAddress: owner,

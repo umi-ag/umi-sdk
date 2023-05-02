@@ -1,0 +1,1 @@
+export const umiTradePackageId = '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e:';

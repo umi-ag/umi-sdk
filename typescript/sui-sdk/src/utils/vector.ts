@@ -1,18 +1,18 @@
 import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
 
-export type VectorRemoveMoveCallArgs = {
+export type MoveCallVectorRemoveArgs = {
   txb: TransactionBlock,
   vectorType: string,
   vector: TransactionArgument,
   index: TransactionArgument,
 };
 
-export const vectorRemoveMoveCall = ({
+export const moveCallVectorRemove = ({
   txb,
   vectorType,
   vector,
   index,
-}: VectorRemoveMoveCallArgs) => {
+}: MoveCallVectorRemoveArgs) => {
   return txb.moveCall({
     target: '0x1::vector::remove',
     typeArguments: [vectorType],
