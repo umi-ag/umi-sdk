@@ -124,7 +124,7 @@ export const moveCallUmiTradeDirect = ({
   return targetCoin;
 };
 
-export const moveCallUmiTradeExactSourceCoin = ({
+export const moveCallUmiTradeExact = ({
   transactionBlock: txb,
   quote,
   coins,
