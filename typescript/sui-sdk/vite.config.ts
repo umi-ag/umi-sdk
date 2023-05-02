@@ -12,13 +12,6 @@ export default defineConfig({
     nodeResolve(),
     polyfillNode(),
   ],
-  resolve: {
-    alias: {
-      process: 'process/browser',
-      stream: 'rollup-plugin-node-polyfills/polyfills/stream',
-      events: 'rollup-plugin-node-polyfills/polyfills/events',
-    },
-  },
   define: {
     'process.env': process.env ?? {},
   },
