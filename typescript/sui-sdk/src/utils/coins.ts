@@ -43,19 +43,13 @@ export type MoveCallWithdrawCoinsArgs = GetSufficientCoinsArgs & {
 
 export const moveCallWithdrawCoin = async ({ txb, ...args }: MoveCallWithdrawCoinsArgs) => {
   const coins = await getSufficientCoins(args);
-  const coin = moveCallMergeCoins({
+  return moveCallMaybeSplitCoinsAndTransferRest({
     txb,
     coinType: args.coinType,
     coins: coins.map(c => txb.pure(c.coinObjectId)),
+    amount: txb.pure(args.requiredAmount),
+    recipient: txb.pure(args.owner),
   });
-
-  const splited = txb.splitCoins(coin, [txb.pure(args.requiredAmount)]);
-  moveCallMaybeTransferOrDestroyCoin({
-    txb,
-    coinType: args.coinType,
-    coin,
-  });
-  return splited;
 };
 
 export const addIntoBalanceCall = (
