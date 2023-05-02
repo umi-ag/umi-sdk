@@ -4,21 +4,21 @@ import Decimal from 'decimal.js';
 import { fetchQuotesFromUmi } from '../api';
 import type { TradingRoute } from '../types';
 import { getSufficientCoins } from '../utils';
-import { moveCallUmiTradeExact } from './moveCallUmiTrade';
+import { moveCallUmiAgTradeExact } from './moveCallUmiAgTrade';
 
-type BuildTransactionBlockForUmiTradeArgs = {
+type BuildTransactionBlockForUmiAgTradeArgs = {
   provider: JsonRpcProvider,
   quote: TradingRoute,
   accountAddress: SuiAddress,
   slippageTolerance: number,
 };
 
-export const buildTransactionBlockForUmiTrade = async ({
+export const buildTransactionBlockForUmiAgTrade = async ({
   provider,
   quote,
   accountAddress,
   slippageTolerance,
-}: BuildTransactionBlockForUmiTradeArgs) => {
+}: BuildTransactionBlockForUmiAgTradeArgs) => {
   const txb = new TransactionBlock();
 
   const sourceCoins = await getSufficientCoins({
@@ -36,7 +36,7 @@ export const buildTransactionBlockForUmiTrade = async ({
     .round()
     .toString();
 
-  const targetCoinObject = moveCallUmiTradeExact({
+  const targetCoinObject = moveCallUmiAgTradeExact({
     transactionBlock: txb,
     quote,
     accountAddress: accountAddressObject,
@@ -58,7 +58,7 @@ type FetchQuoteAndBuildTransactionBlockArgs = {
   slippageTolerance: number,
 };
 
-export const fetchQuoteAndBuildTransactionBlockForUmiTrade = async ({
+export const fetchQuoteAndBuildTransactionBlockForUmiAgTrade = async ({
   provider,
   sourceCoinType,
   targetCoinType,
@@ -74,7 +74,7 @@ export const fetchQuoteAndBuildTransactionBlockForUmiTrade = async ({
   });
   console.log(JSON.stringify(quote, null, 2));
 
-  const txb = await buildTransactionBlockForUmiTrade({
+  const txb = await buildTransactionBlockForUmiAgTrade({
     provider,
     quote,
     accountAddress,

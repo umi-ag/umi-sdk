@@ -41,7 +41,7 @@ npm run vite-node examples/bot-testnet.ts
 Here's a simple example of how to use @umi-ag/sui-sdk:
 
 ```typescript
-import { fetchQuoteAndBuildTransactionBlockForUmiTrade } from "@umi-ag/sui-sdk";
+import { fetchQuoteAndBuildTransactionBlockForUmiAgTrade } from "@umi-ag/sui-sdk";
 
 const provider = new JsonRpcProvider(testnetConnection);
 
@@ -55,7 +55,7 @@ const devBTC =
 const devUSDC =
   "0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdc::DEVNET_USDC";
 
-const txb = await fetchQuoteAndBuildTransactionBlockForUmiTrade({
+const txb = await fetchQuoteAndBuildTransactionBlockForUmiAgTrade({
   provider,
   accountAddress,
   sourceCoinType: devBTC,
@@ -73,7 +73,7 @@ Additionally, you can manually add move calls to the TransactionBlock.
 import {
   fetchQuotesFromUmi,
   moveCallWithdrawCoin,
-  moveCallUmiTradeExact,
+  moveCallUmiAgTradeExact,
 } from "@umi-ag/sui-sdk";
 
 const sourceAmount = 1000; // u64
@@ -94,7 +94,7 @@ const btc = await moveCallWithdrawCoin({
   txb,
 });
 
-const usdc = moveCallUmiTradeExact({
+const usdc = moveCallUmiAgTradeExact({
   transactionBlock: txb,
   quote,
   accountAddress: owner,

@@ -1,6 +1,6 @@
 import { Ed25519Keypair, JsonRpcProvider, RawSigner, testnetConnection } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { fetchQuoteAndBuildTransactionBlockForUmiTrade } from '../src';
+import { fetchQuoteAndBuildTransactionBlockForUmiAgTrade } from '../src';
 
 globalThis.fetch = fetch;
 
@@ -15,7 +15,7 @@ const devBTC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71
 const devUSDC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdc::DEVNET_USDC';
 
 (async () => {
-  const txb = await fetchQuoteAndBuildTransactionBlockForUmiTrade({
+  const txb = await fetchQuoteAndBuildTransactionBlockForUmiAgTrade({
     provider,
     accountAddress,
     sourceCoinType: devBTC,
