@@ -49,7 +49,7 @@ export const moveCallTrade = (
     .otherwise(() => moveCallSwapUmaUdo(txb, venue, coin));
 };
 
-export type MoveCallUmiTradeArgs = {
+export type MoveCallUmiAgTradeArgs = {
   transactionBlock: TransactionBlock,
   quote: TradingRoute,
   coins: TransactionArgument[];
@@ -57,13 +57,13 @@ export type MoveCallUmiTradeArgs = {
   minTargetAmount: TransactionArgument;
 };
 
-export const moveCallUmiTradeDirect = ({
+export const moveCallUmiAgTradeDirect = ({
   transactionBlock: txb,
   quote,
   coins,
   accountAddress,
   minTargetAmount,
-}: MoveCallUmiTradeArgs) => {
+}: MoveCallUmiAgTradeArgs) => {
   const sourceCoin = moveCallMergeCoins({
     txb,
     coinType: quote.source_coin,
@@ -124,13 +124,13 @@ export const moveCallUmiTradeDirect = ({
   return targetCoin;
 };
 
-export const moveCallUmiTradeExact = ({
+export const moveCallUmiAgTradeExact = ({
   transactionBlock: txb,
   quote,
   coins,
   accountAddress,
   minTargetAmount,
-}: MoveCallUmiTradeArgs) => {
+}: MoveCallUmiAgTradeArgs) => {
   const coin = moveCallMaybeSplitCoinsAndTransferRest({
     txb,
     coinType: quote.source_coin,
@@ -139,7 +139,7 @@ export const moveCallUmiTradeExact = ({
     recipient: accountAddress,
   });
 
-  return moveCallUmiTradeDirect({
+  return moveCallUmiAgTradeDirect({
     transactionBlock: txb,
     quote,
     coins: [coin],
