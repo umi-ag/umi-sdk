@@ -10,7 +10,7 @@ import fetch from 'cross-fetch';
 import { faucet } from '../scripts/faucet';
 import {
   fetchQuotesFromUmi,
-  moveCallUmiTradeExactSourceCoin,
+  moveCallUmiTradeExact,
   moveCallWithdrawCoin,
 } from '../src';
 
@@ -67,7 +67,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     txb,
   });
 
-  const usdc = moveCallUmiTradeExactSourceCoin({
+  const usdc = moveCallUmiTradeExact({
     transactionBlock: txb,
     quote: quote1,
     accountAddress: owner,
