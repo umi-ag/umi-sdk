@@ -24,5 +24,13 @@ const devUSDC = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     slippageTolerance: 0.01, // 1%
   });
 
-  await signer.signAndExecuteTransactionBlock({ transactionBlock: txb });
+  const result = await signer.signAndExecuteTransactionBlock({
+    transactionBlock: txb,
+    options: {
+      showBalanceChanges: true,
+    },
+  });
+
+  console.log(result.balanceChanges);
+  console.log(result.digest);
 })();
