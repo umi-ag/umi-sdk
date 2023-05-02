@@ -1,21 +1,35 @@
-import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock, fromB64 } from '@mysten/sui.js';
+import {
+  Connection,
+  Ed25519Keypair,
+  fromB64,
+  JsonRpcProvider,
+  RawSigner,
+  TransactionBlock,
+} from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { fetchUmiAggregatorQuotes, umiAggregatorMoveCall, withdrawCoin } from '../src';
+import {
+  fetchUmiAggregatorQuotes,
+  umiAggregatorMoveCall,
+  withdrawCoin,
+} from '../src';
 
 globalThis.fetch = fetch;
 
-const provider = new JsonRpcProvider(new Connection({
-  fullnode: 'https://sui-api.rpcpool.com',
-}));
+const provider = new JsonRpcProvider(
+  new Connection({
+    fullnode: 'https://sui-api.rpcpool.com',
+  }),
+);
 
 const keypair = () => {
-  const privatekey0x = (process.env.SUI_PRIVATE_KEY as string); // 0x.....
+  const privatekey0x = process.env.SUI_PRIVATE_KEY as string; // 0x.....
   const privatekey = privatekey0x.replace(/^0x/, ''); //slice used to remove the first 2 letter from the string and that's 0x
   const privateKeyBase64 = Buffer.from(privatekey, 'hex').toString('base64'); //convert hex to base64 string
   return Ed25519Keypair.fromSecretKey(fromB64(privateKeyBase64));
+
+  // const mnemonic = process.env.SUI_MNEMONIC as string;
+  // return Ed25519Keypair.deriveKeypair(mnemonic);
 };
-// const mnemonic = process.env.SUI_MNEMONIC as string;
-// const keypair = Ed25519Keypair.deriveKeypair(mnemonic);
 const signer = new RawSigner(keypair(), provider);
 const address = await signer.getAddress();
 console.log({ address });
@@ -68,7 +82,9 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
 
   // txb.transferObjects([btcAfter, usdc], owner);
 
-  const dryRunResult = await signer.dryRunTransactionBlock({ transactionBlock: txb });
+  const dryRunResult = await signer.dryRunTransactionBlock({
+    transactionBlock: txb,
+  });
   console.log(dryRunResult.balanceChanges);
   // Check BTC balance increase ...
 
