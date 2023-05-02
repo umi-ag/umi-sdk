@@ -106,6 +106,50 @@ export const moveCallMaybeTransferOrDestroyCoin = ({
   });
 };
 
+export type MoveCallMaybeSplitCoinAndTransferRest = {
+  txb: TransactionBlock,
+  coinType: string,
+  coin: TransactionArgument,
+  amount: TransactionArgument,
+  recipient: TransactionArgument,
+};
+
+export const moveCallMaybeSplitCoinAndTransferRest = ({
+  txb,
+  coinType,
+  coin,
+  amount,
+  recipient,
+}: MoveCallMaybeSplitCoinAndTransferRest) => {
+  return txb.moveCall({
+    target: `${umiTradePackageId}::utils::maybe_split_coin_and_transfer_rest`,
+    typeArguments: [coinType],
+    arguments: [coin, amount, recipient],
+  });
+};
+
+export type MoveCallMaybeSplitCoinsAndTransferRest = {
+  txb: TransactionBlock,
+  coinType: string,
+  coins: TransactionArgument[],
+  amount: TransactionArgument,
+  recipient: TransactionArgument,
+};
+
+export const moveCallMaybeSplitCoinsAndTransferRest = ({
+  txb,
+  coinType,
+  coins,
+  amount,
+  recipient,
+}: MoveCallMaybeSplitCoinsAndTransferRest) => {
+  return txb.moveCall({
+    target: `${umiTradePackageId}::utils::maybe_split_coins_and_transfer_rest`,
+    typeArguments: [coinType],
+    arguments: [txb.makeMoveVec({ objects: coins }), amount, recipient],
+  });
+};
+
 export type MoveCallCheckAmountSufficientArgs = {
   txb: TransactionBlock,
   coinType: string,
