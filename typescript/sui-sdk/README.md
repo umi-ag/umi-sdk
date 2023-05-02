@@ -27,6 +27,15 @@ yarn add @umi-ag/sui-sdk
 
 ## Usage
 
+Give it a try for a minute.
+
+```sh
+git clone https://github.com/umi-ag/umi-sdk umi-sdk
+cd $_
+cd typescript/sui-sdk
+npm run vite-node examples/bot.ts
+```
+
 Here's a simple example of how to use @umi-ag/sui-sdk:
 
 ```typescript
@@ -97,7 +106,7 @@ const result = await signer.signAndExecuteTransactionBlock({
   options: {
     showBalanceChanges: true,
     showEffects: true,
-  }
+  },
 });
 
 const gasUsed = result.effects && getTotalGasUsed(result.effects);
