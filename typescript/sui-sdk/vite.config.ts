@@ -1,6 +1,4 @@
-import { nodeResolve } from '@rollup/plugin-node-resolve';
 import path from 'path';
-import polyfillNode from 'rollup-plugin-polyfill-node';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
 
@@ -9,8 +7,6 @@ export default defineConfig({
     dts({
       insertTypesEntry: true,
     }),
-    nodeResolve(),
-    polyfillNode(),
   ],
   resolve: {
     alias: {
@@ -18,9 +14,6 @@ export default defineConfig({
       stream: 'rollup-plugin-node-polyfills/polyfills/stream',
       events: 'rollup-plugin-node-polyfills/polyfills/events',
     },
-  },
-  define: {
-    'process.env': process.env ?? {},
   },
   build: {
     target: 'esnext',

@@ -1,6 +1,6 @@
 {
   "name": "@umi-ag/sui-sdk",
-  "version": "0.202305.13",
+  "version": "0.202305.16",
   "files": [
     "src",
     "dist"
@@ -27,7 +27,7 @@
   },
   "keywords": [],
   "dependencies": {
-    "@mysten/sui.js": "^0.32.2",
+    "@mysten/sui.js": "^0.33.0",
     "cross-fetch": "^3.1.5",
     "decimal.js": "^10.4.3",
     "dotenv": "^16.0.3",
@@ -36,7 +36,6 @@
     "ts-pattern": "^4.2.2"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "^15.0.2",
     "@types/node": "^18.16.3",
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
@@ -47,7 +46,6 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "prettier": "^2.8.8",
     "rollup-plugin-node-polyfills": "^0.2.1",
-    "rollup-plugin-polyfill-node": "^0.12.0",
     "typescript": "^5.0.4",
     "vite": "^4.3.4",
     "vite-node": "^0.30.1",
