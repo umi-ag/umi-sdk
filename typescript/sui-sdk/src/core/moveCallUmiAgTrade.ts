@@ -10,13 +10,13 @@ export const getCoinXYTypes = (venue: Venue) => {
   return [coinXType, coinYType];
 };
 
-export const maybeFindOrCreateVenueObject = (
+export const maybeFindOrCreateObject = (
   txb: TransactionBlock,
-  venue: Venue,
+  objectId: string,
 ) => {
-  // If the venue object is already in the transaction block, use it.
-  const venueObjectArg = txb.blockData.inputs.find(i => i.value === venue.object_id)
-    ?? txb.pure(venue.object_id);
+  // If the object is already in the transaction block, use it.
+  const venueObjectArg = txb.blockData.inputs.find(i => i.value === objectId)
+    ?? txb.pure(objectId);
 
   return venueObjectArg;
 };
@@ -28,7 +28,7 @@ export const moveCallSwapUmaUdo = (
 ) => {
   const [coinXType, coinYType] = getCoinXYTypes(venue);
 
-  const venueObjectArg = maybeFindOrCreateVenueObject(txb, venue);
+  const venueObjectArg = maybeFindOrCreateObject(txb, venue.object_id);
 
   return txb.moveCall({
     target: venue.function,
@@ -40,12 +40,33 @@ export const moveCallSwapUmaUdo = (
   });
 };
 
+export const moveCallAnimeswap = (
+  txb: TransactionBlock,
+  venue: Venue,
+  coin: TransactionArgument,
+) => {
+  const [coinXType, coinYType] = getCoinXYTypes(venue);
+
+  const venueObjectArg = maybeFindOrCreateObject(txb, venue.object_id);
+
+  return txb.moveCall({
+    target: venue.function,
+    typeArguments: [coinXType, coinYType],
+    arguments: [
+      venueObjectArg,
+      maybeFindOrCreateObject(txb, '0x6'), // clock
+      coin,
+    ]
+  });
+};
+
 export const moveCallTrade = (
   txb: TransactionBlock,
   venue: Venue,
   coin: TransactionArgument,
 ) => {
   return match(venue)
+    .with({ name: 'animeswap' }, () => moveCallAnimeswap(txb, venue, coin))
     .otherwise(() => moveCallSwapUmaUdo(txb, venue, coin));
 };
 
