@@ -2,12 +2,13 @@ import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
 import { match } from 'ts-pattern';
 import type { TradingRoute, Venue } from '../types';
 import { moveCallCheckAmountSufficient, moveCallMaybeSplitCoinsAndTransferRest, moveCallMergeCoins } from '../utils';
+import { moveCallAnimeswap } from '../venues/animeswap';
 
 export const getCoinXYTypes = (venue: Venue) => {
-  const [coinXType, coinYType] = venue.is_x_to_y
+  const [coinTypeX, coinTypeY] = venue.is_x_to_y
     ? [venue.source_coin, venue.target_coin]
     : [venue.target_coin, venue.source_coin];
-  return [coinXType, coinYType];
+  return [coinTypeX, coinTypeY];
 };
 
 export const maybeFindOrCreateObject = (
@@ -26,35 +27,15 @@ export const moveCallSwapUmaUdo = (
   venue: Venue,
   coin: TransactionArgument,
 ) => {
-  const [coinXType, coinYType] = getCoinXYTypes(venue);
+  const [coinTypeX, coinTypeY] = getCoinXYTypes(venue);
 
   const venueObjectArg = maybeFindOrCreateObject(txb, venue.object_id);
 
   return txb.moveCall({
     target: venue.function,
-    typeArguments: [coinXType, coinYType],
+    typeArguments: [coinTypeX, coinTypeY],
     arguments: [
       venueObjectArg,
-      coin,
-    ]
-  });
-};
-
-export const moveCallAnimeswap = (
-  txb: TransactionBlock,
-  venue: Venue,
-  coin: TransactionArgument,
-) => {
-  const [coinXType, coinYType] = getCoinXYTypes(venue);
-
-  const venueObjectArg = maybeFindOrCreateObject(txb, venue.object_id);
-
-  return txb.moveCall({
-    target: venue.function,
-    typeArguments: [coinXType, coinYType],
-    arguments: [
-      venueObjectArg,
-      maybeFindOrCreateObject(txb, '0x6'), // clock
       coin,
     ]
   });

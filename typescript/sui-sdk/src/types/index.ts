@@ -56,8 +56,8 @@ export type TradingRoutes = TradingRoute[];
 
 export type VenueInfo = {
   venueObjectId: string,
-  coinXType: string,
-  coinYType: string,
+  coinTypeX: string,
+  coinTypeY: string,
 };
 
 export type VenueBook = Record<string, Record<string, VenueInfo>>;
