@@ -7,7 +7,6 @@ import {
   TransactionBlock,
 } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { faucet } from '../scripts/faucet';
 import {
   fetchQuotesFromUmi,
   moveCallUmiAgTradeExact,
@@ -27,7 +26,6 @@ const keypair = () => {
   const privatekey = privatekey0x.replace(/^0x/, ''); //slice used to remove the first 2 letter from the string and that's 0x
   const privateKeyBase64 = Buffer.from(privatekey, 'hex').toString('base64'); //convert hex to base64 string
   return Ed25519Keypair.fromSecretKey(fromB64(privateKeyBase64));
-
   // const mnemonic = process.env.SUI_MNEMONIC as string;
   // return Ed25519Keypair.deriveKeypair(mnemonic);
 };
@@ -41,7 +39,6 @@ const WETHw = '0xaf8cd5edc19c4512f4259f0bee101a40d41ebed738ade5874359610ef8eeced
 // This example shows how to swap BTC to USDC and then swap back to BTC
 (async () => {
   const sourceAmount = 1000; // u64
-  await faucet({ signer, coinType: SUI, amount: sourceAmount });
 
   const [quote1] = await fetchQuotesFromUmi({
     sourceCoin: SUI,

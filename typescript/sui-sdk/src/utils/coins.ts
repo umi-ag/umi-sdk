@@ -52,6 +52,16 @@ export const moveCallWithdrawCoin = async ({ txb, ...args }: MoveCallWithdrawCoi
   });
 };
 
+export const moveCallCoinZero = (
+  txb: TransactionBlock,
+  coinType: string,
+) => {
+  return txb.moveCall({
+    target: '0x2::coin::zero',
+    typeArguments: [coinType],
+  });
+};
+
 export const addIntoBalanceCall = (
   txb: TransactionBlock,
   coinType: string,
