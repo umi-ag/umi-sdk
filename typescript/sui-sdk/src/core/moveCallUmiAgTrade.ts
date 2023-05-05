@@ -1,6 +1,6 @@
 import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
 import { match } from 'ts-pattern';
-import { umiTradePackageId } from '../config';
+import { UMIAG_PACKAGE_ID } from '../config';
 import type { TradingRoute, Venue } from '../types';
 import type { MoveCallCheckAmountSufficientArgs, MoveCallMaybeSplitCoinsAndTransferRest } from '../utils';
 import { moveCallMergeCoins } from '../utils';
@@ -160,7 +160,7 @@ export const moveCallUmiAgTradeBegin = ({
   recipient,
 }: MoveCallMaybeSplitCoinsAndTransferRest) => {
   return txb.moveCall({
-    target: `${umiTradePackageId}::umi_aggregator::trade_begin`,
+    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::trade_begin`,
     typeArguments: [coinType],
     arguments: [txb.makeMoveVec({ objects: coins }), amount, recipient],
   });
@@ -173,7 +173,7 @@ export const moveCallUmiAgTradeEnd = ({
   amount,
 }: MoveCallCheckAmountSufficientArgs) => {
   return txb.moveCall({
-    target: `${umiTradePackageId}::umi_aggregator::trade_end`,
+    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::trade_end`,
     typeArguments: [coinType],
     arguments: [coin, amount],
   });
