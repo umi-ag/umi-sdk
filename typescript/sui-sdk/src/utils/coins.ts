@@ -1,6 +1,6 @@
 import type { JsonRpcProvider, TransactionArgument, TransactionBlock } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
-import { umiTradePackageId } from '../config';
+import { UMIAG_PACKAGE_ID } from '../config';
 import type { CoinObject } from '../types';
 
 type GetSufficientCoinsArgs = {
@@ -52,6 +52,16 @@ export const moveCallWithdrawCoin = async ({ txb, ...args }: MoveCallWithdrawCoi
   });
 };
 
+export const moveCallCoinZero = (
+  txb: TransactionBlock,
+  coinType: string,
+) => {
+  return txb.moveCall({
+    target: '0x2::coin::zero',
+    typeArguments: [coinType],
+  });
+};
+
 export const addIntoBalanceCall = (
   txb: TransactionBlock,
   coinType: string,
@@ -80,7 +90,7 @@ export const moveCallMergeCoins = ({
   }
 
   return txb.moveCall({
-    target: `${umiTradePackageId}::utils::merge_coins`,
+    target: `${UMIAG_PACKAGE_ID}::utils::merge_coins`,
     typeArguments: [coinType],
     arguments: [txb.makeMoveVec({ objects: coins })],
   });
@@ -98,7 +108,7 @@ export const moveCallMaybeTransferOrDestroyCoin = ({
   coin,
 }: MoveCallMaybeTransferOrDestroyCoinArgs) => {
   return txb.moveCall({
-    target: `${umiTradePackageId}::utils::maybe_transfer_or_destroy_coin`,
+    target: `${UMIAG_PACKAGE_ID}::utils::maybe_transfer_or_destroy_coin`,
     typeArguments: [coinType],
     arguments: [coin],
   });
@@ -120,7 +130,7 @@ export const moveCallMaybeSplitCoinAndTransferRest = ({
   recipient,
 }: MoveCallMaybeSplitCoinAndTransferRest) => {
   return txb.moveCall({
-    target: `${umiTradePackageId}::utils::maybe_split_coin_and_transfer_rest`,
+    target: `${UMIAG_PACKAGE_ID}::utils::maybe_split_coin_and_transfer_rest`,
     typeArguments: [coinType],
     arguments: [coin, amount, recipient],
   });
@@ -142,7 +152,7 @@ export const moveCallMaybeSplitCoinsAndTransferRest = ({
   recipient,
 }: MoveCallMaybeSplitCoinsAndTransferRest) => {
   return txb.moveCall({
-    target: `${umiTradePackageId}::utils::maybe_split_coins_and_transfer_rest`,
+    target: `${UMIAG_PACKAGE_ID}::utils::maybe_split_coins_and_transfer_rest`,
     typeArguments: [coinType],
     arguments: [txb.makeMoveVec({ objects: coins }), amount, recipient],
   });
@@ -162,7 +172,7 @@ export const moveCallCheckAmountSufficient = ({
   amount,
 }: MoveCallCheckAmountSufficientArgs) => {
   return txb.moveCall({
-    target: `${umiTradePackageId}::utils::check_amount_sufficient`,
+    target: `${UMIAG_PACKAGE_ID}::utils::check_amount_sufficient`,
     typeArguments: [coinType],
     arguments: [coin, amount],
   });

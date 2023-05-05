@@ -1,1 +1,1 @@
-export const umiTradePackageId = '0x59614b797c6c2cba34b0389859bfa042c64528684a8626be6451b936b5c13bdd';
+export const UMIAG_PACKAGE_ID = '0x2e7987a7f1ff7a18dc49a3a6f45274d197155619a38d044c72eea3d83c7085f6';
