@@ -51,7 +51,7 @@ export const moveCallTrade = (
 ) => {
   return match(venue)
     .with({ name: 'animeswap' }, () => moveCallAnimeswap(txb, venue, coin))
-    .with({ name: 'bluemove' }, () => moveCallBluemove(txb, venue, coin))
+    .with({ name: 'bluemoveswap' }, () => moveCallBluemove(txb, venue, coin))
     .otherwise(() => moveCallSwapUmaUdo(txb, venue, coin));
 };
 
