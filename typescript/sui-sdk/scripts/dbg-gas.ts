@@ -1,6 +1,6 @@
 import { Connection, Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock, fromB64 } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { maybeFindOrCreateObject, moveCallWithdrawCoin } from '../src';
+import { maybeFindOrCreateObject } from '../src';
 
 globalThis.fetch = fetch;
 
@@ -29,20 +29,15 @@ const txb = new TransactionBlock();
 const owner = txb.pure(address);
 
 const sourceAmount = 10_000;
-const coin_s = await moveCallWithdrawCoin({
-  provider,
-  owner: address,
-  coinType: SUI,
-  requiredAmount: sourceAmount,
-  txb,
-});
+
+const sui = txb.splitCoins(txb.gas, [txb.pure(sourceAmount)]);
 
 const usd = txb.moveCall({
   target: '0xb24b6789e088b876afabca733bed2299fbc9e2d6369be4d1acfa17d8145454d9::router::swap_exact_input_',
   typeArguments: [SUI, SMOVE],
   arguments: [
     txb.pure(sourceAmount),
-    coin_s,
+    sui,
     txb.pure(0),
     maybeFindOrCreateObject(txb, '0x3f2d9f724f4a1ce5e71676448dc452be9a6243dac9c5b975a588c8c867066e92'),
   ],
