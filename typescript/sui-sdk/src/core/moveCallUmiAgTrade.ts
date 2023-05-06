@@ -5,6 +5,7 @@ import type { TradingRoute, Venue } from '../types';
 import type { MoveCallCheckAmountSufficientArgs, MoveCallMaybeSplitCoinsAndTransferRest } from '../utils';
 import { moveCallMergeCoins } from '../utils';
 import { moveCallAnimeswap } from '../venues/animeswap';
+import { moveCallBluemove } from '../venues/bluemove';
 
 export const getCoinXYTypes = (venue: Venue) => {
   const [coinTypeX, coinTypeY] = venue.is_x_to_y
@@ -50,6 +51,7 @@ export const moveCallTrade = (
 ) => {
   return match(venue)
     .with({ name: 'animeswap' }, () => moveCallAnimeswap(txb, venue, coin))
+    .with({ name: 'bluemove' }, () => moveCallBluemove(txb, venue, coin))
     .otherwise(() => moveCallSwapUmaUdo(txb, venue, coin));
 };
 
@@ -77,10 +79,10 @@ export const moveCallUmiAgTradeDirect = ({
   const targetCoins: TransactionArgument[] = [];
 
   // Process each chain in the trading route
-  for (const { hop } of quote.hops) {
+  for (const { path } of quote.paths) {
     // Process each step in the chain
     let coinToSwap: TransactionArgument = sourceCoin;
-    for (const { venues } of hop.steps) {
+    for (const { venues } of path.steps) {
       const coins: TransactionArgument[] = [];
 
       // Process each step in the trading venue
@@ -90,13 +92,13 @@ export const moveCallUmiAgTradeDirect = ({
       }
 
       if (coins.length < 1) {
-        // return err('Invalid trade hop');
-        throw new Error('Invalid trade hop');
+        // return err('Invalid trade path');
+        throw new Error('Invalid trade path');
       }
 
       coinToSwap = moveCallMergeCoins({
         txb,
-        coinType: hop.target_coin,
+        coinType: path.target_coin,
         coins,
       });
     }
