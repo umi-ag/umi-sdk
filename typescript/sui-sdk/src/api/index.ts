@@ -15,7 +15,7 @@ export const fetchQuotesFromUmi = async ({
   url.searchParams.append('source_coin', sourceCoin);
   url.searchParams.append('target_coin', targetCoin);
   url.searchParams.append('source_amount', sourceAmount.toString());
-  url.searchParams.append('max_hops', maxHops.toString());
+  url.searchParams.append('max_paths', maxHops.toString());
   url.searchParams.append('max_routes', maxRoutes.toString());
 
   const response = await fetch(url.toString());

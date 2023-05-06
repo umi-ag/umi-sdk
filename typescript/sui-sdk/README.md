@@ -9,7 +9,7 @@ and executing trades through the Umi Aggregator.
 
 - Fetch trading routes for a given query
 - Create transaction blocks from trading routes
-- Execute trading routes on the Sui blockhop through the Umi Aggregator
+- Execute trading routes on the Sui Blockchain through the Umi Aggregator
 
 ## Installation
 
@@ -72,8 +72,8 @@ Additionally, you can manually add move calls to the TransactionBlock.
 ```typescript
 import {
   fetchQuotesFromUmi,
-  moveCallWithdrawCoin,
   moveCallUmiAgTradeExact,
+  moveCallWithdrawCoin,
 } from "@umi-ag/sui-sdk";
 
 const sourceAmount = 1000; // u64
