@@ -9,7 +9,7 @@ and executing trades through the Umi Aggregator.
 
 - Fetch trading routes for a given query
 - Create transaction blocks from trading routes
-- Execute trading routes on the Sui blockpath through the Umi Aggregator
+- Execute trading routes on the Sui Blockchain through the Umi Aggregator
 
 ## Installation
 
