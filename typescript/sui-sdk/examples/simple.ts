@@ -27,27 +27,25 @@ const SUI = '0x2::sui::SUI';
 // const USDTw = '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN';
 const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
 
-(async () => {
-  const txb = await fetchQuoteAndBuildTransactionBlockForUmiAgTrade({
-    provider,
-    accountAddress: address,
-    sourceCoinType: SUI,
-    targetCoinType: USDCw,
-    sourceAmount: 1000n,
-    slippageTolerance: 0.01, // 1%
-  });
+const txb = await fetchQuoteAndBuildTransactionBlockForUmiAgTrade({
+  provider,
+  accountAddress: address,
+  sourceCoinType: SUI,
+  targetCoinType: USDCw,
+  sourceAmount: 1000n,
+  slippageTolerance: 0.01, // 1%
+});
 
-  console.log(JSON.stringify(JSON.parse(txb.serialize()), null, 2));
-  const dryRunResult = await signer.dryRunTransactionBlock({
-    transactionBlock: txb,
-  });
-  console.log(JSON.stringify(dryRunResult, null, 2));
-  // const result = await signer.signAndExecuteTransactionBlock({
-  //   transactionBlock: txb,
-  //   options: {
-  //     showBalanceChanges: true,
-  //   },
-  // });
-  // console.log(result.balanceChanges);
-  // console.log(result.digest);
-})();
+console.log(JSON.stringify(JSON.parse(txb.serialize()), null, 2));
+const dryRunResult = await signer.dryRunTransactionBlock({
+  transactionBlock: txb,
+});
+console.log(JSON.stringify(dryRunResult, null, 2));
+// const result = await signer.signAndExecuteTransactionBlock({
+//   transactionBlock: txb,
+//   options: {
+//     showBalanceChanges: true,
+//   },
+// });
+// console.log(result.balanceChanges);
+// console.log(result.digest);

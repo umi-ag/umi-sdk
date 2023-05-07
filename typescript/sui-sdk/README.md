@@ -43,23 +43,29 @@ Here's a simple example of how to use @umi-ag/sui-sdk:
 ```typescript
 import { fetchQuoteAndBuildTransactionBlockForUmiAgTrade } from "@umi-ag/sui-sdk";
 
-const provider = new JsonRpcProvider(testnetConnection);
+const provider = new JsonRpcProvider(
+  new Connection({
+    fullnode: 'https://fullnode.mainnet.sui.io',
+  }),
+);
 
-const mnemonic = process.env.SUI_MNEMONIC as string;
-const keypair = Ed25519Keypair.deriveKeypair(mnemonic);
-const signer = new RawSigner(keypair, provider);
-const accountAddress = await signer.getAddress();
+const keypair = () => {
+  const privatekey0x = process.env.SUI_PRIVATE_KEY as string;
+  const privatekey = privatekey0x.replace(/^0x/, '');
+  const privateKeyBase64 = Buffer.from(privatekey, 'hex').toString('base64');
+  return Ed25519Keypair.fromSecretKey(fromB64(privateKeyBase64));
+};
+const signer = new RawSigner(keypair(), provider);
+const address = await signer.getAddress();
 
-const devBTC =
-  "0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_btc::DEVNET_BTC";
-const devUSDC =
-  "0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a71ef::devnet_usdc::DEVNET_USDC";
+const SUI = '0x2::sui::SUI';
+const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
 
 const txb = await fetchQuoteAndBuildTransactionBlockForUmiAgTrade({
   provider,
-  accountAddress,
-  sourceCoinType: devBTC,
-  targetCoinType: devUSDC,
+  accountAddress: address,
+  sourceCoinType: SUI,
+  targetCoinType: USDCw,
   sourceAmount: 1000n,
   slippageTolerance: 0.01, // 1%
 });
