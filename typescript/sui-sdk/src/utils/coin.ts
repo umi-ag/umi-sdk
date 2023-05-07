@@ -2,6 +2,7 @@ import type { JsonRpcProvider, TransactionArgument, TransactionBlock } from '@my
 import Decimal from 'decimal.js';
 import { UMIAG_PACKAGE_ID } from '../config';
 import type { CoinObject } from '../types';
+import { moveCallVectorDestroyEmpty, moveCallVectorRemove } from './vector';
 
 type GetSufficientCoinsArgs = {
   provider: JsonRpcProvider,
@@ -205,20 +206,44 @@ export type MoveCallSplitCoinByWeightsArgs = {
   txb: TransactionBlock,
   coinType: string,
   coins: TransactionArgument[],
-  weights: TransactionArgument[],
+  weights: number[],
 };
 
+// public fun split_coin_by_weights<S>(
+//     coins_s: vector<Coin<S>>,
+//     weights: vector<u64>,
+//     ctx: &mut TxContext,
+// ): vector<Coin<S>> {
 export const moveCallSplitCoinByWeights = ({
   txb,
   coinType,
   coins,
   weights,
 }: MoveCallSplitCoinByWeightsArgs) => {
-  return txb.moveCall({
+  const result = txb.moveCall({
     target: `${UMIAG_PACKAGE_ID}::utils::split_coin_by_weights`,
     typeArguments: [coinType],
-    arguments: [txb.makeMoveVec({ objects: coins }), txb.makeMoveVec({ objects: weights })],
+    arguments: [
+      txb.makeMoveVec({ objects: coins }),
+      txb.pure(weights, 'vector<u64>'),
+    ],
   });
+
+  const vectorType = `0x2::coin::Coin<${coinType}>`;
+  const splited = [...new Array(weights.length)].map(() => moveCallVectorRemove({
+    txb,
+    vectorType,
+    vector: result,
+    index: txb.pure(0),
+  }));
+
+  moveCallVectorDestroyEmpty({
+    txb,
+    vectorType,
+    vector: result,
+  });
+
+  return splited;
 };
 
 // export type SplitCoinByWeightsArgs = {
