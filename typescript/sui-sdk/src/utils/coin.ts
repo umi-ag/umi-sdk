@@ -67,6 +67,24 @@ export const moveCallCoinZero = (
   });
 };
 
+export type MoveCallCoinValue = {
+  txb: TransactionBlock,
+  coinType: string,
+  coin: TransactionArgument,
+};
+
+export const moveCallCoinValue = ({
+  txb,
+  coinType,
+  coin,
+}: MoveCallCoinValue) => {
+  return txb.moveCall({
+    target: '0x2::coin::value',
+    typeArguments: [coinType],
+    arguments: [coin],
+  });
+};
+
 export const addIntoBalanceCall = (
   txb: TransactionBlock,
   coinType: string,
