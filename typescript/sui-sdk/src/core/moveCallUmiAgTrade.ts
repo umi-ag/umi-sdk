@@ -5,6 +5,7 @@ import { UMIAG_PACKAGE_ID } from '../config';
 import type { TradingRoute, Venue } from '../types';
 import type { MoveCallCheckAmountSufficientArgs, MoveCallMaybeSplitCoinsAndTransferRest } from '../utils';
 import { moveCallMergeCoins, moveCallSplitCoinByWeights } from '../utils';
+import { toBps } from '../utils/number';
 import { moveCallAnimeswap } from '../venues/animeswap';
 import { moveCallBluemove } from '../venues/bluemove';
 
@@ -79,7 +80,7 @@ export const moveCallUmiAgTradeDirect = ({
 
   const targetCoins: TransactionArgument[] = [];
 
-  const pathWeights = quote.paths.map(p => p.weight);
+  const pathWeights = quote.paths.map(p => toBps(p.weight));
   const coinsForPaths = moveCallSplitCoinByWeights({
     txb,
     coinType: quote.source_coin,
@@ -94,7 +95,7 @@ export const moveCallUmiAgTradeDirect = ({
     for (const { venues } of path.steps) {
       const swappedCoins: TransactionArgument[] = [];
 
-      const venueWeights = venues.map(v => v.weight);
+      const venueWeights = venues.map(v => toBps(v.weight));
       const coinsForVenues = moveCallSplitCoinByWeights({
         txb,
         coinType: path.source_coin,
