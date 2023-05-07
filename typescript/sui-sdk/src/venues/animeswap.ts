@@ -1,8 +1,7 @@
-
 import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
 import { maybeFindOrCreateObject } from '../core';
 import type { Venue } from '../types';
-import { moveCallCoinZero } from '../utils';
+import { moveCallCoinZero, moveCallMaybeTransferOrDestroyCoin } from '../utils';
 
 export const moveCallAnimeswap = (
   txb: TransactionBlock,
@@ -12,7 +11,7 @@ export const moveCallAnimeswap = (
   const coinTypeSource = venue.source_coin;
   const coinTypeTarget = venue.target_coin;
 
-  console.log({ coinTypeSource, coinTypeTarget });
+  // console.log({ coinTypeSource, coinTypeTarget });
 
   const typeArguments = venue.is_x_to_y
     ? [coinTypeSource, coinTypeTarget]
@@ -20,7 +19,7 @@ export const moveCallAnimeswap = (
 
   const targetCoin = moveCallCoinZero(txb, coinTypeTarget);
 
-  console.log({ sourceCoin, targetCoin });
+  // console.log({ sourceCoin, targetCoin });
 
   const moveArgs = venue.is_x_to_y
     ? [
@@ -35,9 +34,25 @@ export const moveCallAnimeswap = (
       sourceCoin,
     ];
 
-  return txb.moveCall({
+  const [coinX, coinY] = txb.moveCall({
     target: '0x88d362329ede856f5f67867929ed570bba06c975abec2fab7f0601c56f6a8cb1::animeswap::swap_coins_for_coins',
     typeArguments,
     arguments: moveArgs,
   });
+
+  if (venue.is_x_to_y) {
+    moveCallMaybeTransferOrDestroyCoin({
+      txb,
+      coinType: typeArguments[0],
+      coin: coinX,
+    });
+    return coinY;
+  } else {
+    moveCallMaybeTransferOrDestroyCoin({
+      txb,
+      coinType: typeArguments[1],
+      coin: coinY,
+    });
+    return coinX;
+  }
 };

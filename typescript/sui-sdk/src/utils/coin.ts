@@ -2,6 +2,7 @@ import type { JsonRpcProvider, TransactionArgument, TransactionBlock } from '@my
 import Decimal from 'decimal.js';
 import { UMIAG_PACKAGE_ID } from '../config';
 import type { CoinObject } from '../types';
+import { moveCallVectorDestroyEmpty, moveCallVectorRemove } from './vector';
 
 type GetSufficientCoinsArgs = {
   provider: JsonRpcProvider,
@@ -42,7 +43,12 @@ export type MoveCallWithdrawCoinsArgs = GetSufficientCoinsArgs & {
 };
 
 export const moveCallWithdrawCoin = async ({ txb, ...args }: MoveCallWithdrawCoinsArgs) => {
+  if (args.coinType === '0x2::sui::SUI') {
+    return txb.splitCoins(txb.gas, [txb.pure(args.requiredAmount)]);
+  }
+
   const coins = await getSufficientCoins(args);
+
   return moveCallMaybeSplitCoinsAndTransferRest({
     txb,
     coinType: args.coinType,
@@ -59,6 +65,24 @@ export const moveCallCoinZero = (
   return txb.moveCall({
     target: '0x2::coin::zero',
     typeArguments: [coinType],
+  });
+};
+
+export type MoveCallCoinValue = {
+  txb: TransactionBlock,
+  coinType: string,
+  coin: TransactionArgument,
+};
+
+export const moveCallCoinValue = ({
+  txb,
+  coinType,
+  coin,
+}: MoveCallCoinValue) => {
+  return txb.moveCall({
+    target: '0x2::coin::value',
+    typeArguments: [coinType],
+    arguments: [coin],
   });
 };
 
@@ -178,44 +202,45 @@ export const moveCallCheckAmountSufficient = ({
   });
 };
 
-// export type SplitCoinByWeightsArgs = {
-//   txb: TransactionBlock,
-//   coinType: string,
-//   coins: TransactionArgument[],
-//   weights: TransactionArgument[],
-// };
+export type MoveCallSplitCoinByWeightsArgs = {
+  txb: TransactionBlock,
+  coinType: string,
+  coins: TransactionArgument[],
+  weights: number[],
+};
 
-// export const splitCoinByWeights = ({
-//   txb,
-//   coinType,
-//   coins,
-//   weights,
-// }: SplitCoinByWeightsArgs) => {
-//   // const a = txb.makeMoveVec({ objects: coins });
-//   // const b = txb.makeMoveVec({ objects: weights });
+export const moveCallSplitCoinByWeights = ({
+  txb,
+  coinType,
+  coins,
+  weights,
+}: MoveCallSplitCoinByWeightsArgs) => {
+  if (weights.length === 1 && coins.length === 1) {
+    return coins;
+  }
 
-//   const result = txb.moveCall({
-//     target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::split_coin_by_weights',
-//     typeArguments: [coinType],
-//     arguments: [
-//       // coins,
-//       // weights,
-//       txb.makeMoveVec({ objects: coins }),
-//       txb.makeMoveVec({ objects: weights }),
-//       // a, b
-//     ],
-//   });
-//   // console.log(a, b);
-//   console.log(coins, weights);
+  const result = txb.moveCall({
+    target: `${UMIAG_PACKAGE_ID}::utils::split_coin_by_weights`,
+    typeArguments: [coinType],
+    arguments: [
+      txb.makeMoveVec({ objects: coins }),
+      txb.pure(weights, 'vector<u64>'),
+    ],
+  });
 
-//   return result;
+  const vectorType = `0x2::coin::Coin<${coinType}>`;
+  const splited = [...new Array(weights.length)].map(() => moveCallVectorRemove({
+    txb,
+    vectorType,
+    vector: result,
+    index: txb.pure(0),
+  }));
 
-//   // return [...new Array(weights.length).keys()]
-//   //   .map(() => moveCallVectorRemove({
-//   //     txb,
-//   //     vectorType: `0x2::coin::Coin<${coinType}>`,
-//   //     vector: result,
-//   //     index: txb.pure(0),
-//   //   }));
-// };
+  moveCallVectorDestroyEmpty({
+    txb,
+    vectorType,
+    vector: result,
+  });
 
+  return splited;
+};
