@@ -209,11 +209,6 @@ export type MoveCallSplitCoinByWeightsArgs = {
   weights: number[],
 };
 
-// public fun split_coin_by_weights<S>(
-//     coins_s: vector<Coin<S>>,
-//     weights: vector<u64>,
-//     ctx: &mut TxContext,
-// ): vector<Coin<S>> {
 export const moveCallSplitCoinByWeights = ({
   txb,
   coinType,
@@ -245,45 +240,3 @@ export const moveCallSplitCoinByWeights = ({
 
   return splited;
 };
-
-// export type SplitCoinByWeightsArgs = {
-//   txb: TransactionBlock,
-//   coinType: string,
-//   coins: TransactionArgument[],
-//   weights: TransactionArgument[],
-// };
-
-// export const splitCoinByWeights = ({
-//   txb,
-//   coinType,
-//   coins,
-//   weights,
-// }: SplitCoinByWeightsArgs) => {
-//   // const a = txb.makeMoveVec({ objects: coins });
-//   // const b = txb.makeMoveVec({ objects: weights });
-
-//   const result = txb.moveCall({
-//     target: '0x69aac48222cdd1d9e67cbb36406b7dbaa144ab4d021280d9ef9ea5e584b6a65e::utils::split_coin_by_weights',
-//     typeArguments: [coinType],
-//     arguments: [
-//       // coins,
-//       // weights,
-//       txb.makeMoveVec({ objects: coins }),
-//       txb.makeMoveVec({ objects: weights }),
-//       // a, b
-//     ],
-//   });
-//   // console.log(a, b);
-//   console.log(coins, weights);
-
-//   return result;
-
-//   // return [...new Array(weights.length).keys()]
-//   //   .map(() => moveCallVectorRemove({
-//   //     txb,
-//   //     vectorType: `0x2::coin::Coin<${coinType}>`,
-//   //     vector: result,
-//   //     index: txb.pure(0),
-//   //   }));
-// };
-

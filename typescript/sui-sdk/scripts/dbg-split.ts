@@ -28,7 +28,6 @@ const owner = txb.pure(address);
 
 const sourceAmount = 1000;
 
-// const sui = txb.splitCoins(txb.gas, [txb.pure(sourceAmount)]);
 const sui = await moveCallWithdrawCoin({
   txb,
   coinType: SUI,
@@ -37,30 +36,12 @@ const sui = await moveCallWithdrawCoin({
   requiredAmount: sourceAmount,
 });
 
-// txb.transferObjects([sui], owner);
-// txb.makeMoveVec({ objects: [txb.pure(4_000), txb.pure(6_000)] }); // bps
-
-// const result = txb.moveCall({
-//   target: `${UMIAG_PACKAGE_ID}::utils::split_coin_by_weights`,
-//   typeArguments: [SUI],
-//   arguments: [
-//     txb.makeMoveVec({ objects: [sui] }),
-//     txb.pure([4_000, 6_000], 'vector<u64>'), // bps
-//     // [txb.pure(4_000), txb.pure(6_000)], // bps
-//     // txb.makeMoveVec({ objects: [txb.pure(4_000, 'u64'), txb.pure(6_000, 'u64')] }), // bps
-//     // txb.makeMoveVec({ objects: [txb.pure(4_000), txb.pure(6_000)] }), // bps
-//     // txb.makeMoveVec({ objects: [txb.pure(100, 'u64')] }), // bps
-//   ],
-// });
-// txb.transferObjects([result], owner);
-
 const coins = moveCallSplitCoinByWeights({
   txb,
   coinType: SUI,
   coins: [sui],
   weights: [4000, 6000], // bps
 });
-// console.log(coins);
 
 txb.transferObjects(coins, owner);
 
