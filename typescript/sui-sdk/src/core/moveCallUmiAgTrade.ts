@@ -1,9 +1,10 @@
 import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
+import zip from 'just-zip-it';
 import { match } from 'ts-pattern';
 import { UMIAG_PACKAGE_ID } from '../config';
 import type { TradingRoute, Venue } from '../types';
 import type { MoveCallCheckAmountSufficientArgs, MoveCallMaybeSplitCoinsAndTransferRest } from '../utils';
-import { moveCallMergeCoins } from '../utils';
+import { moveCallMergeCoins, moveCallSplitCoinByWeights } from '../utils';
 import { moveCallAnimeswap } from '../venues/animeswap';
 import { moveCallBluemove } from '../venues/bluemove';
 
@@ -78,20 +79,36 @@ export const moveCallUmiAgTradeDirect = ({
 
   const targetCoins: TransactionArgument[] = [];
 
+  const pathWeights = quote.paths.map(p => p.weight);
+  const coinsForPaths = moveCallSplitCoinByWeights({
+    txb,
+    coinType: quote.source_coin,
+    coins: [sourceCoin],
+    weights: pathWeights,
+  });
+
   // Process each chain in the trading route
-  for (const { path } of quote.paths) {
+  for (const [{ path }, coinForPath] of zip(quote.paths, coinsForPaths)) {
     // Process each step in the chain
-    let coinToSwap: TransactionArgument = sourceCoin;
+    let coinToSwap: TransactionArgument = coinForPath;
     for (const { venues } of path.steps) {
-      const coins: TransactionArgument[] = [];
+      const swappedCoins: TransactionArgument[] = [];
+
+      const venueWeights = venues.map(v => v.weight);
+      const coinsForVenues = moveCallSplitCoinByWeights({
+        txb,
+        coinType: path.source_coin,
+        coins: [coinToSwap],
+        weights: venueWeights,
+      });
 
       // Process each step in the trading venue
-      for (const { venue } of venues) {
-        const swapped = moveCallTrade(txb, venue, coinToSwap);
-        coins.push(swapped);
+      for (const [{ venue }, coinForVenue] of zip(venues, coinsForVenues)) {
+        const swapped = moveCallTrade(txb, venue, coinForVenue);
+        swappedCoins.push(swapped);
       }
 
-      if (coins.length < 1) {
+      if (swappedCoins.length < 1) {
         // return err('Invalid trade path');
         throw new Error('Invalid trade path');
       }
@@ -99,7 +116,7 @@ export const moveCallUmiAgTradeDirect = ({
       coinToSwap = moveCallMergeCoins({
         txb,
         coinType: path.target_coin,
-        coins,
+        coins: swappedCoins,
       });
     }
 

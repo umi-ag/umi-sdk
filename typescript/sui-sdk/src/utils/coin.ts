@@ -215,6 +215,10 @@ export const moveCallSplitCoinByWeights = ({
   coins,
   weights,
 }: MoveCallSplitCoinByWeightsArgs) => {
+  if (weights.length === 1 && coins.length === 1) {
+    return coins;
+  }
+
   const result = txb.moveCall({
     target: `${UMIAG_PACKAGE_ID}::utils::split_coin_by_weights`,
     typeArguments: [coinType],
