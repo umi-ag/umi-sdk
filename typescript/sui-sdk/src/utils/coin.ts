@@ -201,6 +201,26 @@ export const moveCallCheckAmountSufficient = ({
   });
 };
 
+export type MoveCallSplitCoinByWeightsArgs = {
+  txb: TransactionBlock,
+  coinType: string,
+  coins: TransactionArgument[],
+  weights: TransactionArgument[],
+};
+
+export const moveCallSplitCoinByWeights = ({
+  txb,
+  coinType,
+  coins,
+  weights,
+}: MoveCallSplitCoinByWeightsArgs) => {
+  return txb.moveCall({
+    target: `${UMIAG_PACKAGE_ID}::utils::split_coin_by_weights`,
+    typeArguments: [coinType],
+    arguments: [txb.makeMoveVec({ objects: coins }), txb.makeMoveVec({ objects: weights })],
+  });
+};
+
 // export type SplitCoinByWeightsArgs = {
 //   txb: TransactionBlock,
 //   coinType: string,
