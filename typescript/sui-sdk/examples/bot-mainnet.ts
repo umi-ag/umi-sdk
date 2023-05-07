@@ -2,6 +2,7 @@ import {
   Connection,
   Ed25519Keypair,
   fromB64,
+  getTotalGasUsed,
   JsonRpcProvider,
   RawSigner,
   TransactionBlock,
@@ -40,7 +41,8 @@ const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93b
 
 // This example shows how to swap BTC to USDC and then swap back to BTC
 (async () => {
-  const sourceAmount = 79635333898; // u64
+  // const sourceAmount = 79635333898; // u64
+  const sourceAmount = 7963533; // u64
 
   const [quote1] = await fetchQuotesFromUmi({
     sourceCoin: SUI,
@@ -48,7 +50,7 @@ const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93b
     targetCoin: USDCw,
     sourceAmount,
   });
-  // console.log(JSON.stringify(quote1, null, 2));
+  console.log(JSON.stringify(quote1, null, 2));
 
   const txb = new TransactionBlock();
   const owner = txb.pure(address);
@@ -83,7 +85,11 @@ const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93b
   const dryRunResult = await signer.dryRunTransactionBlock({
     transactionBlock: txb,
   });
-  console.log(dryRunResult.balanceChanges);
+  console.log(JSON.stringify(dryRunResult, null, 2));
+
+  const gasUsed = dryRunResult.effects && getTotalGasUsed(dryRunResult.effects);
+  console.log({ gasUsed });
+  // console.log(dryRunResult.balanceChanges);
   // Check BTC balance increase ...
 
   // const result = await signer.signAndExecuteTransactionBlock({
