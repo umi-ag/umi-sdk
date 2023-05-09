@@ -1,3 +1,3 @@
 export * from './buildTransactionBlock';
-export * from './moveCallUmiAgTrade';
+export * from './moveCallUmiAgSwap';
 
