@@ -41,8 +41,7 @@ const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93b
 
 // This example shows how to swap BTC to USDC and then swap back to BTC
 (async () => {
-  // const sourceAmount = 79635333898; // u64
-  const sourceAmount = 7963533; // u64
+  const sourceAmount = 2_000_000_000; // u64
 
   const [quote1] = await fetchQuotesFromUmi({
     sourceCoin: SUI,

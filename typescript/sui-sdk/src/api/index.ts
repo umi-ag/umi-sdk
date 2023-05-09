@@ -1,7 +1,7 @@
 import { fetch } from 'cross-fetch';
 import type { QuoteQuery, TradingRoutes } from '../types';
 
-export const defaultEndpoint = 'https://quiet-sun-2393.fly.dev';
+export const defaultEndpoint = 'https://sui-alpha.fly.dev';
 
 export const fetchQuotesFromUmi = async ({
   sourceCoin,
