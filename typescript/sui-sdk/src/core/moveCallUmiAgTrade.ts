@@ -182,7 +182,7 @@ export const moveCallUmiAgTradeBegin = ({
   recipient,
 }: MoveCallMaybeSplitCoinsAndTransferRest) => {
   return txb.moveCall({
-    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::trade_begin`,
+    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::swap_begin`,
     typeArguments: [coinType],
     arguments: [txb.makeMoveVec({ objects: coins }), amount, recipient],
   });
@@ -195,7 +195,7 @@ export const moveCallUmiAgTradeEnd = ({
   amount,
 }: MoveCallCheckAmountSufficientArgs) => {
   return txb.moveCall({
-    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::trade_end`,
+    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::swap_end`,
     typeArguments: [coinType],
     arguments: [coin, amount],
   });

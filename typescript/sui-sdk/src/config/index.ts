@@ -1,1 +1,4 @@
-export const UMIAG_PACKAGE_ID = '0x2c01f30bcf9dbda62c2e2c3d54c0ea9fd8008e7de99eabb87b5927415b2807cd';
+export const UMIAG_PACKAGE_ID = '0xd7dc6b29041ab4c820cead0bd51923bb796221ec209321bb97ce1f33f81bb620';
+
+
+export const DEFAULT_ENDPOINT = 'https://sui-beta.fly.dev';
