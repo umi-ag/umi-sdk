@@ -8,6 +8,7 @@ import { moveCallMergeCoins, moveCallSplitCoinByWeights } from '../utils';
 import { toBps } from '../utils/number';
 import { moveCallAnimeswap } from '../venues/animeswap';
 import { moveCallBluemove } from '../venues/bluemove';
+import { moveCallKriyaswap } from '../venues/kriyaswap';
 
 export const getCoinXYTypes = (venue: Venue) => {
   const [coinTypeX, coinTypeY] = venue.is_x_to_y
@@ -54,6 +55,7 @@ export const moveCallTrade = (
   return match(venue)
     .with({ name: 'animeswap' }, () => moveCallAnimeswap(txb, venue, coin))
     .with({ name: 'bluemoveswap' }, () => moveCallBluemove(txb, venue, coin))
+    .with({ name: 'kriyaswap' }, () => moveCallKriyaswap(txb, venue, coin))
     .otherwise(() => moveCallSwapUmaUdo(txb, venue, coin));
 };
 
