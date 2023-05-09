@@ -1,7 +1,7 @@
 import { fetch } from 'cross-fetch';
+import { DEFAULT_ENDPOINT } from '../config';
 import type { QuoteQuery, TradingRoutes } from '../types';
 
-export const DEFAULET_ENDPOINT = 'https://sui-beta.fly.dev';
 
 export const fetchQuotesFromUmi = async ({
   sourceCoin,
@@ -9,7 +9,7 @@ export const fetchQuotesFromUmi = async ({
   sourceAmount,
   maxHops = 2,
   maxRoutes = 1,
-  endpoint = DEFAULET_ENDPOINT,
+  endpoint = DEFAULT_ENDPOINT,
 }: QuoteQuery): Promise<TradingRoutes> => {
   const url = new URL(`${endpoint}/quote`);
   url.searchParams.append('source_coin', sourceCoin);

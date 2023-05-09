@@ -59,7 +59,7 @@ export const moveCallTrade = (
     .otherwise(() => moveCallSwapUmaUdo(txb, venue, coin));
 };
 
-export type MoveCallUmiAgTradeArgs = {
+export type MoveCallUmiAgSwapArgs = {
   transactionBlock: TransactionBlock,
   quote: TradingRoute,
   coins: TransactionArgument[];
@@ -67,13 +67,13 @@ export type MoveCallUmiAgTradeArgs = {
   minTargetAmount: TransactionArgument;
 };
 
-export const moveCallUmiAgTradeDirect = ({
+export const moveCallUmiAgSwapDirect = ({
   transactionBlock: txb,
   quote,
   coins,
   accountAddress,
   minTargetAmount,
-}: MoveCallUmiAgTradeArgs) => {
+}: MoveCallUmiAgSwapArgs) => {
   const sourceCoin = moveCallMergeCoins({
     txb,
     coinType: quote.source_coin,
@@ -139,7 +139,7 @@ export const moveCallUmiAgTradeDirect = ({
     coins: targetCoins,
   });
 
-  moveCallUmiAgTradeEnd({
+  moveCallUmiAgSwapEnd({
     txb,
     coinType: quote.target_coin,
     coin: targetCoin,
@@ -150,14 +150,14 @@ export const moveCallUmiAgTradeDirect = ({
   return targetCoin;
 };
 
-export const moveCallUmiAgTradeExact = ({
+export const moveCallUmiAgSwapExact = ({
   transactionBlock: txb,
   quote,
   coins,
   accountAddress,
   minTargetAmount,
-}: MoveCallUmiAgTradeArgs) => {
-  const coin = moveCallUmiAgTradeBegin({
+}: MoveCallUmiAgSwapArgs) => {
+  const coin = moveCallUmiAgSwapBegin({
     txb,
     coinType: quote.source_coin,
     coins,
@@ -165,7 +165,7 @@ export const moveCallUmiAgTradeExact = ({
     recipient: accountAddress,
   });
 
-  return moveCallUmiAgTradeDirect({
+  return moveCallUmiAgSwapDirect({
     transactionBlock: txb,
     quote,
     coins: [coin],
@@ -174,7 +174,7 @@ export const moveCallUmiAgTradeExact = ({
   });
 };
 
-export const moveCallUmiAgTradeBegin = ({
+export const moveCallUmiAgSwapBegin = ({
   txb,
   coinType,
   coins,
@@ -182,20 +182,20 @@ export const moveCallUmiAgTradeBegin = ({
   recipient,
 }: MoveCallMaybeSplitCoinsAndTransferRest) => {
   return txb.moveCall({
-    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::trade_begin`,
+    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::swap_begin`,
     typeArguments: [coinType],
     arguments: [txb.makeMoveVec({ objects: coins }), amount, recipient],
   });
 };
 
-export const moveCallUmiAgTradeEnd = ({
+export const moveCallUmiAgSwapEnd = ({
   txb,
   coinType,
   coin,
   amount,
 }: MoveCallCheckAmountSufficientArgs) => {
   return txb.moveCall({
-    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::trade_end`,
+    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::swap_end`,
     typeArguments: [coinType],
     arguments: [coin, amount],
   });
