@@ -38,10 +38,12 @@ const SUI = '0x2::sui::SUI';
 const WETHw = '0xaf8cd5edc19c4512f4259f0bee101a40d41ebed738ade5874359610ef8eeced5::coin::COIN';
 const USDTw = '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN';
 const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
+const SOURCE_AMOUNT = 1_000_000_000;
+const SLIPPAGE_TOLERANCE = 0.01; // 1%
 
 // This example shows how to swap BTC to USDC and then swap back to BTC
 (async () => {
-  const sourceAmount = 2_000_000_000; // u64
+  const sourceAmount = SOURCE_AMOUNT; // u64
 
   const [quote1] = await fetchQuotesFromUmi({
     sourceCoin: SUI,
@@ -62,12 +64,14 @@ const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93b
     txb,
   });
 
+  let minTargetAmount = Math.floor(quote1.target_amount*(1-SLIPPAGE_TOLERANCE))
+
   const eth = moveCallUmiAgTradeExact({
     transactionBlock: txb,
     quote: quote1,
     accountAddress: owner,
     coins: [suiBefore],
-    minTargetAmount: txb.pure(0),
+    minTargetAmount: txb.pure(minTargetAmount),
   });
   txb.transferObjects([eth], owner);
 
@@ -80,24 +84,28 @@ const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93b
 
   // txb.transferObjects([btcAfter, usdc], owner);
 
-  console.log(JSON.stringify(JSON.parse(txb.serialize()), null, 2));
-  const dryRunResult = await signer.dryRunTransactionBlock({
-    transactionBlock: txb,
-  });
-  console.log(JSON.stringify(dryRunResult, null, 2));
+  {
+    console.log(JSON.stringify(JSON.parse(txb.serialize()), null, 2));
+    const dryRunResult = await signer.dryRunTransactionBlock({
+      transactionBlock: txb,
+    });
+    console.log(JSON.stringify(dryRunResult, null, 2));
 
-  const gasUsed = dryRunResult.effects && getTotalGasUsed(dryRunResult.effects);
-  console.log({ gasUsed });
-  // console.log(dryRunResult.balanceChanges);
-  // Check BTC balance increase ...
+    const gasUsed = dryRunResult.effects && getTotalGasUsed(dryRunResult.effects);
+    console.log({ gasUsed });
+    // console.log(dryRunResult.balanceChanges);
+    // Check BTC balance increase ...
+  }
 
-  // const result = await signer.signAndExecuteTransactionBlock({
-  //   transactionBlock: txb,
-  //   options: {
-  //     showBalanceChanges: true,
-  //     showEffects: true,
-  //   }
-  // });
-  // const gasUsed = result.effects && getTotalGasUsed(result.effects);
-  // console.log(result.digest, gasUsed);
+  {
+    const result = await signer.signAndExecuteTransactionBlock({
+      transactionBlock: txb,
+      options: {
+        showBalanceChanges: true,
+        showEffects: true,
+      }
+    });
+    const gasUsed = result.effects && getTotalGasUsed(result.effects);
+    console.log(result.digest, gasUsed);
+  }
 })();

@@ -1,6 +1,6 @@
 {
   "name": "@umi-ag/sui-sdk",
-  "version": "0.202305.22",
+  "version": "0.202305.23",
   "files": [
     "src",
     "dist"
