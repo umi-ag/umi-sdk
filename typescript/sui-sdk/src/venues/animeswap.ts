@@ -34,6 +34,13 @@ export const moveCallAnimeswap = (
       sourceCoin,
     ];
 
+  //   public swap_coins_for_coins<Ty0, Ty1>(
+  //     Arg0: &mut LiquidityPools,
+  //     Arg1: &Clock,
+  //     Arg2: Coin<Ty0>,
+  //     Arg3: Coin<Ty1>,
+  //     Arg4: &mut TxContext
+  //   ): Coin<Ty0> * Coin<Ty1> {
   const [coinX, coinY] = txb.moveCall({
     target: '0x88d362329ede856f5f67867929ed570bba06c975abec2fab7f0601c56f6a8cb1::animeswap::swap_coins_for_coins',
     typeArguments,

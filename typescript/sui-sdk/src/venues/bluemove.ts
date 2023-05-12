@@ -13,6 +13,13 @@ export const moveCallBluemove = (
 
   console.log({ coinTypeSource, coinTypeTarget });
 
+  // public swap_exact_input_<Ty0, Ty1>(
+  //   Arg0: u64,
+  //   Arg1: Coin<Ty0>,
+  //   Arg2: u64,
+  //   Arg3: &mut Dex_Info,
+  //   Arg4: &mut TxContext
+  // ): Coin<Ty1> {
   return txb.moveCall({
     target: '0xb24b6789e088b876afabca733bed2299fbc9e2d6369be4d1acfa17d8145454d9::router::swap_exact_input_',
     typeArguments: [coinTypeSource, coinTypeTarget],
