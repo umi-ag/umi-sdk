@@ -69,6 +69,7 @@ export type QuoteQuery = {
   maxHops?: number,
   maxRoutes?: number,
   endpoint?: `https://${string}`,
+  venueAllowList?: string[],
 };
 
 export type CoinObject = PaginatedCoins['data'][number];
