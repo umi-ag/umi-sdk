@@ -78,13 +78,13 @@ Additionally, you can manually add move calls to the TransactionBlock.
 
 ```typescript
 import {
-  fetchQuotesFromUmi,
+  fetchQuoteFromUmi,
   moveCallUmiAgSwapExact,
   moveCallWithdrawCoin,
 } from "@umi-ag/sui-sdk";
 
 const sourceAmount = 1000; // u64
-const [quote] = await fetchQuotesFromUmi({
+const [quote] = await fetchQuoteFromUmi({
   sourceCoin: devBTC,
   targetCoin: devUSDC,
   sourceAmount,

@@ -1,7 +1,7 @@
 import type { JsonRpcProvider, SuiAddress } from '@mysten/sui.js';
 import { TransactionBlock } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
-import { fetchQuotesFromUmi } from '../api';
+import { fetchQuoteFromUmi } from '../api';
 import type { TradingRoute } from '../types';
 import { moveCallWithdrawCoin } from '../utils';
 import { moveCallUmiAgSwapExact } from './moveCallUmiAgSwap';
@@ -68,7 +68,7 @@ export const fetchQuoteAndBuildTransactionBlockForUmiAgSwap = async ({
   slippageTolerance,
 }: FetchQuoteAndBuildTransactionBlockArgs) => {
   // TODO: Compare all quotes and pick the best one.
-  const [quote] = await fetchQuotesFromUmi({
+  const [quote] = await fetchQuoteFromUmi({
     sourceCoin: sourceCoinType,
     targetCoin: targetCoinType,
     sourceAmount: sourceAmount.toString(),

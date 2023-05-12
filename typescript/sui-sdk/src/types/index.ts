@@ -68,8 +68,8 @@ export type QuoteQuery = {
   sourceCoin: string,
   targetCoin: string,
   sourceAmount: string | number,
-  maxHops?: number,
-  maxRoutes?: number,
+  // maxHops?: number,
+  // maxRoutes?: number,
   endpoint?: `https://${string}`,
   venueAllowList?: VenueName[],
 };

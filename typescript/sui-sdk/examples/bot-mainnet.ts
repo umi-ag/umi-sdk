@@ -9,7 +9,7 @@ import {
 } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
 import {
-  fetchQuotesFromUmi,
+  fetchQuoteFromUmi,
   moveCallUmiAgSwapExact,
   moveCallWithdrawCoin,
 } from '../src';
@@ -45,7 +45,7 @@ const SLIPPAGE_TOLERANCE = 0.01; // 1%
 (async () => {
   const sourceAmount = SOURCE_AMOUNT; // u64
 
-  const [quote1] = await fetchQuotesFromUmi({
+  const [quote1] = await fetchQuoteFromUmi({
     sourceCoin: SUI,
     // targetCoin: WETHw,
     targetCoin: USDCw,
