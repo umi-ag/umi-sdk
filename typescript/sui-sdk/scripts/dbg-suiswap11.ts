@@ -7,7 +7,7 @@ import {
   fromB64,
 } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { maybeFindOrCreateObject, moveCallWithdrawCoin } from '../src';
+import { maybeFindOrCreateObject, moveCallCoinValue, moveCallWithdrawCoin } from '../src';
 
 globalThis.fetch = fetch;
 
@@ -55,7 +55,7 @@ const [sourceOutputCoin, targetOutputCoin] = txb.moveCall({
       '0x40feddc72ac48743e4f3687b5775bb78c9524ddafd9ba2333d748a89cef4df74'
     ),
     txb.makeMoveVec({ objects: [coin_s] }),
-    txb.pure(sourceAmount),
+    moveCallCoinValue({ txb, coinType: SUI, coin: coin_s }),
     maybeFindOrCreateObject(txb, '0x6'),
   ],
 });

@@ -1,10 +1,10 @@
-import type { TransactionArgument, TransactionBlock } from "@mysten/sui.js";
-import { maybeFindOrCreateObject } from "../core";
-import type { Venue } from "../types";
+import type { TransactionArgument, TransactionBlock } from '@mysten/sui.js';
+import { maybeFindOrCreateObject } from '../core';
+import type { Venue } from '../types';
 import {
-	moveCallCoinValue,
-	moveCallMaybeTransferOrDestroyCoin,
-} from "../utils";
+  moveCallCoinValue,
+  moveCallMaybeTransferOrDestroyCoin,
+} from '../utils';
 
 export const moveCallSuiswap = (
   txb: TransactionBlock,
@@ -15,16 +15,16 @@ export const moveCallSuiswap = (
   const coinTypeTarget = venue.target_coin;
 
   console.log({ coinTypeSource, coinTypeTarget });
-	console.log({ venue });
+  console.log({ venue });
 
-	const sourceCoins: TransactionArgument[] = [sourceCoin];
+  const sourceCoins: TransactionArgument[] = [sourceCoin];
 
   const moveArgs = [
     maybeFindOrCreateObject(txb, venue.object_id), // pool
     txb.makeMoveVec({ objects: sourceCoins }),
-		// [sourceCoin],
+    // [sourceCoin],
     moveCallCoinValue({ txb, coinType: coinTypeSource, coin: sourceCoin }),
-    maybeFindOrCreateObject(txb, "0x6"),
+    maybeFindOrCreateObject(txb, '0x6'),
   ];
 
   // public fun do_swap_x_to_y_direct<X, Y>(
@@ -52,17 +52,17 @@ export const moveCallSuiswap = (
 
   const [sourceOutputCoin, targetOutputCoin] = venue.is_x_to_y
     ? txb.moveCall({
-        target:
-          "0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::pool::do_swap_x_to_y_direct",
-        typeArguments: [coinTypeSource, coinTypeTarget],
-        arguments: moveArgs,
-      })
+      target:
+          '0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::pool::do_swap_x_to_y_direct',
+      typeArguments: [coinTypeSource, coinTypeTarget],
+      arguments: moveArgs,
+    })
     : txb.moveCall({
-        target:
-          "0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::pool::do_swap_y_to_x_direct",
-        typeArguments: [coinTypeTarget, coinTypeSource],
-        arguments: moveArgs,
-      });
+      target:
+          '0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::pool::do_swap_y_to_x_direct',
+      typeArguments: [coinTypeTarget, coinTypeSource],
+      arguments: moveArgs,
+    });
 
   moveCallMaybeTransferOrDestroyCoin({
     txb,
