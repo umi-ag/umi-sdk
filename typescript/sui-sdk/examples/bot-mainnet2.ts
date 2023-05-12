@@ -44,10 +44,10 @@ const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93b
   const sourceAmount = 2_000_000; // u64
 
   const [quote1] = await fetchQuotesFromUmi({
-    sourceCoin: USDCw,
-    // targetCoin: WETHw,
-    targetCoin: SUI,
+    sourceCoin: SUI,
+    targetCoin: WETHw,
     sourceAmount,
+    venueAllowList: ['interestswap', 'animeswap', 'suiswap'],
   });
   console.log(JSON.stringify(quote1, null, 2));
 

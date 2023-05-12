@@ -19,6 +19,8 @@ export const fetchQuotesFromUmi = async ({
   url.searchParams.append('max_routes', maxRoutes.toString());
   url.searchParams.append('venue_allow_list', venueAllowList.join(','));
 
+  // console.log(url.toString());
+
   const response = await fetch(url.toString());
   const result = await response.json();
 
