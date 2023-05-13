@@ -1,13 +1,18 @@
 import {
   Connection,
   Ed25519Keypair,
+  fromB64,
+  getTotalGasUsed,
   JsonRpcProvider,
   RawSigner,
   TransactionBlock,
-  fromB64,
 } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { maybeFindOrCreateObject, moveCallWithdrawCoin } from '../src';
+import {
+  fetchQuoteFromUmi,
+  moveCallUmiAgSwapExact,
+  moveCallWithdrawCoin,
+} from '../src';
 
 globalThis.fetch = fetch;
 
@@ -30,40 +35,85 @@ const address = await signer.getAddress();
 console.log({ address });
 
 const SUI = '0x2::sui::SUI';
+const WETHw =
+  '0xaf8cd5edc19c4512f4259f0bee101a40d41ebed738ade5874359610ef8eeced5::coin::COIN';
+const USDTw =
+  '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN';
 const USDCw =
   '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
+const SSWP =
+  '0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::TOKEN::TOKEN';
+const SOURCE_AMOUNT = 1_000_000;
+const SLIPPAGE_TOLERANCE = 0.01; // 1%
 
-// https://suiexplorer.com/object/0xcf994611fd4c48e277ce3ffd4d4364c914af2c3cbb05f7bf6facd371de688630
-const PoolId = '0xcf994611fd4c48e277ce3ffd4d4364c914af2c3cbb05f7bf6facd371de688630';
-const GlobalConfigId = '0xdaa46292632c3c4d8f31f23ea0f9b36a28ff3677e9684980e4438403a67a3d8f';
+// This example shows how to swap BTC to USDC and then swap back to BTC
+(async () => {
+  const sourceAmount = SOURCE_AMOUNT; // u64
 
-const txb = new TransactionBlock();
-const owner = txb.pure(address);
+  const [quote1] = await fetchQuoteFromUmi({
+    sourceCoin: SUI,
+    targetCoin: USDCw,
+    sourceAmount,
+    venueAllowList: ['cetus'],
+  });
+  console.log(JSON.stringify(quote1, null, 2));
 
-const sourceAmount = 1_000_000;
-const coin_s = await moveCallWithdrawCoin({
-  provider,
-  owner: address,
-  coinType: SUI,
-  requiredAmount: sourceAmount,
-  txb,
-});
+  const txb = new TransactionBlock();
+  const owner = txb.pure(address);
 
-const targetCoin = txb.moveCall({
-  target: '0x8bdfbb8449ce65f705f3c7fbfdf63e19fb3074c44d9250db587c487471af5476::cetus::swap_y',
-  typeArguments: [USDCw, SUI],
-  arguments: [
-    maybeFindOrCreateObject(txb, GlobalConfigId), // GlobalConfig
-    maybeFindOrCreateObject(txb, PoolId), // Pool
-    coin_s,
-    maybeFindOrCreateObject(txb, '0x6'), // Clock
-  ],
-});
+  const suiBefore = await moveCallWithdrawCoin({
+    provider,
+    owner: address,
+    coinType: SUI,
+    requiredAmount: sourceAmount,
+    txb,
+  });
 
-txb.transferObjects([targetCoin], owner);
+  const minTargetAmount = Math.floor(
+    quote1.target_amount * (1 - SLIPPAGE_TOLERANCE)
+  );
 
-const dryRunResult = await signer.dryRunTransactionBlock({
-  transactionBlock: txb,
-});
+  const eth = moveCallUmiAgSwapExact({
+    transactionBlock: txb,
+    quote: quote1,
+    accountAddress: owner,
+    coins: [suiBefore],
+    minTargetAmount: txb.pure(minTargetAmount),
+  });
+  txb.transferObjects([eth], owner);
 
-console.log(dryRunResult);
+  // const btcAfter = moveCallUmiAgSwapExactSourceCoin({
+  //   transactionBlock: txb,
+  //   quote: quote2,
+  //   accountAddress: owner,
+  //   coins: [usdc],
+  // });
+
+  // txb.transferObjects([btcAfter, usdc], owner);
+
+  {
+    console.log(JSON.stringify(JSON.parse(txb.serialize()), null, 2));
+    const dryRunResult = await signer.dryRunTransactionBlock({
+      transactionBlock: txb,
+    });
+    console.log(JSON.stringify(dryRunResult, null, 2));
+
+    const gasUsed =
+      dryRunResult.effects && getTotalGasUsed(dryRunResult.effects);
+    console.log({ gasUsed });
+    // console.log(dryRunResult.balanceChanges);
+    // Check BTC balance increase ...
+  }
+
+  {
+    const result = await signer.signAndExecuteTransactionBlock({
+      transactionBlock: txb,
+      options: {
+        showBalanceChanges: true,
+        showEffects: true,
+      },
+    });
+    const gasUsed = result.effects && getTotalGasUsed(result.effects);
+    console.log(result.digest, gasUsed);
+  }
+})();
