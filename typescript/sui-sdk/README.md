@@ -41,27 +41,28 @@ npm run vite-node examples/bot-testnet.ts
 Here's a simple example of how to use @umi-ag/sui-sdk:
 
 ```typescript
-import { fetchQuoteAndBuildTransactionBlockForUmiAgTrade } from "@umi-ag/sui-sdk";
+import { fetchQuoteAndBuildTransactionBlockForUmiAgSwap } from "@umi-ag/sui-sdk";
 
 const provider = new JsonRpcProvider(
   new Connection({
-    fullnode: 'https://fullnode.mainnet.sui.io',
+    fullnode: "https://fullnode.mainnet.sui.io",
   }),
 );
 
 const keypair = () => {
   const privatekey0x = process.env.SUI_PRIVATE_KEY as string;
-  const privatekey = privatekey0x.replace(/^0x/, '');
-  const privateKeyBase64 = Buffer.from(privatekey, 'hex').toString('base64');
+  const privatekey = privatekey0x.replace(/^0x/, "");
+  const privateKeyBase64 = Buffer.from(privatekey, "hex").toString("base64");
   return Ed25519Keypair.fromSecretKey(fromB64(privateKeyBase64));
 };
 const signer = new RawSigner(keypair(), provider);
 const address = await signer.getAddress();
 
-const SUI = '0x2::sui::SUI';
-const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
+const SUI = "0x2::sui::SUI";
+const USDCw =
+  "0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN";
 
-const txb = await fetchQuoteAndBuildTransactionBlockForUmiAgTrade({
+const txb = await fetchQuoteAndBuildTransactionBlockForUmiAgSwap({
   provider,
   accountAddress: address,
   sourceCoinType: SUI,
@@ -77,13 +78,13 @@ Additionally, you can manually add move calls to the TransactionBlock.
 
 ```typescript
 import {
-  fetchQuotesFromUmi,
-  moveCallUmiAgTradeExact,
+  fetchQuoteFromUmi,
+  moveCallUmiAgSwapExact,
   moveCallWithdrawCoin,
 } from "@umi-ag/sui-sdk";
 
 const sourceAmount = 1000; // u64
-const [quote] = await fetchQuotesFromUmi({
+const [quote] = await fetchQuoteFromUmi({
   sourceCoin: devBTC,
   targetCoin: devUSDC,
   sourceAmount,
@@ -100,7 +101,7 @@ const btc = await moveCallWithdrawCoin({
   txb,
 });
 
-const usdc = moveCallUmiAgTradeExact({
+const usdc = moveCallUmiAgSwapExact({
   transactionBlock: txb,
   quote,
   accountAddress: owner,

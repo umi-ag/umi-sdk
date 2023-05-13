@@ -1,7 +1,9 @@
 import type { PaginatedCoins } from '@mysten/sui.js';
 
+export type VenueName = 'animeswap' | 'bluemoveswap' | 'cetus' | 'flameswap' | 'interestswap' | 'kriyaswap' | 'suiswap' | 'turbos';
+
 export type Venue = {
-  name: string;
+  name: VenueName;
   object_id: string;
   object_type: string;
   source_coin: string;
@@ -66,9 +68,10 @@ export type QuoteQuery = {
   sourceCoin: string,
   targetCoin: string,
   sourceAmount: string | number,
-  maxHops?: number,
-  maxRoutes?: number,
+  // maxHops?: number,
+  // maxRoutes?: number,
   endpoint?: `https://${string}`,
+  venueAllowList?: VenueName[],
 };
 
 export type CoinObject = PaginatedCoins['data'][number];

@@ -9,8 +9,8 @@ import {
 import fetch from 'cross-fetch';
 import { faucet } from '../scripts/faucet';
 import {
-  fetchQuotesFromUmi,
-  moveCallUmiAgTradeExact,
+  fetchQuoteFromUmi,
+  moveCallUmiAgSwapExact,
   moveCallWithdrawCoin,
 } from '../src';
 
@@ -44,13 +44,13 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
   const sourceAmount = 1000; // u64
   await faucet({ signer, coinType: devBTC, amount: sourceAmount });
 
-  const [quote1] = await fetchQuotesFromUmi({
+  const [quote1] = await fetchQuoteFromUmi({
     sourceCoin: devBTC,
     targetCoin: devUSDC,
     sourceAmount,
   });
   console.log(quote1);
-  // const [quote2] = await fetchQuotesFromUmi({
+  // const [quote2] = await fetchQuoteFromUmi({
   //   sourceCoin: devUSDC,
   //   targetCoin: devBTC,
   //   sourceAmount: quote1.target_amount,
@@ -67,7 +67,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
     txb,
   });
 
-  const usdc = moveCallUmiAgTradeExact({
+  const usdc = moveCallUmiAgSwapExact({
     transactionBlock: txb,
     quote: quote1,
     accountAddress: owner,
@@ -76,7 +76,7 @@ const devUSDT = '0xda50fbb5eeb573e9825117b45564fd83abcdb487b5746f37a4a7c368f34a7
   });
   txb.transferObjects([usdc], owner);
 
-  // const btcAfter = moveCallUmiAgTradeExactSourceCoin({
+  // const btcAfter = moveCallUmiAgSwapExactSourceCoin({
   //   transactionBlock: txb,
   //   quote: quote2,
   //   accountAddress: owner,
