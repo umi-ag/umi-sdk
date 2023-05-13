@@ -1,6 +1,6 @@
 import { Ed25519Keypair, JsonRpcProvider, RawSigner, TransactionBlock, fromB64, mainnetConnection } from '@mysten/sui.js';
 import fetch from 'cross-fetch';
-import { fetchQuoteFromUmi, fetchTradingAmountListWithFee, moveCallUmiAgSwapExact, moveCallWithdrawCoin } from '../src';
+import { fetchQuoteFromUmi, fetchTradingAmountListAndFee, moveCallUmiAgSwapExact, moveCallWithdrawCoin } from '../src';
 
 globalThis.fetch = fetch;
 
@@ -56,7 +56,7 @@ txb.transferObjects([eth], owner);
 
 const { transactionBlockBytes } = await signer.signTransactionBlock({ transactionBlock: txb });
 
-const balanceAfter = await fetchTradingAmountListWithFee({
+const balanceAfter = await fetchTradingAmountListAndFee({
   provider,
   transactionBlockBytes,
 });

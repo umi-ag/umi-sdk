@@ -85,15 +85,15 @@ export const fetchQuoteAndBuildTransactionBlockForUmiAgSwap = async ({
   return txb;
 };
 
-export type FetchTradingAmountListWithFeeArgs = {
+export type FetchTradingAmountListAndFeeArgs = {
   provider: JsonRpcProvider,
   transactionBlockBytes: string,
 };
 
-export const fetchTradingAmountListWithFee = async ({
+export const fetchTradingAmountListAndFee = async ({
   provider,
   transactionBlockBytes,
-}: FetchTradingAmountListWithFeeArgs) => {
+}: FetchTradingAmountListAndFeeArgs) => {
   const dryRunResult = await provider.dryRunTransactionBlock({
     transactionBlock: transactionBlockBytes,
   });
