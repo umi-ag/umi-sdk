@@ -8,4 +8,5 @@ export const DEFAULT_ALLOW_LIST_VENUE_NAME: VenueName[] = [
   'animeswap',
   'bluemoveswap',
   'kriyaswap',
+  'suiswap',
 ];
