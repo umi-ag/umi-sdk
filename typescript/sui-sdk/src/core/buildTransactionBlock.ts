@@ -85,31 +85,31 @@ export const fetchQuoteAndBuildTransactionBlockForUmiAgSwap = async ({
   return txb;
 };
 
-export type EstimateBalanceChangeArgs = {
+export type FetchTradingAmountListWithFeeArgs = {
   provider: JsonRpcProvider,
   transactionBlockBytes: string,
-  // coinType: string,
 };
 
-export const estimateBalanceChange = async ({
+export const fetchTradingAmountListWithFee = async ({
   provider,
   transactionBlockBytes,
-  // coinType,
-}: EstimateBalanceChangeArgs) => {
+}: FetchTradingAmountListWithFeeArgs) => {
   const dryRunResult = await provider.dryRunTransactionBlock({
     transactionBlock: transactionBlockBytes,
   });
 
   const gasUsed = Number((dryRunResult.effects && getTotalGasUsed(dryRunResult.effects)) ?? 0);
 
-  const tradingAmountList = dryRunResult.balanceChanges.reduce((prev, cur) => {
-    const amount = new Decimal(cur.amount);
-    if (cur.coinType === '0x2::sui::SUI') {
+  const tradingAmountList = dryRunResult.balanceChanges.map((balanceChange) => {
+    const amount = new Decimal(balanceChange.amount);
+    if (balanceChange.coinType === '0x2::sui::SUI') {
       amount.add(gasUsed);
     }
-    prev[cur.coinType] = amount.toNumber();
-    return prev;
-  }, {} as Record<string, number>);
+    return {
+      coinType: balanceChange.coinType,
+      amount: amount.toNumber(),
+    };
+  });
 
   return {
     tradingAmountList,
