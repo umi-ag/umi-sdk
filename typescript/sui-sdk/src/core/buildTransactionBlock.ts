@@ -1,5 +1,5 @@
 import type { JsonRpcProvider, SuiAddress } from '@mysten/sui.js';
-import { TransactionBlock } from '@mysten/sui.js';
+import { TransactionBlock, getTotalGasUsed } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
 import { fetchQuoteFromUmi } from '../api';
 import type { TradingRoute } from '../types';
@@ -83,4 +83,36 @@ export const fetchQuoteAndBuildTransactionBlockForUmiAgSwap = async ({
   });
 
   return txb;
+};
+
+export type FetchTradingAmountListAndFeeArgs = {
+  provider: JsonRpcProvider,
+  transactionBlockBytes: string,
+};
+
+export const fetchTradingAmountListAndFee = async ({
+  provider,
+  transactionBlockBytes,
+}: FetchTradingAmountListAndFeeArgs) => {
+  const dryRunResult = await provider.dryRunTransactionBlock({
+    transactionBlock: transactionBlockBytes,
+  });
+
+  const gasUsed = Number((dryRunResult.effects && getTotalGasUsed(dryRunResult.effects)) ?? 0);
+
+  const tradingAmountList = dryRunResult.balanceChanges.map((balanceChange) => {
+    let amount = new Decimal(balanceChange.amount);
+    if (balanceChange.coinType === '0x2::sui::SUI') {
+      amount = amount.add(gasUsed);
+    }
+    return {
+      coinType: balanceChange.coinType,
+      amount: amount.toNumber(),
+    };
+  });
+
+  return {
+    tradingAmountList,
+    networkFee: gasUsed,
+  };
 };
