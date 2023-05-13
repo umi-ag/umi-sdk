@@ -50,7 +50,7 @@ const coin_s = await moveCallWithdrawCoin({
 });
 
 const targetCoin = txb.moveCall({
-  target: '0x8bdfbb8449ce65f705f3c7fbfdf63e19fb3074c44d9250db587c487471af5476::cetus::swap_x',
+  target: '0xa9a230dd94cc5ef225bc553e9bc02d9000a6b5f965a8ea65d25630cc3ca2a3a8::umi_aggregator_with_cetus::swap_x',
   typeArguments: [USDCw, SUI],
   arguments: [
     maybeFindOrCreateObject(txb, GlobalConfigId), // GlobalConfig
