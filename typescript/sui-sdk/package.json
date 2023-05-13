@@ -1,6 +1,6 @@
 {
   "name": "@umi-ag/sui-sdk",
-  "version": "0.202305.30",
+  "version": "0.202305.31",
   "files": [
     "src",
     "dist"
@@ -23,7 +23,7 @@
     "bot": "vite-node examples/bot.ts",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint ./src --fix -c .eslintrc.cjs --ext js,ts,jsx,tsx --ignore-pattern='!.*'",
-    "pub": "npm publish --access public"
+    "pub": "vite build && npm publish --access public"
   },
   "keywords": [],
   "dependencies": {
