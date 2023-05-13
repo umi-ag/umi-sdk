@@ -1,3 +1,0 @@
-[submodule "typescript/sui-sdk/packages/sui-coin-list"]
-	path = typescript/sui-sdk/packages/sui-coin-list
-	url = https://github.com/umi-ag/sui-coin-list
