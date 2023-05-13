@@ -101,9 +101,9 @@ export const fetchTradingAmountListWithFee = async ({
   const gasUsed = Number((dryRunResult.effects && getTotalGasUsed(dryRunResult.effects)) ?? 0);
 
   const tradingAmountList = dryRunResult.balanceChanges.map((balanceChange) => {
-    const amount = new Decimal(balanceChange.amount);
+    let amount = new Decimal(balanceChange.amount);
     if (balanceChange.coinType === '0x2::sui::SUI') {
-      amount.add(gasUsed);
+      amount = amount.add(gasUsed);
     }
     return {
       coinType: balanceChange.coinType,
