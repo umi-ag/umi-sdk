@@ -136,3 +136,33 @@ export const fetchTradingAmountListAndFee = async ({
     networkFee,
   };
 };
+
+export type FetchTradingAmountFromQuoteArgs = {
+  provider: JsonRpcProvider,
+  quote: TradingRoute,
+  accountAddress: SuiAddress,
+};
+
+export const fetchTradingAmountFromQuote = async ({
+  provider,
+  quote,
+  accountAddress,
+}: FetchTradingAmountFromQuoteArgs) => {
+  const txb = await buildTransactionBlockForUmiAgSwap({
+    provider,
+    quote,
+    accountAddress,
+    slippageTolerance: 0,
+  });
+
+  const { tradingAmountList, networkFee } = await fetchTradingAmountListAndFee({
+    provider,
+    transactionBlock: txb,
+    senderAddress: accountAddress,
+  });
+
+  return {
+    tradingAmountList,
+    networkFee,
+  };
+};
