@@ -98,21 +98,22 @@ export const fetchTradingAmountListAndFee = async ({
   transactionBlock,
   senderAddress,
 }: FetchTradingAmountListAndFeeArgs) => {
-  const devInspectResult = await provider.devInspectTransactionBlock({
-    transactionBlock,
-    sender: senderAddress,
+  transactionBlock.setSender(senderAddress);
+  const txbBytes = await transactionBlock.build({ provider });
+  const dryRunResult = await provider.dryRunTransactionBlock({
+    transactionBlock: txbBytes,
   });
 
-  if (devInspectResult.error) {
-    throw new Error(devInspectResult.error);
+  if (dryRunResult.effects.status.status !== 'success') {
+    throw new Error('Failed to dry run transaction block');
   }
 
-  const networkFee = Number(getTotalGasUsed(devInspectResult.effects) ?? 0);
+  const networkFee = Number(getTotalGasUsed(dryRunResult.effects) ?? 0);
 
-  const swapBeginEvent = devInspectResult
+  const swapBeginEvent = dryRunResult
     .events
     .find((event) => event.type === `${UMIAG_PACKAGE_ID}::umi_aggregator::SwapBeginEvent`);
-  const swapEndEvent = devInspectResult
+  const swapEndEvent = dryRunResult
     .events
     .find((event) => event.type === `${UMIAG_PACKAGE_ID}::umi_aggregator::SwapEndEvent`);
 
@@ -130,6 +131,36 @@ export const fetchTradingAmountListAndFee = async ({
       amount: Number(swapEndEvent.parsedJson?.amount),
     },
   ];
+
+  return {
+    tradingAmountList,
+    networkFee,
+  };
+};
+
+export type FetchTradingAmountFromQuoteArgs = {
+  provider: JsonRpcProvider,
+  quote: TradingRoute,
+  accountAddress: SuiAddress,
+};
+
+export const fetchTradingAmountFromQuote = async ({
+  provider,
+  quote,
+  accountAddress,
+}: FetchTradingAmountFromQuoteArgs) => {
+  const txb = await buildTransactionBlockForUmiAgSwap({
+    provider,
+    quote,
+    accountAddress,
+    slippageTolerance: 0,
+  });
+
+  const { tradingAmountList, networkFee } = await fetchTradingAmountListAndFee({
+    provider,
+    transactionBlock: txb,
+    senderAddress: accountAddress,
+  });
 
   return {
     tradingAmountList,
