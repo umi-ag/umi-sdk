@@ -5,6 +5,7 @@ import { fetchQuoteFromUmi } from '../api';
 import { UMIAG_PACKAGE_ID } from '../config';
 import type { TradingRoute } from '../types';
 import { moveCallWithdrawCoin } from '../utils';
+import { formatTypeName } from '../utils/type-name';
 import { moveCallUmiAgSwapExact } from './moveCallUmiAgSwap';
 
 type BuildTransactionBlockForUmiAgSwapArgs = {
@@ -121,11 +122,11 @@ export const fetchTradingAmountListAndFee = async ({
 
   const tradingAmountList = [
     {
-      coinType: `0x${swapBeginEvent.parsedJson?.coin_type.name}`,
-      amount: -Number(swapBeginEvent.parsedJson?.amount),
+      coinType: formatTypeName(swapBeginEvent.parsedJson?.coin_type.name),
+      amount: -Number(swapBeginEvent.parsedJson?.amount), // minus because it's a withdraw
     },
     {
-      coinType: `0x${swapEndEvent.parsedJson?.coin_type.name}`,
+      coinType: formatTypeName(swapEndEvent.parsedJson?.coin_type.name),
       amount: Number(swapEndEvent.parsedJson?.amount),
     },
   ];
