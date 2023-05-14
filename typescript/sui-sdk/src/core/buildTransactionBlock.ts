@@ -2,8 +2,10 @@ import type { JsonRpcProvider, SuiAddress } from '@mysten/sui.js';
 import { TransactionBlock, getTotalGasUsed } from '@mysten/sui.js';
 import Decimal from 'decimal.js';
 import { fetchQuoteFromUmi } from '../api';
+import { UMIAG_PACKAGE_ID } from '../config';
 import type { TradingRoute } from '../types';
 import { moveCallWithdrawCoin } from '../utils';
+import { formatTypeName } from '../utils/type-name';
 import { moveCallUmiAgSwapExact } from './moveCallUmiAgSwap';
 
 type BuildTransactionBlockForUmiAgSwapArgs = {
@@ -87,32 +89,50 @@ export const fetchQuoteAndBuildTransactionBlockForUmiAgSwap = async ({
 
 export type FetchTradingAmountListAndFeeArgs = {
   provider: JsonRpcProvider,
-  transactionBlockBytes: string,
+  transactionBlock: TransactionBlock,
+  senderAddress: SuiAddress
 };
 
 export const fetchTradingAmountListAndFee = async ({
   provider,
-  transactionBlockBytes,
+  transactionBlock,
+  senderAddress,
 }: FetchTradingAmountListAndFeeArgs) => {
-  const dryRunResult = await provider.dryRunTransactionBlock({
-    transactionBlock: transactionBlockBytes,
+  const devInspectResult = await provider.devInspectTransactionBlock({
+    transactionBlock,
+    sender: senderAddress,
   });
 
-  const gasUsed = Number((dryRunResult.effects && getTotalGasUsed(dryRunResult.effects)) ?? 0);
+  if (devInspectResult.error) {
+    throw new Error(devInspectResult.error);
+  }
 
-  const tradingAmountList = dryRunResult.balanceChanges.map((balanceChange) => {
-    let amount = new Decimal(balanceChange.amount);
-    if (balanceChange.coinType === '0x2::sui::SUI') {
-      amount = amount.add(gasUsed);
-    }
-    return {
-      coinType: balanceChange.coinType,
-      amount: amount.toNumber(),
-    };
-  });
+  const networkFee = Number(getTotalGasUsed(devInspectResult.effects) ?? 0);
+
+  const swapBeginEvent = devInspectResult
+    .events
+    .find((event) => event.type === `${UMIAG_PACKAGE_ID}::umi_aggregator::SwapBeginEvent`);
+  const swapEndEvent = devInspectResult
+    .events
+    .find((event) => event.type === `${UMIAG_PACKAGE_ID}::umi_aggregator::SwapEndEvent`);
+
+  if (!swapBeginEvent || !swapEndEvent) {
+    throw new Error('Required events not found');
+  }
+
+  const tradingAmountList = [
+    {
+      coinType: formatTypeName(swapBeginEvent.parsedJson?.coin_type.name),
+      amount: -Number(swapBeginEvent.parsedJson?.amount), // minus because it's a withdraw
+    },
+    {
+      coinType: formatTypeName(swapEndEvent.parsedJson?.coin_type.name),
+      amount: Number(swapEndEvent.parsedJson?.amount),
+    },
+  ];
 
   return {
     tradingAmountList,
-    networkFee: gasUsed,
+    networkFee,
   };
 };

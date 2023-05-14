@@ -1,6 +1,6 @@
 import type { VenueName } from '../types';
 
-export const UMIAG_PACKAGE_ID = '0xd1b8f31fdba29f1cb57ec8e27db3844849414d8e38a465c97992b15bb1b2c638';
+export const UMIAG_PACKAGE_ID = '0xb8261603668830ae4269b45abc6bae451f7f1b5d220de59a39b1bf29217261c2';
 
 export const DEFAULT_ENDPOINT = 'https://sui-beta.fly.dev';
 
