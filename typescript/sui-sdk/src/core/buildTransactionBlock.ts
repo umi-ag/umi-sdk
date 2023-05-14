@@ -98,21 +98,18 @@ export const fetchTradingAmountListAndFee = async ({
   transactionBlock,
   senderAddress,
 }: FetchTradingAmountListAndFeeArgs) => {
-  const devInspectResult = await provider.devInspectTransactionBlock({
-    transactionBlock,
-    sender: senderAddress,
+  transactionBlock.setSender(senderAddress);
+  const txbBytes = await transactionBlock.build({ provider });
+  const dryRunResult = await provider.dryRunTransactionBlock({
+    transactionBlock: txbBytes,
   });
 
-  if (devInspectResult.error) {
-    throw new Error(devInspectResult.error);
-  }
+  const networkFee = Number(getTotalGasUsed(dryRunResult.effects) ?? 0);
 
-  const networkFee = Number(getTotalGasUsed(devInspectResult.effects) ?? 0);
-
-  const swapBeginEvent = devInspectResult
+  const swapBeginEvent = dryRunResult
     .events
     .find((event) => event.type === `${UMIAG_PACKAGE_ID}::umi_aggregator::SwapBeginEvent`);
-  const swapEndEvent = devInspectResult
+  const swapEndEvent = dryRunResult
     .events
     .find((event) => event.type === `${UMIAG_PACKAGE_ID}::umi_aggregator::SwapEndEvent`);
 

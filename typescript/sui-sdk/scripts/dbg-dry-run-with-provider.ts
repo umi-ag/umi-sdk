@@ -18,14 +18,14 @@ const SUI = '0x2::sui::SUI';
 const WETHw = '0xaf8cd5edc19c4512f4259f0bee101a40d41ebed738ade5874359610ef8eeced5::coin::COIN';
 const USDTw = '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN';
 const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
-const SOURCE_AMOUNT = 1_000;
+const SOURCE_AMOUNT = 50e9 + 1;
 const SLIPPAGE_TOLERANCE = 1; // 1%
 
 const [quote1] = await fetchQuoteFromUmi({
-  // sourceCoin: SUI,
-  // targetCoin: USDCw,
-  sourceCoin: USDCw,
-  targetCoin: SUI,
+  sourceCoin: SUI,
+  targetCoin: USDCw,
+  // sourceCoin: USDCw,
+  // targetCoin: SUI,
   // targetCoin: WETHw,
   sourceAmount: SOURCE_AMOUNT,
 });
@@ -37,8 +37,8 @@ const owner = txb.pure(address);
 const suiBefore = await moveCallWithdrawCoin({
   provider,
   owner: address,
-  // coinType: SUI,
-  coinType: USDCw,
+  coinType: SUI,
+  // coinType: USDCw,
   requiredAmount: SOURCE_AMOUNT,
   txb,
 });
@@ -54,11 +54,17 @@ const eth = moveCallUmiAgSwapExact({
 });
 txb.transferObjects([eth], owner);
 
-const a = await provider.devInspectTransactionBlock({
-  transactionBlock: txb,
-  sender: address,
-});
-console.log(JSON.stringify(a, null, 2));
+// txb.setSender(address);
+// const b = await txb.build({ provider });
+// const r = await provider.dryRunTransactionBlock({ transactionBlock: b });
+// console.log(JSON.stringify(r, null, 2));
+
+// console.log(JSON.stringify(JSON.parse(txb.serialize()), null, 2));
+// const a = await provider.devInspectTransactionBlock({
+//   transactionBlock: txb,
+//   sender: address,
+// });
+// console.log(JSON.stringify(a, null, 2));
 
 const balanceAfter = await fetchTradingAmountListAndFee({
   provider,
