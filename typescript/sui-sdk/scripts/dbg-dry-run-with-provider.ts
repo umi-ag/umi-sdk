@@ -54,10 +54,15 @@ const eth = moveCallUmiAgSwapExact({
 });
 txb.transferObjects([eth], owner);
 
-const { transactionBlockBytes } = await signer.signTransactionBlock({ transactionBlock: txb });
+const a = await provider.devInspectTransactionBlock({
+  transactionBlock: txb,
+  sender: address,
+});
+console.log(JSON.stringify(a, null, 2));
 
 const balanceAfter = await fetchTradingAmountListAndFee({
   provider,
-  transactionBlockBytes,
+  transactionBlock: txb,
+  senderAddress: address,
 });
-console.log(balanceAfter);
+console.log(JSON.stringify(balanceAfter, null, 2));
