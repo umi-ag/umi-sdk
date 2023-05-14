@@ -104,6 +104,10 @@ export const fetchTradingAmountListAndFee = async ({
     transactionBlock: txbBytes,
   });
 
+  if (dryRunResult.effects.status.status !== 'success') {
+    throw new Error('Failed to dry run transaction block');
+  }
+
   const networkFee = Number(getTotalGasUsed(dryRunResult.effects) ?? 0);
 
   const swapBeginEvent = dryRunResult
