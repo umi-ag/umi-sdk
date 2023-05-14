@@ -9,6 +9,7 @@ import { toBps } from '../utils/number';
 import { moveCallAnimeswap } from '../venues/animeswap';
 import { moveCallBluemove } from '../venues/bluemove';
 import { moveCallCetus } from '../venues/cetus';
+import { moveCallInterestswap } from '../venues/interestswap';
 import { moveCallKriyaswap } from '../venues/kriyaswap';
 import { moveCallSuiswap } from '../venues/suiswap';
 
@@ -60,6 +61,7 @@ export const moveCallTrade = (
     .with({ name: 'cetus' }, () => moveCallCetus(txb, venue, coin))
     .with({ name: 'kriyaswap' }, () => moveCallKriyaswap(txb, venue, coin))
     .with({ name: 'suiswap' }, () => moveCallSuiswap(txb, venue, coin))
+    .with({ name: 'interestswap' }, () => moveCallInterestswap(txb, venue, coin))
     .otherwise(() => moveCallSwapUmaUdo(txb, venue, coin));
 };
 
