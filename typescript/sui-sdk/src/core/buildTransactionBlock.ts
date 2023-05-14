@@ -153,7 +153,7 @@ export const fetchTradingAmountFromQuote = async ({
     provider,
     quote,
     accountAddress,
-    slippageTolerance: 0,
+    slippageTolerance: 1,
   });
 
   const { tradingAmountList, networkFee } = await fetchTradingAmountListAndFee({
