@@ -62,12 +62,17 @@ const SUI = "0x2::sui::SUI";
 const USDCw =
   "0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN";
 
-const txb = await fetchQuoteAndBuildTransactionBlockForUmiAgSwap({
+const [quote] = await fetchQuoteFromUmi({
+  sourceCoin: SUI,
+  targetCoin: USDCw,
+  sourceAmount,
+});
+console.log(quote);
+
+const txb = await buildTransactionBlockForUmiAgSwap({
   provider,
+  quote,
   accountAddress: address,
-  sourceCoinType: SUI,
-  targetCoinType: USDCw,
-  sourceAmount: 1000n,
   slippageTolerance: 0.01, // 1%
 });
 
