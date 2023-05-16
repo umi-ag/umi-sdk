@@ -100,13 +100,13 @@ export const moveCallUmiAgSwapDirect = ({
   for (const [{ path }, coinForPath] of zip(quote.paths, coinsForPaths)) {
     // Process each step in the chain
     let coinToSwap: TransactionArgument = coinForPath;
-    for (const { venues } of path.steps) {
+    for (const { venues, ...step } of path.steps) {
       const swappedCoins: TransactionArgument[] = [];
 
       const venueWeights = venues.map(v => toBps(v.weight));
       const coinsForVenues = moveCallSplitCoinByWeights({
         txb,
-        coinType: path.source_coin,
+        coinType: step.source_coin,
         coins: [coinToSwap],
         weights: venueWeights,
       });
@@ -124,7 +124,7 @@ export const moveCallUmiAgSwapDirect = ({
 
       coinToSwap = moveCallMergeCoins({
         txb,
-        coinType: path.target_coin,
+        coinType: step.target_coin,
         coins: swappedCoins,
       });
     }
