@@ -34,7 +34,7 @@ const signer = new RawSigner(keypair(), provider);
 const address = await signer.getAddress();
 console.log({ address });
 
-const SUI = '0x2::sui::SUI';
+const SUI = '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI';
 const WETHw = '0xaf8cd5edc19c4512f4259f0bee101a40d41ebed738ade5874359610ef8eeced5::coin::COIN';
 const USDTw = '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN';
 const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
