@@ -22,7 +22,7 @@ const signer = new RawSigner(keypair(), provider);
 const address = await signer.getAddress();
 console.log({ address });
 
-const SUI = '0x2::sui::SUI';
+const SUI = '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI';
 const SMOVE = '0xd9f9b0b4f35276eecd1eea6985bfabe2a2bbd5575f9adb9162ccbdb4ddebde7f::smove::SMOVE';
 
 const txb = new TransactionBlock();

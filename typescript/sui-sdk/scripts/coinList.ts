@@ -38,7 +38,7 @@ export const coinlist: CoinProfile[] = [
     officialSymbol: 'Sui',
     decimals: 9,
     logoURI: 'https://cryptototem.com/wp-content/uploads/2022/08/SUI-logo.jpg',
-    type: '0x2::sui::SUI',
+    type: '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI',
     objects: {
       package: '0x2',
       module: 'sui',

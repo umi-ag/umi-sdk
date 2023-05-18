@@ -43,7 +43,7 @@ export type MoveCallWithdrawCoinsArgs = GetSufficientCoinsArgs & {
 };
 
 export const moveCallWithdrawCoin = async ({ txb, ...args }: MoveCallWithdrawCoinsArgs) => {
-  if (args.coinType === '0x2::sui::SUI') {
+  if (args.coinType === '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI') {
     return txb.splitCoins(txb.gas, [txb.pure(args.requiredAmount)]);
   }
 

@@ -29,7 +29,7 @@ const signer = new RawSigner(keypair(), provider);
 const address = await signer.getAddress();
 console.log({ address });
 
-const SUI = '0x2::sui::SUI';
+const SUI = '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI';
 const SSWP =
   '0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::TOKEN::TOKEN';
 
