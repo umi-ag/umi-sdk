@@ -1,6 +1,6 @@
 import type { PaginatedCoins } from '@mysten/sui.js';
 
-export type VenueName = 'animeswap' | 'bluemoveswap' | 'cetus' | 'flameswap' | 'interestswap' | 'kriyaswap' | 'suiswap' | 'turbos';
+export type VenueName = 'animeswap' | 'bluemoveswap' | 'cetus' | 'flameswap' | 'interestswap' | 'kriyaswap' | 'suiswap' | 'turbos' | 'bayswap';
 
 export type Venue = {
   name: VenueName;
