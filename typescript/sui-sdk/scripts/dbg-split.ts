@@ -21,7 +21,7 @@ const keypair = () => {
 const signer = new RawSigner(keypair(), provider);
 const address = await signer.getAddress();
 
-const SUI = '0x0000000000000000000000000000000000000000000000000000000000000002::sui::SUI';
+const SUI = '0x2::sui::SUI';
 
 const txb = new TransactionBlock();
 const owner = txb.pure(address);
