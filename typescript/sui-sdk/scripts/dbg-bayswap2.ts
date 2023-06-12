@@ -19,7 +19,7 @@ globalThis.fetch = fetch;
 const provider = new JsonRpcProvider(
   new Connection({
     fullnode: 'https://fullnode.mainnet.sui.io',
-  }),
+  })
 );
 
 const keypair = () => {
@@ -35,10 +35,17 @@ const address = await signer.getAddress();
 console.log({ address });
 
 const SUI = '0x2::sui::SUI';
-const WETHw = '0xaf8cd5edc19c4512f4259f0bee101a40d41ebed738ade5874359610ef8eeced5::coin::COIN';
-const USDTw = '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN';
-const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
-const SOURCE_AMOUNT = 1_000_000_000;
+const WETHw =
+  '0xaf8cd5edc19c4512f4259f0bee101a40d41ebed738ade5874359610ef8eeced5::coin::COIN';
+const USDTw =
+  '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN';
+const USDCw =
+  '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
+const SSWP =
+  '0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::TOKEN::TOKEN';
+const BSWT =
+  '0xf0fe2210b4f0c4e3aff7ed147f14980cf14f1114c6ad8fd531ab748ccf33373b::bswt::BSWT';
+const SOURCE_AMOUNT = 100_000;
 const SLIPPAGE_TOLERANCE = 0.01; // 1%
 
 // This example shows how to swap BTC to USDC and then swap back to BTC
@@ -47,16 +54,17 @@ const SLIPPAGE_TOLERANCE = 0.01; // 1%
 
   const [quote1] = await fetchQuoteFromUmi({
     sourceCoin: SUI,
-    // targetCoin: WETHw,
-    targetCoin: USDCw,
+    targetCoin: BSWT,
     sourceAmount,
+    venueAllowList: ['bayswap'],
   });
+  console.log({ quote1 });
   console.log(JSON.stringify(quote1, null, 2));
 
   const txb = new TransactionBlock();
   const owner = txb.pure(address);
 
-  const suiBefore = await moveCallWithdrawCoin({
+  const sourceBefore = await moveCallWithdrawCoin({
     provider,
     owner: address,
     coinType: SUI,
@@ -64,16 +72,18 @@ const SLIPPAGE_TOLERANCE = 0.01; // 1%
     txb,
   });
 
-  const minTargetAmount = Math.floor(quote1.target_amount * (1 - SLIPPAGE_TOLERANCE));
+  const minTargetAmount = Math.floor(
+    quote1.target_amount * (1 - SLIPPAGE_TOLERANCE)
+  );
 
-  const eth = moveCallUmiAgSwapExact({
+  const targetOutputCoin = moveCallUmiAgSwapExact({
     transactionBlock: txb,
     quote: quote1,
     accountAddress: owner,
-    coins: [suiBefore],
+    coins: [sourceBefore],
     minTargetAmount: txb.pure(minTargetAmount),
   });
-  txb.transferObjects([eth], owner);
+  txb.transferObjects([targetOutputCoin], owner);
 
   // const btcAfter = moveCallUmiAgSwapExactSourceCoin({
   //   transactionBlock: txb,
@@ -91,7 +101,8 @@ const SLIPPAGE_TOLERANCE = 0.01; // 1%
     });
     console.log(JSON.stringify(dryRunResult, null, 2));
 
-    const gasUsed = dryRunResult.effects && getTotalGasUsed(dryRunResult.effects);
+    const gasUsed =
+      dryRunResult.effects && getTotalGasUsed(dryRunResult.effects);
     console.log({ gasUsed });
     // console.log(dryRunResult.balanceChanges);
     // Check BTC balance increase ...
@@ -103,7 +114,7 @@ const SLIPPAGE_TOLERANCE = 0.01; // 1%
       options: {
         showBalanceChanges: true,
         showEffects: true,
-      }
+      },
     });
     const gasUsed = result.effects && getTotalGasUsed(result.effects);
     console.log(result.digest, gasUsed);

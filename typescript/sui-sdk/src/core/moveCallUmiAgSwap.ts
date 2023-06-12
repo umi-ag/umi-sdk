@@ -7,6 +7,7 @@ import type { MoveCallCheckAmountSufficientArgs, MoveCallMaybeSplitCoinsAndTrans
 import { moveCallMergeCoins, moveCallSplitCoinByWeights } from '../utils';
 import { toBps } from '../utils/number';
 import { moveCallAnimeswap } from '../venues/animeswap';
+import { moveCallBayswap } from '../venues/bayswap';
 import { moveCallBluemove } from '../venues/bluemove';
 import { moveCallCetus } from '../venues/cetus';
 import { moveCallInterestswap } from '../venues/interestswap';
@@ -62,6 +63,7 @@ export const moveCallTrade = (
     .with({ name: 'kriyaswap' }, () => moveCallKriyaswap(txb, venue, coin))
     .with({ name: 'suiswap' }, () => moveCallSuiswap(txb, venue, coin))
     .with({ name: 'interestswap' }, () => moveCallInterestswap(txb, venue, coin))
+    .with({ name: 'bayswap' }, () => moveCallBayswap(txb, venue, coin))
     .otherwise(() => moveCallSwapUmaUdo(txb, venue, coin));
 };
 
