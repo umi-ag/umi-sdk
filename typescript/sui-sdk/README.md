@@ -65,7 +65,7 @@ const USDCw =
 const [quote] = await fetchQuoteFromUmi({
   sourceCoin: SUI,
   targetCoin: USDCw,
-  sourceAmount,
+  sourceAmount: 1000 // u64,
 });
 console.log(quote);
 
