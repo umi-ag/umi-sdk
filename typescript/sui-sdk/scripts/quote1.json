@@ -1,0 +1,133 @@
+{
+  "source_coin": "0x2::sui::SUI",
+  "target_coin": "0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN",
+  "source_amount": 50000000001,
+  "target_amount": 57903745.54388836,
+  "paths": [
+    {
+      "path": {
+        "source_coin": "0x2::sui::SUI",
+        "target_coin": "0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN",
+        "source_amount": 50000000001,
+        "target_amount": 57903745.54388836,
+        "steps": [
+          {
+            "source_coin": "0x2::sui::SUI",
+            "target_coin": "0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN",
+            "source_amount": 50000000001,
+            "target_amount": 57903745.54388836,
+            "venues": [
+              {
+                "venue": {
+                  "name": "bluemoveswap",
+                  "object_id": "0xd004382031ab318bb8395bb6e5758227f4999850d7345bc11105dc2728ae1288",
+                  "object_type": "0xb24b6789e088b876afabca733bed2299fbc9e2d6369be4d1acfa17d8145454d9::swap::Pool<0x2::sui::SUI, 0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN>",
+                  "source_coin": "0x2::sui::SUI",
+                  "target_coin": "0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN",
+                  "source_amount": 50000000001,
+                  "target_amount": 57903745.54388836,
+                  "source_fee": 150000000.003,
+                  "target_fee": 0,
+                  "is_x_to_y": true
+                },
+                "weight": 0.6
+              },
+              {
+                "venue": {
+                  "name": "bluemoveswap",
+                  "object_id": "0xd004382031ab318bb8395bb6e5758227f4999850d7345bc11105dc2728ae1288",
+                  "object_type": "0xb24b6789e088b876afabca733bed2299fbc9e2d6369be4d1acfa17d8145454d9::swap::Pool<0x2::sui::SUI, 0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN>",
+                  "source_coin": "0x2::sui::SUI",
+                  "target_coin": "0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN",
+                  "source_amount": 50000000001,
+                  "target_amount": 57903745.54388836,
+                  "source_fee": 150000000.003,
+                  "target_fee": 0,
+                  "is_x_to_y": true
+                },
+                "weight": 0.4
+              }
+            ]
+          },
+          {
+            "source_coin": "0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN",
+            "target_coin": "0x2::sui::SUI",
+            "source_amount": 100000,
+            "target_amount": 86626411.93443881,
+            "venues": [
+              {
+                "venue": {
+                  "name": "animeswap",
+                  "object_id": "0x74ff9efeebde6d43ff1cb8ece562d3e77aded1f05aba7888135625602e0c3ce7",
+                  "object_type": "0x88d362329ede856f5f67867929ed570bba06c975abec2fab7f0601c56f6a8cb1::animeswap::LiquidityPool<0x2::sui::SUI, 0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN>",
+                  "source_coin": "0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN",
+                  "target_coin": "0x2::sui::SUI",
+                  "source_amount": 100000,
+                  "target_amount": 86626411.93443881,
+                  "source_fee": 29.999999999999996,
+                  "target_fee": 0,
+                  "is_x_to_y": false
+                },
+                "weight": 0.5
+              },
+              {
+                "venue": {
+                  "name": "animeswap",
+                  "object_id": "0x74ff9efeebde6d43ff1cb8ece562d3e77aded1f05aba7888135625602e0c3ce7",
+                  "object_type": "0x88d362329ede856f5f67867929ed570bba06c975abec2fab7f0601c56f6a8cb1::animeswap::LiquidityPool<0x2::sui::SUI, 0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN>",
+                  "source_coin": "0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN",
+                  "target_coin": "0x2::sui::SUI",
+                  "source_amount": 100000,
+                  "target_amount": 86626411.93443881,
+                  "source_fee": 29.999999999999996,
+                  "target_fee": 0,
+                  "is_x_to_y": false
+                },
+                "weight": 0.5
+              }
+            ]
+          },
+          {
+            "source_coin": "0x2::sui::SUI",
+            "target_coin": "0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN",
+            "source_amount": 86626411.93443881,
+            "target_amount": 101600.75916544972,
+            "venues": [
+              {
+                "venue": {
+                  "name": "animeswap",
+                  "object_id": "0x37bb0182f8469545f574d5185eae53effa2385f6ea3eb80376deec72aca426bd",
+                  "object_type": "0x88d362329ede856f5f67867929ed570bba06c975abec2fab7f0601c56f6a8cb1::animeswap::LiquidityPool<0x2::sui::SUI, 0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN>",
+                  "source_coin": "0x2::sui::SUI",
+                  "target_coin": "0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN",
+                  "source_amount": 86626411.93443881,
+                  "target_amount": 101600.75916544972,
+                  "source_fee": 25987.92358033164,
+                  "target_fee": 0,
+                  "is_x_to_y": true
+                },
+                "weight": 0.3
+              },
+              {
+                "venue": {
+                  "name": "animeswap",
+                  "object_id": "0x37bb0182f8469545f574d5185eae53effa2385f6ea3eb80376deec72aca426bd",
+                  "object_type": "0x88d362329ede856f5f67867929ed570bba06c975abec2fab7f0601c56f6a8cb1::animeswap::LiquidityPool<0x2::sui::SUI, 0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN>",
+                  "source_coin": "0x2::sui::SUI",
+                  "target_coin": "0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN",
+                  "source_amount": 86626411.93443881,
+                  "target_amount": 101600.75916544972,
+                  "source_fee": 25987.92358033164,
+                  "target_fee": 0,
+                  "is_x_to_y": true
+                },
+                "weight": 0.7
+              }
+            ]
+          }
+        ]
+      },
+      "weight": 1
+    }
+  ]
+}
