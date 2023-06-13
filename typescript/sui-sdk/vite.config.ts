@@ -27,6 +27,8 @@ export default defineConfig({
         } else if (format === 'umd') {
           return 'index.js';
         }
+
+        return 'index.js';
       },
     },
   },
