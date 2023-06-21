@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "aptos": "^1.10.0",
-    "cross-fetch": "^3.1.6"
+    "cross-fetch": "^3.1.6",
+    "neverthrow": "^6.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.2.1",

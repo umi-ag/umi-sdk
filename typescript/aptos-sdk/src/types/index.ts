@@ -1,10 +1,10 @@
-export type VenueName = 'animeswap'
-  | 'pontem';
+export type VenueName = 'anime'
+  | 'pontem' | 'aptoswapnet' | 'aux' | 'cetus' | 'pancake';
 
 export type Venue = {
   name: VenueName;
-  object_id: string;
-  object_type: string;
+  package: string;
+  resource_type: string;
   source_coin: string;
   target_coin: string;
   // f64
@@ -50,6 +50,7 @@ export type TradingRoute = {
   target_coin: string;
   source_amount: number;
   target_amount: number;
+  swap_type: "direct" | "multi-hop" | "split";
   paths: WeightedHop[];
 };
 
@@ -71,4 +72,10 @@ export type QuoteQuery = {
   // maxRoutes?: number,
   endpoint?: `https://${string}`,
   venueAllowList?: VenueName[],
+};
+
+export type SwapSettings = {
+  slippageTolerance: number,
+  transactionDeadline: number,
+  maxGasFee: number,
 };
