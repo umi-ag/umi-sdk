@@ -1,6 +1,8 @@
 import type { Types } from 'aptos';
+import type { U64 } from 'aptos/src/generated';
 import { err, ok } from 'neverthrow';
 import { Venue } from '../types';
+import { VenueType } from '../venues';
 
 export const getLiquidswapTypeArgs = (venue: Venue, x2y: boolean) => {
   const X = venue.source_coin;
@@ -53,6 +55,9 @@ export const getPancakeTypeArgs = (venue: Venue, x2y: boolean) => {
 
 const unsupportedDexErr = (venueName: string) => err(`Unsupported dex: ${venueName}`);
 
+export const getPoolType = (venue: Venue): U64 => {
+  return '0';
+};
 
 export const getTypeArgs = (venue: Venue, x2y: boolean) => {
   if (venue.name === 'anime') {
@@ -77,6 +82,34 @@ export const getTypeArgs = (venue: Venue, x2y: boolean) => {
 
   if (venue.name === 'pontem') {
     return ok(getLiquidswapTypeArgs(venue, x2y));
+  }
+
+  return unsupportedDexErr(venue.name);
+};
+
+export const getVenueType = (venue: Venue) => {
+  if (venue.name === 'anime') {
+    return ok(VenueType.Anime);
+  }
+
+  if (venue.name === 'aptoswapnet') {
+    return ok(VenueType.Aptoswap);
+  }
+
+  if (venue.name === 'aux') {
+    return ok(VenueType.Aux);
+  }
+
+  if (venue.name === 'cetus') {
+    return ok(VenueType.Cetus);
+  }
+
+  if (venue.name === 'pancake') {
+    return ok(VenueType.Pancake);
+  }
+
+  if (venue.name === 'pontem') {
+    return ok(VenueType.Pontem.toString());
   }
 
   return unsupportedDexErr(venue.name);
