@@ -42,7 +42,7 @@ export const makeDirectSwapPayload = (
 
   const payload: Types.TransactionPayload = {
     type: 'entry_function_payload',
-    function: `${UMIAG_PACKAGE_ID}::one_step_route`,
+    function: `${UMIAG_PACKAGE_ID}::aggregator::one_step_route`,
     type_arguments: typeArgs.value,
     arguments: args.value,
   };
