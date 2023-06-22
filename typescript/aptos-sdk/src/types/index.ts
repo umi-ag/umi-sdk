@@ -1,5 +1,4 @@
-export type VenueName = 'anime'
-  | 'pontem' | 'aptoswapnet' | 'aux' | 'cetus' | 'pancake';
+export type VenueName = 'anime' | 'pontem' | 'aptoswapnet' | 'aux' | 'cetus' | 'pancake';
 
 export type Venue = {
   name: VenueName;
@@ -7,6 +6,7 @@ export type Venue = {
   resource_type: string;
   source_coin: string;
   target_coin: string;
+  curve_type: string;
   // f64
   source_amount: number;
   // f64
@@ -14,7 +14,7 @@ export type Venue = {
   source_fee: number;
   target_fee: number;
   is_x_to_y: boolean;
-  function: `${string}::${string}::${string}`;
+  // function: `${string}::${string}::${string}`;
 };
 
 export type WeightedVenue = {

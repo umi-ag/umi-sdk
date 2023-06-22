@@ -7,7 +7,7 @@ import { VenueType } from '../venues';
 export const getLiquidswapTypeArgs = (venue: Venue, x2y: boolean) => {
   const X = venue.source_coin;
   const Y = venue.target_coin;
-  const E = pool.extensions.curveType;
+  const E = venue.curve_type;
 
   if (x2y) return [X, Y, E];
   return [Y, X, E];
