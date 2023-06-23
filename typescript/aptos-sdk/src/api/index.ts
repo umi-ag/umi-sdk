@@ -20,5 +20,7 @@ export const fetchQuoteFromUmi = async ({
   const response = await fetch(url.toString());
   const result = await response.json();
 
+  console.log({ result });
+
   return result;
 };
