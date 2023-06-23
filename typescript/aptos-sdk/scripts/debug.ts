@@ -1,6 +1,7 @@
-import { AptosAccount, AptosClient } from 'aptos';
+import { AptosAccount, AptosClient, } from 'aptos';
 import fs from 'fs';
-import { SwapSettings, TradingRoute, makeSwapPayload } from '../src';
+import type { SwapSettings, TradingRoute } from '../src';
+import { buildTransactionPayloadForUmiAgSwap } from '../src';
 
 const NODE_URL = 'https://fullnode.mainnet.aptoslabs.com';
 
@@ -21,16 +22,22 @@ const d = await client.getAccount(address);
 //   venueAllowList: ['anime'],
 // });
 
-const data = fs.readFileSync('scripts/routing.json', 'utf-8');
+const data = fs.readFileSync('scripts/routing.json', 'utf8');
 const quote: TradingRoute = JSON.parse(data);
 
-const initialSwapSettings: SwapSettings = {
+const swapSettings: SwapSettings = {
   maxGasFee: 40_000,
-  slippageTolerance: 0.01,
+  slippageTolerance: 1,
   transactionDeadline: 30,
 };
 
-const payload = makeSwapPayload(quote, initialSwapSettings);
+// const r = makeSwapPayload(quote, swapSettings);
+const r = buildTransactionPayloadForUmiAgSwap({ quote, swapSettings });
+
+if (r.isErr()) {
+  console.log(r.error);
+  process.exit(1);
+}
 
 // const excuteuTradeTransactionForAptos = async () => {
 //   const payload = makeSwapPayload(quote, initialSwapSettings);
@@ -44,9 +51,14 @@ const payload = makeSwapPayload(quote, initialSwapSettings);
 //   return res;
 // };
 
-
 // const payload = await buildTransactionPayloadForUmiAgSwap({quote, initialSwapSettings});
 
-const r = await client.signAndSubmitTransaction(account, payload);
+const payload = r.value;
+// const builder = new TransactionBuilderRemoteABI(client, { sender: account.address() });
+// const rawTx = await builder.build(payload.function, payload.type_arguments, payload.arguments);
+const rawTx = await client.generateTransaction(address, payload);
 
-console.log(r);
+const txResult = await client.simulateTransaction(account, rawTx);
+// const txResult = await client.signAndSubmitTransaction(account, rawTx);
+
+console.log(txResult);
