@@ -1,12 +1,27 @@
 {
-  "name": "aptos-sdk",
-  "version": "1.0.0",
+  "name": "@umi-ag/aptos-sdk",
+  "version": "0.202306.1",
   "description": "",
   "type": "module",
-  "main": "index.js",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "source": "./src/index.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "vite-node": "vite-node"
+    "vite-node": "vite-node",
+    "build": "vite build"
   },
   "keywords": [],
   "author": "",
