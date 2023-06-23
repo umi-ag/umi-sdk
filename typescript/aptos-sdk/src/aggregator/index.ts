@@ -1,7 +1,7 @@
 export * from './helper';
 
 import { err } from 'neverthrow';
-import { SwapSettings, TradingRoute } from '../types';
+import type { SwapSettings, TradingRoute } from '../types';
 import { makeDirectSwapPayload } from './direct';
 import { make2HopSwapPayload, make3HopSwapPayload } from './multi-hop';
 import { make2SplitSwapPayload, make3SplitSwapPayload } from './split';
@@ -24,4 +24,4 @@ export const makeSwapPayload = (quote: TradingRoute, settings: SwapSettings) => 
   }
 
   return err(`Invalid arguments: ${quote.swap_type}`);
-}
+};

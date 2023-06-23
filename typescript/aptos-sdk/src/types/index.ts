@@ -50,7 +50,7 @@ export type TradingRoute = {
   target_coin: string;
   source_amount: number;
   target_amount: number;
-  swap_type: "direct" | "multi-hop" | "split";
+  swap_type: 'direct' | 'multi-hop' | 'split';
   paths: WeightedHop[];
 };
 

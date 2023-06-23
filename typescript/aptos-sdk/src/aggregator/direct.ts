@@ -1,7 +1,7 @@
 import type { Types } from 'aptos';
 import { ok } from 'neverthrow';
 import { UMIAG_PACKAGE_ID } from '../config';
-import { SwapSettings, TradingRoute } from '../types';
+import type { SwapSettings, TradingRoute } from '../types';
 import { calcMinAmount } from './calculator';
 import { getPoolType, getTypeArgs, getVenueType, is_x_to_y_ } from './helper';
 

@@ -1,6 +1,7 @@
 import { AptosAccount, AptosClient } from 'aptos';
 import fs from 'fs';
-import { SwapSettings, TradingRoute, makeSwapPayload } from '../src';
+import type { SwapSettings, TradingRoute } from '../src';
+import { makeSwapPayload } from '../src';
 
 const NODE_URL = 'https://fullnode.mainnet.aptoslabs.com';
 
@@ -21,7 +22,7 @@ const d = await client.getAccount(address);
 //   venueAllowList: ['anime'],
 // });
 
-const data = fs.readFileSync('scripts/routing.json', 'utf-8');
+const data = fs.readFileSync('scripts/routing.json', 'utf8');
 const quote: TradingRoute = JSON.parse(data);
 
 const initialSwapSettings: SwapSettings = {
@@ -43,7 +44,6 @@ const payload = makeSwapPayload(quote, initialSwapSettings);
 //     ), (e) => e as any);
 //   return res;
 // };
-
 
 // const payload = await buildTransactionPayloadForUmiAgSwap({quote, initialSwapSettings});
 

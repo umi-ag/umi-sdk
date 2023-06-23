@@ -2,7 +2,7 @@ import { err } from 'neverthrow';
 import { makeDirectSwapPayload } from '../aggregator/direct';
 import { make2HopSwapPayload, make3HopSwapPayload } from '../aggregator/multi-hop';
 import { make2SplitSwapPayload, make3SplitSwapPayload } from '../aggregator/split';
-import { SwapSettings, TradingRoute } from '../types';
+import type { SwapSettings, TradingRoute } from '../types';
 
 export type BuildTransactionPayloadForUmiAgSwapArgs = {
   quote: TradingRoute,

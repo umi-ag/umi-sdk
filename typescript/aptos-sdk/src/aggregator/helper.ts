@@ -1,7 +1,7 @@
 import type { Types } from 'aptos';
 import type { U64 } from 'aptos/src/generated';
 import { err, ok } from 'neverthrow';
-import { Venue } from '../types';
+import type { Venue } from '../types';
 import { VenueType } from '../venues';
 
 export const getLiquidswapTypeArgs = (venue: Venue, x2y: boolean) => {
@@ -122,6 +122,4 @@ export const getTypeArgsFromStructTag = (structTagString: Types.MoveStructTag) =
 export const is_x_to_y_ = (venue: Venue) => {
   return venue.source_coin === getTypeArgsFromStructTag(venue.resource_type)[0];
 };
-
-
 
