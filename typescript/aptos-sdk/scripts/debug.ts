@@ -1,4 +1,4 @@
-import { AptosAccount, AptosClient, TransactionBuilderRemoteABI, } from 'aptos';
+import { AptosAccount, AptosClient, } from 'aptos';
 import fs from 'fs';
 import type { SwapSettings, TradingRoute } from '../src';
 import { makeSwapPayload } from '../src';
@@ -53,8 +53,9 @@ if (r.isErr()) {
 // const payload = await buildTransactionPayloadForUmiAgSwap({quote, initialSwapSettings});
 
 const payload = r.value;
-const builder = new TransactionBuilderRemoteABI(client, { sender: account.address() });
-const rawTx = await builder.build(payload.function, payload.type_arguments, payload.arguments);
+// const builder = new TransactionBuilderRemoteABI(client, { sender: account.address() });
+// const rawTx = await builder.build(payload.function, payload.type_arguments, payload.arguments);
+const rawTx = await client.generateTransaction(account.address(), payload);
 
 // const rr = await client.simulateTransaction(account, rawTx);
 const rr = await client.signAndSubmitTransaction(account, rawTx);
