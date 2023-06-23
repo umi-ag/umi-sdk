@@ -1,4 +1,4 @@
-import { AptosAccount, AptosClient } from 'aptos';
+import { AptosAccount, AptosClient, TransactionBuilderRemoteABI, } from 'aptos';
 import fs from 'fs';
 import type { SwapSettings, TradingRoute } from '../src';
 import { makeSwapPayload } from '../src';
@@ -27,11 +27,16 @@ const quote: TradingRoute = JSON.parse(data);
 
 const initialSwapSettings: SwapSettings = {
   maxGasFee: 40_000,
-  slippageTolerance: 0.01,
+  slippageTolerance: 1,
   transactionDeadline: 30,
 };
 
-const payload = makeSwapPayload(quote, initialSwapSettings);
+const r = makeSwapPayload(quote, initialSwapSettings);
+
+if (r.isErr()) {
+  console.log(r.error);
+  process.exit(1);
+}
 
 // const excuteuTradeTransactionForAptos = async () => {
 //   const payload = makeSwapPayload(quote, initialSwapSettings);
@@ -47,6 +52,11 @@ const payload = makeSwapPayload(quote, initialSwapSettings);
 
 // const payload = await buildTransactionPayloadForUmiAgSwap({quote, initialSwapSettings});
 
-const r = await client.signAndSubmitTransaction(account, payload);
+const payload = r.value;
+const builder = new TransactionBuilderRemoteABI(client, { sender: account.address() });
+const rawTx = await builder.build(payload.function, payload.type_arguments, payload.arguments);
 
-console.log(r);
+// const rr = await client.simulateTransaction(account, rawTx);
+const rr = await client.signAndSubmitTransaction(account, rawTx);
+
+console.log(rr);
