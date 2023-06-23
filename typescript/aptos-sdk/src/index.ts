@@ -1,3 +1,4 @@
+export * from './aggregator';
 export * from './api';
 export * from './config';
 export * from './core';
