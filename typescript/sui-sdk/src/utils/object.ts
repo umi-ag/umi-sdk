@@ -27,6 +27,9 @@ export const findObjectByType = async ({
 }: FindObjectByTypeArgs) => {
   const objects = await provider.getOwnedObjects({
     owner,
+    options: {
+      showType: true,
+    }
   });
 
   const objectId = objects.data.find(e => e.data?.type === type)?.data?.objectId;
