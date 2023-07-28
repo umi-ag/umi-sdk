@@ -4,7 +4,8 @@ import { moveCallDeepBook } from '../src/venues/deepbook';
 import { SUI, USDCw, address, provider, signer } from './common';
 
 const LOT_SIZE = 1e8;
-const SOURCE_AMOUNT = LOT_SIZE * 1000;
+// const SOURCE_AMOUNT = LOT_SIZE * 1000 + 1;
+const SOURCE_AMOUNT = 223456789;
 
 const txb = new TransactionBlock();
 
