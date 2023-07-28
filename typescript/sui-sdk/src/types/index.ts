@@ -70,7 +70,7 @@ export type QuoteQuery = {
   sourceAmount: string | number,
   // maxHops?: number,
   // maxRoutes?: number,
-  endpoint?: `https://${string}`,
+  endpoint?: string,
   venueAllowList?: VenueName[],
 };
 
