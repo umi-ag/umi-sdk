@@ -20,10 +20,10 @@ export const moveCallDeepBook = (
   txb: TransactionBlock,
   venue: Venue,
   sourceCoin: TransactionArgument,
-  accountCapCandidate?: TransactionArgument,
+  accountCapCandidate: TransactionArgument | null,
 ) => {
   const accountCap = accountCapCandidate ?? txb.moveCall({
-    target: '0xdee9::clob_v2::account_cap',
+    target: '0xdee9::clob_v2::create_account',
   });
 
   // public fun swap_exact_base_for_quote<BaseAsset, QuoteAsset>(

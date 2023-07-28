@@ -4,7 +4,7 @@ import Decimal from 'decimal.js';
 import { fetchQuoteFromUmi } from '../api';
 import { UMIAG_PACKAGE_ID } from '../config';
 import type { TradingRoute } from '../types';
-import { moveCallWithdrawCoin } from '../utils';
+import { findObjectByType, moveCallWithdrawCoin } from '../utils';
 import { formatTypeName } from '../utils/type-name';
 import { moveCallUmiAgSwapExact } from './moveCallUmiAgSwap';
 
@@ -39,12 +39,20 @@ export const buildTransactionBlockForUmiAgSwap = async ({
     .round()
     .toString();
 
+  const accountCap = await findObjectByType({
+    txb,
+    type: '0xdee9::custodian_v2::AccountCap',
+    owner: accountAddress,
+    provider,
+  });
+
   const targetCoinObject = moveCallUmiAgSwapExact({
     transactionBlock: txb,
     quote,
     accountAddress: accountAddressObject,
     coins: [sourceCoin],
     minTargetAmount: txb.pure(minTargetAmount),
+    accountCap,
   });
 
   txb.transferObjects([targetCoinObject], accountAddressObject);

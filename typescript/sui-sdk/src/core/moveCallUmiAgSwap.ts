@@ -56,7 +56,7 @@ export const moveCallTrade = (
   txb: TransactionBlock,
   venue: Venue,
   coin: TransactionArgument,
-  accountCap?: TransactionArgument, // for deepbook
+  accountCap: TransactionArgument | null, // for deepbook
 ) => {
   return match(venue)
     .with({ name: 'animeswap' }, () => moveCallAnimeswap(txb, venue, coin))
@@ -76,7 +76,7 @@ export type MoveCallUmiAgSwapArgs = {
   coins: TransactionArgument[];
   accountAddress: TransactionArgument,
   minTargetAmount: TransactionArgument;
-  accountCap?: TransactionArgument; // for deepbook
+  accountCap: TransactionArgument | null; // for deepbook
 };
 
 export const moveCallUmiAgSwapDirect = ({
