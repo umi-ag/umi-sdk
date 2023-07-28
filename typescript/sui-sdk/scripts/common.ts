@@ -28,5 +28,18 @@ export const SSWP =
   '0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::TOKEN::TOKEN';
 
 export const printTxb = (txb: TransactionBlock) => {
-  console.log(JSON.stringify(JSON.parse(txb.serialize()), null, 2));
+  const t = JSON.parse(txb.serialize());
+  const { inputs, transactions } = t;
+
+  for (const [i, input] of Object.entries(inputs)) {
+    console.log(`----- input ${i} -----`);
+    console.log(JSON.stringify(input, null, 2));
+  }
+
+  for (const [i, transaction] of Object.entries(transactions)) {
+    console.log(`----- tx ${i} -----`);
+    console.log(JSON.stringify(transaction, null, 2));
+  }
+
+  // console.log(JSON.stringify(t, null, 2));
 };
