@@ -31,7 +31,7 @@ export const moveCallDeepBook = (
         maybeFindOrCreateObject(txb, venue.object_id),
         txb.pure(0), // client_order_id (arbitrary)
         accountCap,
-        txb.pure(100),
+        txb.pure(100000000),
         sourceCoin,
         moveCallCoinZero(txb, venue.target_coin),
         maybeFindOrCreateObject(txb, '0x6'),
@@ -58,7 +58,7 @@ export const moveCallDeepBook = (
       maybeFindOrCreateObject(txb, venue.object_id),
       txb.pure(0), // client_order_id (arbitrary)
       accountCap,
-      txb.pure(100),
+      txb.pure(100000000),
       maybeFindOrCreateObject(txb, '0x6'),
       sourceCoin,
     ]

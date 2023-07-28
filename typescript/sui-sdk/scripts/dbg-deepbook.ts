@@ -3,7 +3,8 @@ import { findObjectByType, moveCallMaybeTransferOrDestroyCoin, moveCallWithdrawC
 import { moveCallDeepBook } from '../src/venues/deepbook';
 import { SUI, USDCw, address, provider, signer } from './common';
 
-const SOURCE_AMOUNT = 100;
+const LOT_SIZE = 1e8;
+const SOURCE_AMOUNT = LOT_SIZE * 1000;
 
 const txb = new TransactionBlock();
 
