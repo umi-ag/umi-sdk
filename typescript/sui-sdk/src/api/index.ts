@@ -1,4 +1,4 @@
-import { fetch } from 'cross-fetch';
+import fetch from 'cross-fetch';
 import { DEFAULT_ALLOW_LIST_VENUE_NAME, DEFAULT_ENDPOINT } from '../config';
 import type { QuoteQuery, TradingRoutes } from '../types';
 

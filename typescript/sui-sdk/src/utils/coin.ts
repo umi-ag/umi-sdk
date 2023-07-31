@@ -244,3 +244,23 @@ export const moveCallSplitCoinByWeights = ({
 
   return splited;
 };
+
+export type MoveCallCalcQuantityArgs = {
+  txb: TransactionBlock,
+  coinType: string,
+  coin: TransactionArgument,
+  lotSize: number,
+};
+
+export const moveCallCalcQuantity = ({
+  txb,
+  coinType,
+  coin,
+  lotSize,
+}: MoveCallCalcQuantityArgs) => {
+  return txb.moveCall({
+    target: `${UMIAG_PACKAGE_ID}::utils::calc_quantity`,
+    typeArguments: [coinType],
+    arguments: [coin, txb.pure(lotSize)],
+  });
+};

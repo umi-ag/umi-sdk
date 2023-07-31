@@ -10,6 +10,7 @@ import { moveCallAnimeswap } from '../venues/animeswap';
 import { moveCallBayswap } from '../venues/bayswap';
 import { moveCallBluemove } from '../venues/bluemove';
 import { moveCallCetus } from '../venues/cetus';
+import { moveCallDeepBook } from '../venues/deepbook';
 import { moveCallInterestswap } from '../venues/interestswap';
 import { moveCallKriyaswap } from '../venues/kriyaswap';
 import { moveCallSuiswap } from '../venues/suiswap';
@@ -55,6 +56,7 @@ export const moveCallTrade = (
   txb: TransactionBlock,
   venue: Venue,
   coin: TransactionArgument,
+  accountCap: TransactionArgument | null = null, // for deepbook
 ) => {
   return match(venue)
     .with({ name: 'animeswap' }, () => moveCallAnimeswap(txb, venue, coin))
@@ -64,6 +66,7 @@ export const moveCallTrade = (
     .with({ name: 'suiswap' }, () => moveCallSuiswap(txb, venue, coin))
     .with({ name: 'interestswap' }, () => moveCallInterestswap(txb, venue, coin))
     .with({ name: 'bayswap' }, () => moveCallBayswap(txb, venue, coin))
+    .with({ name: 'deepbook' }, () => moveCallDeepBook(txb, venue, coin, accountCap))
     .otherwise(() => moveCallSwapUmaUdo(txb, venue, coin));
 };
 
@@ -73,6 +76,7 @@ export type MoveCallUmiAgSwapArgs = {
   coins: TransactionArgument[];
   accountAddress: TransactionArgument,
   minTargetAmount: TransactionArgument;
+  accountCap?: TransactionArgument | null; // for deepbook
 };
 
 export const moveCallUmiAgSwapDirect = ({
@@ -81,6 +85,7 @@ export const moveCallUmiAgSwapDirect = ({
   coins,
   accountAddress,
   minTargetAmount,
+  accountCap,
 }: MoveCallUmiAgSwapArgs) => {
   const sourceCoin = moveCallMergeCoins({
     txb,
@@ -115,7 +120,7 @@ export const moveCallUmiAgSwapDirect = ({
 
       // Process each step in the trading venue
       for (const [{ venue }, coinForVenue] of zip(venues, coinsForVenues)) {
-        const swapped = moveCallTrade(txb, venue, coinForVenue);
+        const swapped = moveCallTrade(txb, venue, coinForVenue, accountCap);
         swappedCoins.push(swapped);
       }
 
@@ -164,6 +169,7 @@ export const moveCallUmiAgSwapExact = ({
   coins,
   accountAddress,
   minTargetAmount,
+  accountCap,
 }: MoveCallUmiAgSwapArgs) => {
   const coin = moveCallUmiAgSwapBegin({
     txb,
@@ -179,6 +185,7 @@ export const moveCallUmiAgSwapExact = ({
     coins: [coin],
     accountAddress,
     minTargetAmount,
+    accountCap,
   });
 };
 
