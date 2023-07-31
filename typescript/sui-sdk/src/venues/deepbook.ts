@@ -3,17 +3,16 @@ import { maybeFindOrCreateObject } from '../core';
 import type { Venue } from '../types';
 import { moveCallCalcQuantity, moveCallCoinZero, moveCallMaybeTransferOrDestroyCoin } from '../utils';
 
-export const getLotSize = (coinTypeSource: string, coinTypeTarget: string) => {
-  const pair = [coinTypeSource, coinTypeTarget].sort().join('/');
+export const getLotSize = (poolId: string) => {
+  const SUI_USDCw = '0x7f526b1263c4b91b43c9e646419b5696f424de28dda3c1e6658cc0a54558baa7';
+  const USDTw_USDCw = '0x5deafda22b6b86127ea4299503362638bea0ca33bb212ea3a67b029356b8b955';
 
-  const SUI = '0x2::sui::SUI';
-  const USDCw = '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN';
-  const USDTw = '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN';
+  const lotSize = {
+    [SUI_USDCw]: 1e8,
+    [USDTw_USDCw]: 1e6,
+  }[poolId];
 
-  return {
-    [`${SUI}/${USDCw}`]: 1e8,
-    [`${USDCw}/${USDTw}`]: 1e6,
-  }[pair];
+  return lotSize ?? 0;
 };
 
 export const moveCallDeepBook = (
@@ -41,7 +40,7 @@ export const moveCallDeepBook = (
       txb,
       coinType: venue.source_coin,
       coin: sourceCoin,
-      lotSize: getLotSize(venue.source_coin, venue.target_coin),
+      lotSize: getLotSize(venue.object_id),
     });
 
     const [baseCoin, quoteCoin] = txb.moveCall({
@@ -75,7 +74,7 @@ export const moveCallDeepBook = (
     txb,
     coinType: venue.source_coin,
     coin: sourceCoin,
-    lotSize: getLotSize(venue.target_coin, venue.source_coin),
+    lotSize: getLotSize(venue.object_id),
   });
   const [baseCoin, quoteCoin] = txb.moveCall({
     target: '0xdee9::clob_v2::swap_exact_quote_for_base',
