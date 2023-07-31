@@ -71,7 +71,6 @@ export const moveCallDeepBook = (
   //     quote_coin: Coin<QuoteAsset>,
   //     ctx: &mut TxContext,
   // ): (Coin<BaseAsset>, Coin<QuoteAsset>, u64)
-
   const quantity = moveCallCalcQuantity({
     txb,
     coinType: venue.source_coin,

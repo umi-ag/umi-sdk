@@ -25,16 +25,6 @@ export const fetchQuoteFromUmi = async ({
   return result;
 };
 
-export const fetchQuoteX = async ({
-  endpoint = DEFAULT_ENDPOINT,
-}: Pick<QuoteQuery, 'endpoint'>): Promise<TradingRoutes> => {
-  const url = new URL(`${endpoint}/quote_x`);
-  const response = await fetch(url.toString());
-  const result = await response.json();
-
-  return result;
-};
-
 export const _fetchQuotesFromUmi = async ({
   sourceCoin,
   targetCoin,
