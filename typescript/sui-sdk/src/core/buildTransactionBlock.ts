@@ -39,6 +39,7 @@ export const buildTransactionBlockForUmiAgSwap = async ({
     .round()
     .toString();
 
+  // TODO: Only fetch this if a trading route includes deepbook
   const accountCap = await findObjectByType({
     txb,
     type: '0xdee9::custodian_v2::AccountCap',

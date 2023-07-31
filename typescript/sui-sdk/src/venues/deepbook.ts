@@ -19,6 +19,7 @@ export const moveCallDeepBook = (
   txb: TransactionBlock,
   venue: Venue,
   sourceCoin: TransactionArgument,
+  // TODO: make this optional
   accountCapCandidate: TransactionArgument | null,
 ) => {
   const accountCap = accountCapCandidate ?? txb.moveCall({
