@@ -77,6 +77,7 @@ export type MoveCallUmiAgSwapArgs = {
   accountAddress: TransactionArgument,
   minTargetAmount: TransactionArgument;
   accountCap?: TransactionArgument | null; // for deepbook
+  partnerPolicyObjectId?: TransactionArgument;
 };
 
 export const moveCallUmiAgSwapDirect = ({
@@ -86,6 +87,7 @@ export const moveCallUmiAgSwapDirect = ({
   accountAddress,
   minTargetAmount,
   accountCap,
+  partnerPolicyObjectId,
 }: MoveCallUmiAgSwapArgs) => {
   const sourceCoin = moveCallMergeCoins({
     txb,
@@ -152,6 +154,15 @@ export const moveCallUmiAgSwapDirect = ({
     coins: targetCoins,
   });
 
+  if (partnerPolicyObjectId) {
+    moveCallTakeFeeForPartner({
+      txb,
+      coinType: quote.target_coin,
+      coin: targetCoin,
+      policy: partnerPolicyObjectId,
+    });
+  }
+
   moveCallUmiAgSwapEnd({
     txb,
     coinType: quote.target_coin,
@@ -213,5 +224,25 @@ export const moveCallUmiAgSwapEnd = ({
     target: `${UMIAG_PACKAGE_ID}::umi_aggregator::swap_end`,
     typeArguments: [coinType],
     arguments: [coin, amount],
+  });
+};
+
+export type TakeFeeForPartnerArgs = {
+  txb: TransactionBlock,
+  coinType: string,
+  coin: TransactionArgument,
+  policy: TransactionArgument,
+};
+
+export const moveCallTakeFeeForPartner = ({
+  txb,
+  coinType,
+  coin,
+  policy,
+}: TakeFeeForPartnerArgs) => {
+  return txb.moveCall({
+    target: `${UMIAG_PACKAGE_ID}::umi_aggregator::take_fee_for_partner`,
+    typeArguments: [coinType],
+    arguments: [coin, policy],
   });
 };
