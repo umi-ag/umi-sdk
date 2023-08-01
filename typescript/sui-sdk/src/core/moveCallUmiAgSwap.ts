@@ -77,7 +77,7 @@ export type MoveCallUmiAgSwapArgs = {
   accountAddress: TransactionArgument,
   minTargetAmount: TransactionArgument;
   accountCap?: TransactionArgument | null; // for deepbook
-  partnerPolicyObjectId?: TransactionArgument;
+  partnerPolicy?: TransactionArgument;
 };
 
 export const moveCallUmiAgSwapDirect = ({
@@ -87,7 +87,7 @@ export const moveCallUmiAgSwapDirect = ({
   accountAddress,
   minTargetAmount,
   accountCap,
-  partnerPolicyObjectId,
+  partnerPolicy,
 }: MoveCallUmiAgSwapArgs) => {
   const sourceCoin = moveCallMergeCoins({
     txb,
@@ -154,12 +154,12 @@ export const moveCallUmiAgSwapDirect = ({
     coins: targetCoins,
   });
 
-  if (partnerPolicyObjectId) {
+  if (partnerPolicy) {
     moveCallTakeFeeForPartner({
       txb,
       coinType: quote.target_coin,
       coin: targetCoin,
-      policy: partnerPolicyObjectId,
+      policy: partnerPolicy,
     });
   }
 
@@ -181,6 +181,7 @@ export const moveCallUmiAgSwapExact = ({
   accountAddress,
   minTargetAmount,
   accountCap,
+  partnerPolicy,
 }: MoveCallUmiAgSwapArgs) => {
   const coin = moveCallUmiAgSwapBegin({
     txb,
@@ -197,6 +198,7 @@ export const moveCallUmiAgSwapExact = ({
     accountAddress,
     minTargetAmount,
     accountCap,
+    partnerPolicy,
   });
 };
 
