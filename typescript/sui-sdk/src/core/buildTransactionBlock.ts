@@ -13,6 +13,7 @@ type BuildTransactionBlockForUmiAgSwapArgs = {
   quote: TradingRoute,
   accountAddress: SuiAddress,
   slippageTolerance: number,
+  partnerPolicyObjectId?: string,
 };
 
 export const buildTransactionBlockForUmiAgSwap = async ({
@@ -20,6 +21,7 @@ export const buildTransactionBlockForUmiAgSwap = async ({
   quote,
   accountAddress,
   slippageTolerance,
+  partnerPolicyObjectId,
 }: BuildTransactionBlockForUmiAgSwapArgs) => {
   const txb = new TransactionBlock();
 
@@ -47,6 +49,8 @@ export const buildTransactionBlockForUmiAgSwap = async ({
     provider,
   });
 
+  const partnerPolicy = partnerPolicyObjectId ? txb.pure(partnerPolicyObjectId) : undefined;
+
   const targetCoinObject = moveCallUmiAgSwapExact({
     transactionBlock: txb,
     quote,
@@ -54,6 +58,7 @@ export const buildTransactionBlockForUmiAgSwap = async ({
     coins: [sourceCoin],
     minTargetAmount: txb.pure(minTargetAmount),
     accountCap,
+    partnerPolicy,
   });
 
   txb.transferObjects([targetCoinObject], accountAddressObject);
@@ -68,6 +73,7 @@ type FetchQuoteAndBuildTransactionBlockArgs = {
   sourceAmount: bigint,
   accountAddress: SuiAddress,
   slippageTolerance: number,
+  partnerPolicyObjectId?: string,
 };
 
 export const fetchQuoteAndBuildTransactionBlockForUmiAgSwap = async ({
@@ -77,6 +83,7 @@ export const fetchQuoteAndBuildTransactionBlockForUmiAgSwap = async ({
   sourceAmount,
   accountAddress,
   slippageTolerance,
+  partnerPolicyObjectId,
 }: FetchQuoteAndBuildTransactionBlockArgs) => {
   // TODO: Compare all quotes and pick the best one.
   const [quote] = await fetchQuoteFromUmi({
@@ -91,11 +98,13 @@ export const fetchQuoteAndBuildTransactionBlockForUmiAgSwap = async ({
     quote,
     accountAddress,
     slippageTolerance,
+    partnerPolicyObjectId,
   });
 
   return txb;
 };
 
+// TODO: Rename TradingAmount to SwapAmount
 export type FetchTradingAmountListAndFeeArgs = {
   provider: JsonRpcProvider,
   transactionBlock: TransactionBlock,

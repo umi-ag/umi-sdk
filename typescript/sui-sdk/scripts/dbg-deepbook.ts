@@ -42,7 +42,7 @@ const usdc = moveCallDeepBook(
     target_fee: 0,
   },
   sui,
-  accountCap ?? undefined,
+  accountCap ?? null,
 );
 
 moveCallMaybeTransferOrDestroyCoin({
