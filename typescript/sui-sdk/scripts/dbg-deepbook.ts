@@ -31,8 +31,8 @@ const usdc = moveCallDeepBook(
   {
     name: 'deepbook',
     object_id: '0x7f526b1263c4b91b43c9e646419b5696f424de28dda3c1e6658cc0a54558baa7',
-    source_coin: SUI,
-    target_coin: USDCw,
+    source_coin_type: SUI,
+    target_coin_type: USDCw,
     is_x_to_y: true,
     function: 'a::b::c',
     object_type: 'x',

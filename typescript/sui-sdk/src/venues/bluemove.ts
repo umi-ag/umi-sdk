@@ -8,8 +8,8 @@ export const moveCallBluemove = (
   venue: Venue,
   sourceCoin: TransactionArgument,
 ) => {
-  const coinTypeSource = venue.source_coin;
-  const coinTypeTarget = venue.target_coin;
+  const coinTypeSource = venue.source_coin_type;
+  const coinTypeTarget = venue.target_coin_type;
 
   console.log({ coinTypeSource, coinTypeTarget });
 

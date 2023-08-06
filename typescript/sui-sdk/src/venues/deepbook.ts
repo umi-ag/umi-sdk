@@ -38,26 +38,26 @@ export const moveCallDeepBook = (
   if (venue.is_x_to_y) {
     const quantity = moveCallCalcQuantity({
       txb,
-      coinType: venue.source_coin,
+      coinType: venue.source_coin_type,
       coin: sourceCoin,
       lotSize: getLotSize(venue.object_id),
     });
 
     const [baseCoin, quoteCoin] = txb.moveCall({
       target: '0xdee9::clob_v2::swap_exact_base_for_quote',
-      typeArguments: [venue.source_coin, venue.target_coin],
+      typeArguments: [venue.source_coin_type, venue.target_coin_type],
       arguments: [
         maybeFindOrCreateObject(txb, venue.object_id),
         txb.pure(0), // client_order_id (arbitrary)
         accountCap,
         quantity,
         sourceCoin,
-        moveCallCoinZero(txb, venue.target_coin),
+        moveCallCoinZero(txb, venue.target_coin_type),
         maybeFindOrCreateObject(txb, '0x6'),
       ]
     });
 
-    moveCallMaybeTransferOrDestroyCoin({ txb, coinType: venue.source_coin, coin: baseCoin });
+    moveCallMaybeTransferOrDestroyCoin({ txb, coinType: venue.source_coin_type, coin: baseCoin });
     return quoteCoin;
   }
 
@@ -72,13 +72,13 @@ export const moveCallDeepBook = (
   // ): (Coin<BaseAsset>, Coin<QuoteAsset>, u64)
   const quantity = moveCallCalcQuantity({
     txb,
-    coinType: venue.source_coin,
+    coinType: venue.source_coin_type,
     coin: sourceCoin,
     lotSize: getLotSize(venue.object_id),
   });
   const [baseCoin, quoteCoin] = txb.moveCall({
     target: '0xdee9::clob_v2::swap_exact_quote_for_base',
-    typeArguments: [venue.target_coin, venue.source_coin],
+    typeArguments: [venue.target_coin_type, venue.source_coin_type],
     arguments: [
       maybeFindOrCreateObject(txb, venue.object_id),
       txb.pure(0), // client_order_id (arbitrary)
@@ -88,6 +88,6 @@ export const moveCallDeepBook = (
       sourceCoin,
     ]
   });
-  moveCallMaybeTransferOrDestroyCoin({ txb, coinType: venue.source_coin, coin: quoteCoin });
+  moveCallMaybeTransferOrDestroyCoin({ txb, coinType: venue.source_coin_type, coin: quoteCoin });
   return baseCoin;
 };

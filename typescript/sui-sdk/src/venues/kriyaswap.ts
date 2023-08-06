@@ -8,8 +8,8 @@ export const moveCallKriyaswap = (
   venue: Venue,
   sourceCoin: TransactionArgument,
 ) => {
-  const coinTypeSource = venue.source_coin;
-  const coinTypeTarget = venue.target_coin;
+  const coinTypeSource = venue.source_coin_type;
+  const coinTypeTarget = venue.target_coin_type;
 
   const moveArgs = [
     maybeFindOrCreateObject(txb, venue.object_id), // pool

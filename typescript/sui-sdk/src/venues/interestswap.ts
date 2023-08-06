@@ -7,8 +7,8 @@ export const moveCallInterestswap = (
   venue: Venue,
   sourceCoin: TransactionArgument,
 ) => {
-  const coinTypeSource = venue.source_coin;
-  const coinTypeTarget = venue.target_coin;
+  const coinTypeSource = venue.source_coin_type;
+  const coinTypeTarget = venue.target_coin_type;
 
   const DEX_STORAGE_ID = '0xdf2ee39f28fdf4bc5d5b5dc89926ac121839f8594fa51b2383a14cb99ab25a77';
 

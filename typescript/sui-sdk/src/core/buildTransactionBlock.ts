@@ -5,6 +5,7 @@ import { fetchQuoteFromUmi } from '../api';
 import { UMIAG_PACKAGE_ID } from '../config';
 import type { TradingRoute } from '../types';
 import { findObjectByType, moveCallWithdrawCoin } from '../utils';
+import { isVenueInTradingRoute } from '../utils/quote';
 import { formatTypeName } from '../utils/type-name';
 import { moveCallUmiAgSwapExact } from './moveCallUmiAgSwap';
 
@@ -28,7 +29,7 @@ export const buildTransactionBlockForUmiAgSwap = async ({
   const sourceCoin = await moveCallWithdrawCoin({
     provider,
     owner: accountAddress,
-    coinType: quote.source_coin,
+    coinType: quote.source_coin_type,
     requiredAmount: quote.source_amount,
     txb,
   });
@@ -41,13 +42,15 @@ export const buildTransactionBlockForUmiAgSwap = async ({
     .round()
     .toString();
 
-  // TODO: Only fetch this if a trading route includes deepbook
-  const accountCap = await findObjectByType({
-    txb,
-    type: '0xdee9::custodian_v2::AccountCap',
-    owner: accountAddress,
-    provider,
-  });
+  let accountCap = null;
+  if (isVenueInTradingRoute('deepbook', quote)) {
+    accountCap = await findObjectByType({
+      txb,
+      type: '0xdee9::custodian_v2::AccountCap',
+      owner: accountAddress,
+      provider,
+    });
+  }
 
   const partnerPolicy = partnerPolicyObjectId ? txb.pure(partnerPolicyObjectId) : undefined;
 
