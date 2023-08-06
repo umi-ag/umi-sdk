@@ -11,8 +11,8 @@ export const moveCallSuiswap = (
   venue: Venue,
   sourceCoin: TransactionArgument
 ) => {
-  const coinTypeSource = venue.source_coin;
-  const coinTypeTarget = venue.target_coin;
+  const coinTypeSource = venue.source_coin_type;
+  const coinTypeTarget = venue.target_coin_type;
 
   console.log({ coinTypeSource, coinTypeTarget });
   console.log({ venue });
@@ -53,13 +53,13 @@ export const moveCallSuiswap = (
   const [sourceOutputCoin, targetOutputCoin] = venue.is_x_to_y
     ? txb.moveCall({
       target:
-          '0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::pool::do_swap_x_to_y_direct',
+        '0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::pool::do_swap_x_to_y_direct',
       typeArguments: [coinTypeSource, coinTypeTarget],
       arguments: moveArgs,
     })
     : txb.moveCall({
       target:
-          '0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::pool::do_swap_y_to_x_direct',
+        '0x361dd589b98e8fcda9a7ee53b85efabef3569d00416640d2faa516e3801d7ffc::pool::do_swap_y_to_x_direct',
       typeArguments: [coinTypeTarget, coinTypeSource],
       arguments: moveArgs,
     });

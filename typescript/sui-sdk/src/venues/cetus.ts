@@ -9,8 +9,8 @@ export const moveCallCetus = (
   venue: Venue,
   sourceCoin: TransactionArgument,
 ) => {
-  const coinTypeSource = venue.source_coin;
-  const coinTypeTarget = venue.target_coin;
+  const coinTypeSource = venue.source_coin_type;
+  const coinTypeTarget = venue.target_coin_type;
 
   const typeArguments = venue.is_x_to_y
     ? [coinTypeSource, coinTypeTarget]

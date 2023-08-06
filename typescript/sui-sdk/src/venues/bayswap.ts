@@ -8,8 +8,8 @@ export const moveCallBayswap = (
   venue: Venue,
   sourceCoin: TransactionArgument,
 ) => {
-  const coinTypeSource = venue.source_coin;
-  const coinTypeTarget = venue.target_coin;
+  const coinTypeSource = venue.source_coin_type;
+  const coinTypeTarget = venue.target_coin_type;
 
   const DEX_STORAGE_ID = '0x53568bcc281b720f257e53397b45228186cc3f47e714ab2ab5afea87af7ed903';
 

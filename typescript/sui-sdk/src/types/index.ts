@@ -6,8 +6,8 @@ export type Venue = {
   name: VenueName;
   object_id: string;
   object_type: string;
-  source_coin: string;
-  target_coin: string;
+  source_coin_type: string;
+  target_coin_type: string;
   // f64
   source_amount: number;
   // f64
@@ -25,16 +25,16 @@ export type WeightedVenue = {
 };
 
 export type Step = {
-  source_coin: string;
-  target_coin: string;
+  source_coin_type: string;
+  target_coin_type: string;
   source_amount: number;
   target_amount: number;
   venues: WeightedVenue[];
 };
 
 export type Hop = {
-  source_coin: string;
-  target_coin: string;
+  source_coin_type: string;
+  target_coin_type: string;
   source_amount: number;
   target_amount: number;
   steps: Step[];
@@ -47,8 +47,8 @@ export type WeightedHop = {
 };
 
 export type TradingRoute = {
-  source_coin: string;
-  target_coin: string;
+  source_coin_type: string;
+  target_coin_type: string;
   source_amount: number;
   target_amount: number;
   paths: WeightedHop[];

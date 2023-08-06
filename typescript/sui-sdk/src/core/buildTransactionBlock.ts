@@ -28,7 +28,7 @@ export const buildTransactionBlockForUmiAgSwap = async ({
   const sourceCoin = await moveCallWithdrawCoin({
     provider,
     owner: accountAddress,
-    coinType: quote.source_coin,
+    coinType: quote.source_coin_type,
     requiredAmount: quote.source_amount,
     txb,
   });

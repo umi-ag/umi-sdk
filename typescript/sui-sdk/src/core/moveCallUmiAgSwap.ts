@@ -17,8 +17,8 @@ import { moveCallSuiswap } from '../venues/suiswap';
 
 export const getCoinXYTypes = (venue: Venue) => {
   const [coinTypeX, coinTypeY] = venue.is_x_to_y
-    ? [venue.source_coin, venue.target_coin]
-    : [venue.target_coin, venue.source_coin];
+    ? [venue.source_coin_type, venue.target_coin_type]
+    : [venue.target_coin_type, venue.source_coin_type];
   return [coinTypeX, coinTypeY];
 };
 
@@ -91,7 +91,7 @@ export const moveCallUmiAgSwapDirect = ({
 }: MoveCallUmiAgSwapArgs) => {
   const sourceCoin = moveCallMergeCoins({
     txb,
-    coinType: quote.source_coin,
+    coinType: quote.source_coin_type,
     coins,
   });
 
@@ -100,7 +100,7 @@ export const moveCallUmiAgSwapDirect = ({
   const pathWeights = quote.paths.map(p => toBps(p.weight));
   const coinsForPaths = moveCallSplitCoinByWeights({
     txb,
-    coinType: quote.source_coin,
+    coinType: quote.source_coin_type,
     coins: [sourceCoin],
     weights: pathWeights,
   });
@@ -115,7 +115,7 @@ export const moveCallUmiAgSwapDirect = ({
       const venueWeights = venues.map(v => toBps(v.weight));
       const coinsForVenues = moveCallSplitCoinByWeights({
         txb,
-        coinType: step.source_coin,
+        coinType: step.source_coin_type,
         coins: [coinToSwap],
         weights: venueWeights,
       });
@@ -133,7 +133,7 @@ export const moveCallUmiAgSwapDirect = ({
 
       coinToSwap = moveCallMergeCoins({
         txb,
-        coinType: step.target_coin,
+        coinType: step.target_coin_type,
         coins: swappedCoins,
       });
     }
@@ -150,14 +150,14 @@ export const moveCallUmiAgSwapDirect = ({
 
   const targetCoin = moveCallMergeCoins({
     txb,
-    coinType: quote.target_coin,
+    coinType: quote.target_coin_type,
     coins: targetCoins,
   });
 
   if (partnerPolicy) {
     moveCallTakeFeeForPartner({
       txb,
-      coinType: quote.target_coin,
+      coinType: quote.target_coin_type,
       coin: targetCoin,
       policy: partnerPolicy,
     });
@@ -165,7 +165,7 @@ export const moveCallUmiAgSwapDirect = ({
 
   moveCallUmiAgSwapEnd({
     txb,
-    coinType: quote.target_coin,
+    coinType: quote.target_coin_type,
     coin: targetCoin,
     amount: minTargetAmount,
   });
@@ -185,7 +185,7 @@ export const moveCallUmiAgSwapExact = ({
 }: MoveCallUmiAgSwapArgs) => {
   const coin = moveCallUmiAgSwapBegin({
     txb,
-    coinType: quote.source_coin,
+    coinType: quote.source_coin_type,
     coins,
     amount: txb.pure(quote.source_amount),
     recipient: accountAddress,
